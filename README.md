@@ -76,6 +76,9 @@ python3 tools/build-artifact.py index.html artifact.html
 
 ## ふたりで進めるとき
 
+はじめての人は、先に **[共同作業のてびき](https://claude.ai/artifact/TS6arWrM6yJ6a3J3xqpasa)** を読んでほしい。
+GitHub が何なのか、Claude Code に日本語でどう頼めばよいかを、そこにまとめてある。
+
 - 直す前に `git pull`。作業は `main` に直接ではなく、枝を切ってから
 - `CLAUDE.md` は設計の記録。判断を変えたら、コードと一緒に直す
 - 見た目を変えたら、幅 375px と 430px の両方で見る。スマホ縦が主戦場
