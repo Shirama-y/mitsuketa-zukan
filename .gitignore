@@ -1,0 +1,23 @@
+# 公開用に組み立てたもの。index.html から作れるので、置かない
+artifact.html
+
+# 手元の確認用に一時的に作るページ
+.preview*.html
+.frame.html
+.probe.html
+.blank.html
+.t-*.html
+pv*.html
+q-*.html
+v-*.html
+n.html
+bk.html
+c9.html
+r.html
+sh-*.html
+
+# 試験で使う Chrome のプロファイル
+chrome-profile/
+prof-*/
+
+.DS_Store
