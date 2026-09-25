@@ -49,6 +49,21 @@ for (const entry of entries) {
   plist = plist.slice(0, pos) + insertion + plist.slice(pos);
 }
 
+const portraitOnly = `<key>UISupportedInterfaceOrientations</key>
+  <array>
+    <string>UIInterfaceOrientationPortrait</string>
+  </array>`;
+
+plist = plist.replace(
+  /<key>UISupportedInterfaceOrientations<\/key>\s*<array>[\s\S]*?<\/array>/,
+  portraitOnly
+);
+
+plist = plist.replace(
+  /\s*<key>UISupportedInterfaceOrientations~ipad<\/key>\s*<array>[\s\S]*?<\/array>/,
+  ''
+);
+
 await writeFile(plistPath, plist, 'utf8');
 
 const privacyManifest = `<?xml version="1.0" encoding="UTF-8"?>
@@ -74,7 +89,9 @@ if (existsSync(projectPath)) {
 
   project = project
     .replace(/MARKETING_VERSION = [^;]+;/g, 'MARKETING_VERSION = 1.0.0;')
-    .replace(/CURRENT_PROJECT_VERSION = [^;]+;/g, 'CURRENT_PROJECT_VERSION = 1;');
+    .replace(/CURRENT_PROJECT_VERSION = [^;]+;/g, 'CURRENT_PROJECT_VERSION = 1;')
+    .replace(/TARGETED_DEVICE_FAMILY = "[^"]+";/g, 'TARGETED_DEVICE_FAMILY = "1";')
+    .replace(/IPHONEOS_DEPLOYMENT_TARGET = [^;]+;/g, 'IPHONEOS_DEPLOYMENT_TARGET = 15.0;');
 
   if (!project.includes('PrivacyInfo.xcprivacy')) {
     const id = seed =>
@@ -143,8 +160,9 @@ if (existsSync(projectPath)) {
       resourcesReplacement +
       project.slice(resourcesEnd);
 
-    await writeFile(projectPath, project, 'utf8');
   }
+
+  await writeFile(projectPath, project, 'utf8');
 }
 
-console.log('iOS privacy descriptions and PrivacyInfo.xcprivacy configured.');
+console.log('iOS privacy, portrait orientation, versioning, and PrivacyInfo.xcprivacy configured.');
