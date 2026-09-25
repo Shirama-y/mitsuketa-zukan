@@ -27,7 +27,24 @@ const APP_SHELL = [
   "./assets/gold-corners.svg",
   "./assets/preset-night.svg",
   "./assets/preset-nature.svg",
-  "./assets/preset-collection.svg"
+  "./assets/preset-collection.svg",
+  "./assets/nav-user.svg",
+  "./assets/icon-leaf.svg",
+  "./assets/icon-flower.svg",
+  "./assets/icon-bird.svg",
+  "./assets/icon-butterfly.svg",
+  "./assets/icon-blocks.svg",
+  "./assets/icon-sticker.svg",
+  "./assets/icon-plush.svg",
+  "./assets/icon-object.svg",
+  "./assets/icon-cafe.svg",
+  "./assets/icon-camera.svg",
+  "./assets/icon-heart.svg",
+  "./assets/icon-bookmark.svg",
+  "./assets/icon-sliders.svg",
+  "./assets/icon-more.svg",
+  "./assets/icon-plus.svg",
+  "./assets/icon-back.svg"
 ];
 
 self.addEventListener("install", event => {
