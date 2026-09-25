@@ -26,6 +26,14 @@ const entries = [
     key: 'ITSAppUsesNonExemptEncryption',
     value: '<false/>',
   },
+  {
+    key: 'UIViewControllerBasedStatusBarAppearance',
+    value: '<true/>',
+  },
+  {
+    key: 'UIStatusBarStyle',
+    value: '<string>UIStatusBarStyleLightContent</string>',
+  },
 ];
 
 for (const entry of entries) {
