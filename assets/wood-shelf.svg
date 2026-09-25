@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 180">
+<defs>
+<linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#7a5038"/><stop offset=".42" stop-color="#5b3828"/><stop offset="1" stop-color="#342017"/></linearGradient>
+<filter id="grain"><feTurbulence baseFrequency=".018 .22" numOctaves="2" seed="12" type="fractalNoise"/><feColorMatrix values=".5 0 0 0 .12 0 .35 0 0 .06 0 0 .25 0 .03 0 0 0 .16 0"/></filter>
+</defs>
+<rect width="1200" height="180" rx="12" fill="url(#wood)"/>
+<rect width="1200" height="180" filter="url(#grain)" opacity=".65"/>
+<path d="M0 26 C180 12 310 42 490 25 S850 10 1200 30" fill="none" stroke="#b78460" opacity=".18" stroke-width="3"/>
+<path d="M0 128 C210 112 360 150 560 127 S920 108 1200 134" fill="none" stroke="#24150f" opacity=".25" stroke-width="3"/>
+</svg>
