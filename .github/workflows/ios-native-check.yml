@@ -8,17 +8,6 @@ on:
   push:
     branches:
       - native-app-v1
-  pull_request:
-    branches:
-      - system-update-v2
-    paths:
-      - "package.json"
-      - "capacitor.config.json"
-      - "index.html"
-      - "assets/**"
-      - "resources/**"
-      - "scripts/**"
-      - ".github/workflows/ios-native-check.yml"
 
 jobs:
   ios-build:
