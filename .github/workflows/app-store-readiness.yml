@@ -1,0 +1,105 @@
+name: App Store release readiness
+
+concurrency:
+  group: app-store-release-readiness
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - native-app-v1
+    paths:
+      - "codemagic.yaml"
+      - "app-store-metadata.ja-JP.json"
+      - "privacy.html"
+      - "support.html"
+      - "APP_STORE_CHECKLIST.md"
+      - "APP_STORE_CONNECT_ANSWERS.md"
+      - ".github/workflows/app-store-readiness.yml"
+  workflow_dispatch:
+
+jobs:
+  readiness:
+    name: Validate App Store release inputs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get source
+        uses: actions/checkout@v4
+
+      - name: Validate metadata JSON
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("app-store-metadata.ja-JP.json")
+          data = json.loads(path.read_text(encoding="utf-8"))
+
+          expected = {
+              "locale": "ja-JP",
+              "name": "わたしの図鑑",
+              "version": "1.0.0",
+              "bundleId": "com.dodolabo.mitsuketazukan",
+              "supportUrl": "https://shirama-y.github.io/mitsuketa-zukan/support.html",
+              "privacyPolicyUrl": "https://shirama-y.github.io/mitsuketa-zukan/privacy.html",
+          }
+
+          for key, value in expected.items():
+              actual = data.get(key)
+              assert actual == value, f"{key}: expected {value!r}, got {actual!r}"
+
+          assert data.get("description", "").strip(), "description is empty"
+          assert data.get("keywords", "").strip(), "keywords are empty"
+          assert len(data.get("name", "")) <= 30, "App name exceeds 30 characters"
+          assert len(data.get("subtitle", "")) <= 30, "Subtitle exceeds 30 characters"
+          assert len(data.get("promotionalText", "")) <= 170, "Promotional text exceeds 170 characters"
+          assert len(data.get("keywords", "").encode("utf-8")) <= 300, "Keywords look unexpectedly long"
+
+          print("Metadata JSON: OK")
+          PY
+
+      - name: Validate Codemagic release config
+        run: |
+          set -euo pipefail
+
+          grep -q 'app_store_connect: dodolabo-appstore' codemagic.yaml
+          grep -q 'distribution_type: app_store' codemagic.yaml
+          grep -q 'bundle_identifier: com.dodolabo.mitsuketazukan' codemagic.yaml
+          grep -q 'xcode: latest' codemagic.yaml
+          grep -q 'auth: integration' codemagic.yaml
+          grep -q 'submit_to_app_store: false' codemagic.yaml
+          grep -q 'XCODE_PROJECT: "ios/App/App.xcodeproj"' codemagic.yaml
+          grep -q 'XCODE_SCHEME: "App"' codemagic.yaml
+
+          echo "Codemagic release config: OK"
+
+      - name: Check public App Store URLs
+        run: |
+          set -euo pipefail
+
+          for url in \
+            "https://shirama-y.github.io/mitsuketa-zukan/support.html" \
+            "https://shirama-y.github.io/mitsuketa-zukan/privacy.html"
+          do
+            echo "Checking $url"
+            status="$(curl --silent --show-error --location --output /tmp/page.html --write-out '%{http_code}' "$url")"
+            test "$status" = "200"
+            test -s /tmp/page.html
+          done
+
+          echo "Public App Store URLs: OK"
+
+      - name: Verify required release files
+        run: |
+          set -euo pipefail
+
+          test -s APP_STORE_CHECKLIST.md
+          test -s APP_STORE_CONNECT_ANSWERS.md
+          test -s PRIVACY_POLICY.md
+          test -s SUPPORT.md
+          test -s privacy.html
+          test -s support.html
+          test -s TESTFLIGHT_NOTES.md
+
+          echo "Release files: OK"
