@@ -1,0 +1,56 @@
+workflows:
+  ios-testflight:
+    name: iOS TestFlight - Macなし配信
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+
+    integrations:
+      app_store_connect: dodolabo-appstore
+
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.dodolabo.mitsuketazukan
+      vars:
+        XCODE_PROJECT: "ios/App/App.xcodeproj"
+        XCODE_SCHEME: "App"
+      node: 22
+      xcode: 26.6
+
+    scripts:
+      - name: Install dependencies
+        script: npm install
+
+      - name: Create native iOS project
+        script: npm run native:ios:add
+
+      - name: Verify release configuration
+        script: |
+          test -f ios/App/App/Info.plist
+          test -f ios/App/App/PrivacyInfo.xcprivacy
+          grep -q "NSCameraUsageDescription" ios/App/App/Info.plist
+          grep -q "NSPhotoLibraryUsageDescription" ios/App/App/Info.plist
+          grep -Eq 'TARGETED_DEVICE_FAMILY = "?1"?;' ios/App/App.xcodeproj/project.pbxproj
+
+      - name: Apply App Store signing
+        script: xcode-project use-profiles
+
+      - name: Set cloud build number
+        script: |
+          cd ios/App
+          agvtool new-version -all "$BUILD_NUMBER"
+
+      - name: Build signed IPA
+        script: |
+          xcode-project build-ipa             --project "$CM_BUILD_DIR/$XCODE_PROJECT"             --scheme "$XCODE_SCHEME"
+
+    artifacts:
+      - ios/App/build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: false
+        submit_to_app_store: false
