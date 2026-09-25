@@ -2533,8 +2533,41 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
 
   /* ================= 記録をくわえる ================= */
 
+  function nativeApi(){
+    var n=window.NativeZukan;
+    return n&&n.isNative?n:null
+  }
+
+  function nativeHaptic(kind){
+    var n=nativeApi();
+    if(n&&n.haptic){
+      n.haptic(kind||"light")["catch"](function(){})
+    }
+  }
+
+  function openCapturedPhoto(bookId,file){
+    if(!file)return;
+    squeeze(file).then(
+      function(blob){openEntryForm(bookId,blob)},
+      function(){openEntryForm(bookId,file)}
+    )
+  }
+
   function startCapture(bookId) {
     pendingBookId = bookId;
+    var n=nativeApi();
+    if(n&&n.pickPhoto){
+      nativeHaptic("light");
+      n.pickPhoto().then(function(file){
+        if(!file||!pendingBookId)return;
+        var id=pendingBookId;
+        pendingBookId=null;
+        openCapturedPhoto(id,file)
+      })["catch"](function(){
+        pendingBookId=null
+      });
+      return
+    }
     pick.click();
   }
 
@@ -2544,8 +2577,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
     if (!file || !pendingBookId) return;
     var bookId = pendingBookId;
     pendingBookId = null;
-    squeeze(file).then(function (blob) { openEntryForm(bookId, blob); },
-                       function () { openEntryForm(bookId, file); });
+    openCapturedPhoto(bookId,file);
   });
 
   function openEntryForm(bookId, photo) {
@@ -2800,7 +2832,18 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
       });
       var d=new Date(),p=function(n){return String(n).padStart(2,"0")};
       var name="zukan-backup-"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+".json";
-      downloadBlob(new Blob([JSON.stringify(payload)],{type:"application/json"}),name)
+      var json=JSON.stringify(payload),n=nativeApi();
+      if(n&&n.shareBackup){
+        return n.shareBackup(name,json).then(function(){
+          nativeHaptic("success");
+          return true
+        })["catch"](function(){
+          downloadBlob(new Blob([json],{type:"application/json"}),name);
+          return false
+        })
+      }
+      downloadBlob(new Blob([json],{type:"application/json"}),name);
+      return true
     })
   }
 
@@ -2987,7 +3030,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
           row.dataset.search=[e.name||"",e.kanji||"",e.place||"",Array.isArray(e.tags)?e.tags.join(" "):""].join(" ").toLowerCase();
           img.className="entry-photo";img.alt="";img.src=urlFor(e);
           var names=displayNames(b,e),op=h("button","entry-open");op.type="button";op.append(h("div","entry-name",names.main));if(names.sub)op.append(h("div","entry-alias",names.sub));op.append(h("div","entry-meta",showDate(e.date)+(e.place?"　•　"+e.place:"")));op.addEventListener("click",function(){go("#/b/"+b.id+"/e/"+e.no)});
-          var fav=h("button","heart-btn"+(e.favorite?" on":""));fav.type="button";fav.setAttribute("aria-label",e.favorite?"お気に入りを外す":"お気に入りに追加");fav.append(maskIcon("./assets/icon-heart.svg","heart-mask"));fav.addEventListener("click",function(){e.favorite=!e.favorite;store.updateEntry(e).then(render)});
+          var fav=h("button","heart-btn"+(e.favorite?" on":""));fav.type="button";fav.setAttribute("aria-label",e.favorite?"お気に入りを外す":"お気に入りに追加");fav.append(maskIcon("./assets/icon-heart.svg","heart-mask"));fav.addEventListener("click",function(){nativeHaptic("light");e.favorite=!e.favorite;store.updateEntry(e).then(render)});
           row.append(img,op,fav);ln.append(row)
         });screen.append(ln);
         emptyState.textContent="条件に合う記録が見つかりません。";
@@ -3014,7 +3057,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
       var b=out[0],list=out[1],e=list.filter(function(x){return x.no===no})[0];app.replaceChildren();clearAppNav();if(!b||!e){go("#/b/"+bookId+"/list");return}
       var screen=h("section","detail-screen");applyButtonTheme(screen,b);screen.style.setProperty("--book-font",bookFont(b.font).css);
       var top=h("div","detail-top"),back=h("a","back","← "+b.title);back.href="#/b/"+b.id+"/list";
-      var fav=h("button","heart-btn"+(e.favorite?" on":""));fav.type="button";fav.setAttribute("aria-label",e.favorite?"お気に入りを外す":"お気に入りに追加");fav.append(maskIcon("./assets/icon-heart.svg","heart-mask"));fav.addEventListener("click",function(){e.favorite=!e.favorite;store.updateEntry(e).then(render)});top.append(back,fav);screen.append(top);
+      var fav=h("button","heart-btn"+(e.favorite?" on":""));fav.type="button";fav.setAttribute("aria-label",e.favorite?"お気に入りを外す":"お気に入りに追加");fav.append(maskIcon("./assets/icon-heart.svg","heart-mask"));fav.addEventListener("click",function(){nativeHaptic("light");e.favorite=!e.favorite;store.updateEntry(e).then(render)});top.append(back,fav);screen.append(top);
       var img=document.createElement("img");img.className="detail-photo";img.alt="";img.src=urlFor(e);var names=displayNames(b,e);screen.append(img,h("div","detail-no","No."+pad(e.no)),h("h1","detail-name",names.main));if(names.sub)screen.append(h("div","detail-alias",names.sub));
       var meta=h("div","detail-meta");[["見つけた日",showDate(e.date)],["見つけたところ",e.place||"——"]].forEach(function(x){var r=h("div","detail-meta-row");r.append(h("span",null,x[0]),h("span",null,x[1]));meta.append(r)});screen.append(meta);
       if(e.tags&&e.tags.length){var tagList=h("div","tag-list");e.tags.forEach(function(t){tagList.append(h("span","tag-pill",t))});screen.append(tagList)}
@@ -3152,7 +3195,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
       save.addEventListener("click",function(){save.disabled=true;save.textContent="保存中…";store.updateBook(bookId,{
         title:(ti.value||"").trim()||"わたしの図鑑",subtitle:(si.value||"").trim(),font:Number(draft.font)||0,icon:Number(draft.icon)||0,
         color:Number(draft.color)||0,theme:Number(draft.theme)||0,frame:Number(draft.frame)||0,layout:draft.layout||"normal",nameMode:draft.nameMode||"both",titleSize:draft.titleSize||"medium",titleAlign:draft.titleAlign||"center",buttonTheme:draft.buttonTheme||"pink",customBg:draft.customBg||"",customAccent:draft.customAccent||"",customInk:draft.customInk||""
-      }).then(function(){go("#/b/"+bookId)},function(){save.disabled=false;save.textContent="保存"})});
+      }).then(function(){nativeHaptic("success");go("#/b/"+bookId)},function(){save.disabled=false;save.textContent="保存"})});
       app.append(screen);repaint()
     })
   }
@@ -3274,7 +3317,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
           subtitle:sub.input.value.trim(),font:draft.font,icon:draft.icon,layout:draft.layout,nameMode:draft.nameMode||"both",titleSize:draft.titleSize||"medium",titleAlign:draft.titleAlign||"center",buttonTheme:draft.buttonTheme||"pink",
           customBg:draft.customBg||"",customAccent:draft.customAccent||"",customInk:draft.customInk||""
         })
-      }).then(function(b){closeSheet(true);go("#/b/"+b.id)},function(){make.disabled=false;make.textContent="もう一度ためす"})
+      }).then(function(b){nativeHaptic("success");closeSheet(true);go("#/b/"+b.id)},function(){make.disabled=false;make.textContent="もう一度ためす"})
     });
     paint();openSheet(c)
   }
@@ -3311,6 +3354,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
           photoBuf:buf,photoType:photo.type||"image/jpeg",createdAt:Date.now()
         })
       }).then(function(){
+        nativeHaptic("success");
         URL.revokeObjectURL(url);closeSheet();render()
       })["catch"](function(err){
         save.disabled=false;cancel.disabled=false;save.textContent="コレクションに追加";
