@@ -102,7 +102,15 @@ try {
   await page.locator(".cover-screen").waitFor();
   await page.getByRole("button", { name: "デザインを編集" }).click();
   await page.locator(".design-screen").waitFor();
+
+  // Button theme can be changed and persists with the book.
+  await page.getByRole("button", { name: "ネイビー" }).click();
+  await page.locator(".button-theme-choice.active", { hasText: "ネイビー" }).waitFor();
   await page.screenshot({ path: "/tmp/zukan-design-430.png", fullPage: true });
+  await page.getByRole("button", { name: "保存" }).click();
+  await page.locator(".cover-screen").waitFor();
+  await page.getByRole("button", { name: "デザインを編集" }).click();
+  await page.locator(".button-theme-choice.active", { hasText: "ネイビー" }).waitFor();
 
   console.log("OK: UI smoke test passed");
 } catch (error) {
