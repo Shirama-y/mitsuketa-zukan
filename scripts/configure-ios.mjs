@@ -64,6 +64,17 @@ plist = plist.replace(
   ''
 );
 
+// Portrait-only iPhone release: keep the first App Store version focused.
+plist = plist.replace(
+  /<key>UISupportedInterfaceOrientations<\/key>\s*<array>[\s\S]*?<\/array>/,
+  '<key>UISupportedInterfaceOrientations</key>\n\t<array>\n\t\t<string>UIInterfaceOrientationPortrait</string>\n\t</array>'
+);
+
+plist = plist.replace(
+  /\s*<key>UISupportedInterfaceOrientations~ipad<\/key>\s*<array>[\s\S]*?<\/array>/,
+  ''
+);
+
 await writeFile(plistPath, plist, 'utf8');
 
 const privacyManifest = `<?xml version="1.0" encoding="UTF-8"?>
