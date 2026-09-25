@@ -80,6 +80,24 @@ try {
   await page.goto(BASE + "#/", { waitUntil: "networkidle" });
   await page.screenshot({ path: "/tmp/zukan-shelf-430.png", fullPage: true });
 
+  // Search screen opens from bottom nav.
+  await page.locator("#app-nav button").nth(1).click();
+  await page.waitForURL(/#\/search$/);
+  await page.locator(".global-search input").fill("たんぽぽ");
+  await page.getByText("たんぽぽ", { exact: true }).waitFor();
+
+  // Collections screen opens and contains the created book.
+  await page.locator("#app-nav button").nth(2).click();
+  await page.waitForURL(/#\/collections$/);
+  await page.getByText("草花図鑑", { exact: true }).waitFor();
+
+  // Settings screen exposes backup and restore.
+  await page.locator("#app-nav button").nth(3).click();
+  await page.waitForURL(/#\/settings$/);
+  await page.getByText("バックアップ", { exact: true }).waitFor();
+  await page.getByText("復元", { exact: true }).waitFor();
+
+  await page.goto(BASE + "#/", { waitUntil: "networkidle" });
   await page.locator(".spine-card:not(.new-spine)").first().click();
   await page.locator(".cover-screen").waitFor();
   await page.getByRole("button", { name: "デザインを編集" }).click();
