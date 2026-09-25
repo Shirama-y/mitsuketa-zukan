@@ -40,7 +40,9 @@ jobs:
         with:
           name: iphone-ui-preview
           path: |
-            /tmp/zukan-375.png
-            /tmp/zukan-430.png
+            /tmp/zukan-cover-375.png
+            /tmp/zukan-detail-375.png
+            /tmp/zukan-shelf-430.png
+            /tmp/zukan-design-430.png
             /tmp/zukan-failure.png
           if-no-files-found: ignore
