@@ -1,7 +1,10 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { existsSync, writeFileSync } from 'node:fs';
+import xcode from 'xcode';
 
 const plistPath = 'ios/App/App/Info.plist';
+const privacyPath = 'ios/App/App/PrivacyInfo.xcprivacy';
+const projectPath = 'ios/App/App.xcodeproj/project.pbxproj';
 
 if (!existsSync(plistPath)) {
   console.log('iOS project not found yet. Run npm run native:ios:add first.');
@@ -39,4 +42,36 @@ for (const entry of entries) {
 }
 
 await writeFile(plistPath, plist, 'utf8');
-console.log('iOS privacy descriptions configured.');
+
+const privacyManifest = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>NSPrivacyTracking</key>
+  <false/>
+  <key>NSPrivacyTrackingDomains</key>
+  <array/>
+  <key>NSPrivacyCollectedDataTypes</key>
+  <array/>
+  <key>NSPrivacyAccessedAPITypes</key>
+  <array/>
+</dict>
+</plist>
+`;
+
+writeFileSync(privacyPath, privacyManifest, 'utf8');
+
+if (existsSync(projectPath)) {
+  const project = xcode.project(projectPath);
+  project.parseSync();
+
+  const projectText = project.writeSync();
+  if (!projectText.includes('PrivacyInfo.xcprivacy')) {
+    project.addResourceFile('App/PrivacyInfo.xcprivacy', {
+      target: project.getFirstTarget().uuid,
+    });
+    writeFileSync(projectPath, project.writeSync(), 'utf8');
+  }
+}
+
+console.log('iOS privacy descriptions and PrivacyInfo.xcprivacy configured.');
