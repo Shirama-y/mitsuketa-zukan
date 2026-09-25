@@ -1,6 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import { existsSync, writeFileSync } from 'node:fs';
-import xcode from 'xcode';
+import { existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 
 const plistPath = 'ios/App/App/Info.plist';
 const privacyPath = 'ios/App/App/PrivacyInfo.xcprivacy';
@@ -59,28 +59,79 @@ const privacyManifest = `<?xml version="1.0" encoding="UTF-8"?>
 </plist>
 `;
 
-writeFileSync(privacyPath, privacyManifest, 'utf8');
+await writeFile(privacyPath, privacyManifest, 'utf8');
 
 if (existsSync(projectPath)) {
-  const project = xcode.project(projectPath);
-  project.parseSync();
+  let project = await readFile(projectPath, 'utf8');
 
-  const projectText = project.writeSync();
-  if (!projectText.includes('PrivacyInfo.xcprivacy')) {
-    const appGroupKey =
-      project.findPBXGroupKey({ path: 'App' }) ||
-      project.findPBXGroupKey({ name: 'App' });
+  if (!project.includes('PrivacyInfo.xcprivacy')) {
+    const id = seed =>
+      createHash('sha1').update(seed).digest('hex').slice(0, 24).toUpperCase();
 
-    if (!appGroupKey) {
-      throw new Error('Could not find the App PBXGroup in the Xcode project');
+    const fileRef = id('mitsuketa-zukan PrivacyInfo.xcprivacy file');
+    const buildRef = id('mitsuketa-zukan PrivacyInfo.xcprivacy build');
+
+    project = project.replace(
+      '/* Begin PBXBuildFile section */\n',
+      `/* Begin PBXBuildFile section */\n\t\t${buildRef} /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = ${fileRef} /* PrivacyInfo.xcprivacy */; };\n`
+    );
+
+    project = project.replace(
+      '/* Begin PBXFileReference section */\n',
+      `/* Begin PBXFileReference section */\n\t\t${fileRef} /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };\n`
+    );
+
+    const groupStart = project.indexOf('/* Begin PBXGroup section */');
+    const groupEnd = project.indexOf('/* End PBXGroup section */');
+
+    if (groupStart < 0 || groupEnd < 0) {
+      throw new Error('Could not locate PBXGroup section');
     }
 
-    project.addResourceFile(
-      'PrivacyInfo.xcprivacy',
-      { target: project.getFirstTarget().uuid },
-      appGroupKey
+    const groupSection = project.slice(groupStart, groupEnd);
+    const appGroupMatch = groupSection.match(
+      /([A-F0-9]{24}) \/\* App \*\/ = \{\n\s*isa = PBXGroup;\n\s*children = \(\n/
     );
-    writeFileSync(projectPath, project.writeSync(), 'utf8');
+
+    if (!appGroupMatch) {
+      throw new Error('Could not locate App PBXGroup');
+    }
+
+    const appGroupNeedle = appGroupMatch[0];
+    const appGroupReplacement =
+      appGroupNeedle +
+      `\t\t\t\t${fileRef} /* PrivacyInfo.xcprivacy */,\n`;
+
+    project =
+      project.slice(0, groupStart) +
+      groupSection.replace(appGroupNeedle, appGroupReplacement) +
+      project.slice(groupEnd);
+
+    const resourcesStart = project.indexOf('/* Begin PBXResourcesBuildPhase section */');
+    const resourcesEnd = project.indexOf('/* End PBXResourcesBuildPhase section */');
+
+    if (resourcesStart < 0 || resourcesEnd < 0) {
+      throw new Error('Could not locate PBXResourcesBuildPhase section');
+    }
+
+    const resourcesSection = project.slice(resourcesStart, resourcesEnd);
+    const filesNeedle = /files = \(\n/;
+
+    if (!filesNeedle.test(resourcesSection)) {
+      throw new Error('Could not locate Resources files list');
+    }
+
+    const resourcesReplacement = resourcesSection.replace(
+      filesNeedle,
+      `files = (\n\t\t\t\t${buildRef} /* PrivacyInfo.xcprivacy in Resources */,\n`
+    );
+
+    project =
+      project.slice(0, resourcesStart) +
+      resourcesReplacement +
+      project.slice(resourcesEnd);
+
+    await writeFile(projectPath, project, 'utf8');
   }
 }
 
