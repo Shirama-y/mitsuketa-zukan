@@ -690,7 +690,14 @@ body{
   }
 .book-rail{display:flex;align-items:flex-end;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:28px 18px 0;min-height:430px;scroll-padding-inline:18px}
 .book-rail::-webkit-scrollbar{display:none}
-.shelf-board{height:18px;background-image:linear-gradient(180deg,rgba(255,255,255,.08),rgba(0,0,0,.18)),url("./assets/shelf-wood.svg");background-size:cover;background-position:center;box-shadow:0 5px 10px rgba(0,0,0,.36),inset 0 1px rgba(255,255,255,.10)}
+.shelf-board{
+    height:22px;
+    background-color:#4b2e21;
+    background-image:url("./assets/wood-shelf.svg");
+    background-size:cover;
+    background-position:center;
+    box-shadow:0 8px 16px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.12)
+  }
 .shelf-lower{
     height:124px;
     position:relative;
@@ -763,12 +770,18 @@ body{
   box-shadow:inset 8px 0 16px rgba(0,0,0,.28),inset -2px 0 rgba(255,255,255,.05),0 24px 55px rgba(0,0,0,.4);
   display:flex;align-items:center;justify-content:center;text-align:center;padding:34px 24px;overflow:hidden
 }
+.book-face{background-repeat:no-repeat;background-size:cover;background-position:center}
 .book-face::before{content:"";position:absolute;inset:16px;border:1px solid var(--book-accent,#e6c579);opacity:.72}
 .book-face::after{content:"";position:absolute;left:8px;top:0;bottom:0;width:5px;background:linear-gradient(90deg,rgba(0,0,0,.35),rgba(255,255,255,.04))}
 .book-face.frame-kazari::before{border:3px double var(--book-accent,#e6c579);opacity:.72}
 .book-face.frame-simple::before{inset:21px;border-color:var(--book-accent,#e6c579);opacity:.30}
 .book-face.frame-line::before{inset:12px 18px}
 .book-face-inner{position:relative;z-index:2;width:100%}
+.book-face-inner::before{
+  content:"";position:absolute;inset:-24px -18px;
+  background:url("./assets/gold-corners.svg") center/100% 100% no-repeat;
+  opacity:.38;pointer-events:none
+}
 .book-face-icon{font-size:29px;margin-bottom:20px}
 .book-face-title{font-family:var(--book-font);font-size:clamp(25px,7vw,38px);line-height:1.35;letter-spacing:.08em;overflow-wrap:anywhere}
 .book-face.title-small .book-face-title{font-size:clamp(20px,5.8vw,30px)}
@@ -825,6 +838,7 @@ body{
 .preset-thumb{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:10px;background:#071727;margin-bottom:8px}
 @media(hover:hover) and (pointer:fine){.preset-card:hover{transform:translateY(-2px);border-color:#526d83}}
 .preset-card.active{border-color:var(--rose);box-shadow:inset 0 0 0 1px var(--rose)}
+.preset-art{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:9px;margin-bottom:9px;border:1px solid rgba(255,255,255,.06)}
 .preset-name{display:block;font-family:var(--klee);font-size:14px;line-height:1.3;padding-inline:3px}
 .preset-note{display:block;margin-top:5px;color:var(--muted);font-size:10px;line-height:1.45;padding:0 3px 4px}
 .preset-dots{display:flex;gap:5px;margin-top:9px}.preset-dots i{width:13px;height:13px;border-radius:50%;display:block;border:1px solid rgba(255,255,255,.18)}
@@ -945,12 +959,12 @@ body{
   function bookFont(i){return BOOK_FONTS[(Number(i)||0)%BOOK_FONTS.length]}
   function bookIcon(i){var n=(i==null||i==="")?5:Number(i);if(isNaN(n))n=5;return BOOK_ICONS[n%BOOK_ICONS.length]}
   var BOOK_PRESETS=[
-    {name:"Night Library",note:"夜の図書館。落ち着いた一冊。",image:"./assets/theme-night-library.svg",color:3,theme:0,frame:1,font:0,icon:5,layout:"normal",titleSize:"medium",titleAlign:"center"},
-    {name:"Nature",note:"草花や生きもの、自然の記録に。",image:"./assets/theme-nature.svg",color:2,theme:5,frame:2,font:1,icon:0,layout:"relaxed",titleSize:"medium",titleAlign:"center"},
-    {name:"Block",note:"ブロックやミニチュアをすっきり整理。",image:"./assets/theme-block.svg",color:3,theme:3,frame:2,font:3,icon:2,layout:"compact",titleSize:"large",titleAlign:"left"},
-    {name:"Sticker",note:"シールや紙ものをやさしく可愛く。",image:"./assets/theme-sticker.svg",color:6,theme:3,frame:2,font:2,icon:3,layout:"normal",titleSize:"medium",titleAlign:"center"},
-    {name:"Plush",note:"ぬいぐるみや小物の思い出に。",image:"./assets/theme-plush.svg",color:9,theme:5,frame:1,font:0,icon:4,layout:"relaxed",titleSize:"small",titleAlign:"center"},
-    {name:"Classic",note:"集めるものを選ばない定番の装丁。",image:"./assets/theme-classic.svg",color:0,theme:0,frame:1,font:1,icon:5,layout:"normal",titleSize:"medium",titleAlign:"center"}
+    {name:"Night Library",art:"./assets/preset-night.svg",note:"夜の図書館。落ち着いた一冊。",image:"./assets/theme-night-library.svg",color:3,theme:0,frame:1,font:0,icon:5,layout:"normal",titleSize:"medium",titleAlign:"center"},
+    {name:"Nature",art:"./assets/preset-nature.svg",note:"草花や生きもの、自然の記録に。",image:"./assets/theme-nature.svg",color:2,theme:5,frame:2,font:1,icon:0,layout:"relaxed",titleSize:"medium",titleAlign:"center"},
+    {name:"Block",art:"./assets/preset-collection.svg",note:"ブロックやミニチュアをすっきり整理。",image:"./assets/theme-block.svg",color:3,theme:3,frame:2,font:3,icon:2,layout:"compact",titleSize:"large",titleAlign:"left"},
+    {name:"Sticker",art:"./assets/preset-collection.svg",note:"シールや紙ものをやさしく可愛く。",image:"./assets/theme-sticker.svg",color:6,theme:3,frame:2,font:2,icon:3,layout:"normal",titleSize:"medium",titleAlign:"center"},
+    {name:"Plush",art:"./assets/preset-collection.svg",note:"ぬいぐるみや小物の思い出に。",image:"./assets/theme-plush.svg",color:9,theme:5,frame:1,font:0,icon:4,layout:"relaxed",titleSize:"small",titleAlign:"center"},
+    {name:"Classic",art:"./assets/preset-collection.svg",note:"集めるものを選ばない定番の装丁。",image:"./assets/theme-classic.svg",color:0,theme:0,frame:1,font:1,icon:5,layout:"normal",titleSize:"medium",titleAlign:"center"}
   ];
 
 
@@ -2497,14 +2511,14 @@ body{
 
   function textureCss(themeIdx){
     var n=(Number(themeIdx)||0)%8;
-    if(n===0)return'url("./assets/cover-leather.svg")';
-    if(n===1)return'repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0 1px,transparent 1px 7px),repeating-linear-gradient(-45deg,rgba(0,0,0,.025) 0 1px,transparent 1px 8px)';
-    if(n===2)return'repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 1px,transparent 1px 5px),repeating-linear-gradient(0deg,rgba(0,0,0,.02) 0 1px,transparent 1px 6px)';
-    if(n===3)return'linear-gradient(135deg,rgba(255,255,255,.025),transparent 45%,rgba(0,0,0,.035))';
-    if(n===4)return'url("./assets/cover-grain.svg")';
-    if(n===5)return'url("./assets/cover-linen.svg")';
-    if(n===6)return'radial-gradient(ellipse at 30% 30%,rgba(255,255,255,.035) 0 1px,transparent 1.8px),radial-gradient(ellipse at 70% 70%,rgba(0,0,0,.035) 0 1px,transparent 1.8px)';
-    return'linear-gradient(180deg,rgba(255,255,255,.025),transparent 38%,rgba(0,0,0,.04))'
+    if(n===0)return'url("./assets/texture-leather.svg")';
+    if(n===5)return'url("./assets/texture-linen.svg")';
+    if(n===1)return"repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0 1px,transparent 1px 7px),repeating-linear-gradient(-45deg,rgba(0,0,0,.025) 0 1px,transparent 1px 8px)";
+    if(n===2)return"repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 1px,transparent 1px 5px),repeating-linear-gradient(0deg,rgba(0,0,0,.02) 0 1px,transparent 1px 6px)";
+    if(n===3)return"linear-gradient(135deg,rgba(255,255,255,.025),transparent 45%,rgba(0,0,0,.035))";
+    if(n===4)return"radial-gradient(circle at 6px 6px,rgba(255,255,255,.035) 0 1px,transparent 1.4px)";
+    if(n===6)return"radial-gradient(ellipse at 30% 30%,rgba(255,255,255,.035) 0 1px,transparent 1.8px),radial-gradient(ellipse at 70% 70%,rgba(0,0,0,.035) 0 1px,transparent 1.8px)";
+    return"linear-gradient(180deg,rgba(255,255,255,.025),transparent 38%,rgba(0,0,0,.04))"
   }
   function styleBookNode(node,b){
     var co=cover(b.color);
