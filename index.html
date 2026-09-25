@@ -1186,6 +1186,12 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
 }
 </style>
 <style id="native-app-polish">
+.new-spine .spine-icon{background:currentColor!important;width:28px;height:28px;color:var(--ui-pink,#C77B7B)!important}
+.new-spine{border:1px solid rgba(250,247,242,.28)!important;color:rgba(250,247,242,.72)!important}
+.new-spine .spine-title{font-family:var(--kaku)!important;font-size:16px;letter-spacing:.05em}
+.native-app .shelf-hint{font-family:var(--kaku)!important;color:rgba(250,247,242,.72)}
+.native-app .library-admin button{font-family:var(--kaku)!important;color:rgba(250,247,242,.58)!important}
+
 .native-detail-actions{grid-template-columns:repeat(3,minmax(0,1fr))}
 .native-app .add-entry-btn,.native-app .primary-pill,.native-app .save-design{min-height:48px}
 .native-app button{-webkit-tap-highlight-color:transparent}
@@ -3004,7 +3010,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
         var sic=bookIcon(b.icon);if(sic.src)bt.append(maskIcon(sic.src,"spine-icon"));bt.append(h("span","spine-title",b.title),h("span","spine-count",(b.count||0)+" items"));
         bt.addEventListener("click",function(){go("#/b/"+b.id)});rail.append(bt)
       });
-      var add=h("button","spine-card new-spine");add.type="button";add.append(h("span","spine-icon","＋"),h("span","spine-title","新しい図鑑"));add.addEventListener("click",openNewBook);rail.append(add);
+      var add=h("button","spine-card new-spine");add.type="button";add.append(maskIcon("./assets/icon-plus.svg","spine-icon"),h("span","spine-title","新しい図鑑"));add.addEventListener("click",function(){nativeHaptic("light");openNewBook()});rail.append(add);
       var lower=h("div","shelf-lower"),shadows=h("div","shelf-shadow-books");
       shadows.append(h("i"),h("i"),h("i"),h("i"));lower.append(shadows);
       stage.append(rail,h("div","shelf-board"),lower);
