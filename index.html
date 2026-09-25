@@ -2393,10 +2393,6 @@ body{
       var b=out[0],list=out[1];app.replaceChildren();if(!b){go("#/");return}setCover(cover(b.color));
       var mode=bookFilterMode[bookId]||"all",shown=list.slice(),query=(bookSearchText[bookId]||"").trim().toLowerCase();
       if(mode==="fav")shown=shown.filter(function(e){return!!e.favorite});
-      if(query)shown=shown.filter(function(e){
-        var hay=[e.name||"",e.place||"",Array.isArray(e.tags)?e.tags.join(" "):""].join(" ").toLowerCase();
-        return hay.indexOf(query)>=0
-      });
       if(mode==="recent")shown.sort(function(a,z){return(z.createdAt||0)-(a.createdAt||0)});
       var screen=h("section","collection-screen");screen.style.setProperty("--book-font",bookFont(b.font).css);
       var head=h("div","collection-head"),back=h("button","round-btn","‹");back.type="button";back.addEventListener("click",function(){go("#/b/"+b.id)});
@@ -2404,17 +2400,36 @@ body{
       var edit=h("button","round-btn","⋯");edit.type="button";edit.addEventListener("click",function(){go("#/b/"+b.id+"/design")});head.append(back,title,edit);screen.append(head);
       var search=h("label","collection-search"),mag=h("span",null,"⌕"),searchInput=document.createElement("input");
       searchInput.type="search";searchInput.placeholder="名前・タグ・場所から探す";searchInput.value=bookSearchText[bookId]||"";
-      searchInput.addEventListener("input",function(){bookSearchText[bookId]=searchInput.value;render()});
+      searchInput.setAttribute("aria-label","コレクションを検索");
       search.append(mag,searchInput);screen.append(search);
       var filters=h("div","filter-row");[["all","すべて"],["fav","♡ お気に入り"],["recent","新しい順"]].forEach(function(x){var bt=h("button","filter-chip"+(mode===x[0]?" active":""),x[1]);bt.type="button";bt.addEventListener("click",function(){bookFilterMode[bookId]=x[0];render()});filters.append(bt)});screen.append(filters);
-      if(!shown.length)screen.append(h("div","empty-collection",query?"条件に合う記録が見つかりません。":mode==="fav"?"お気に入りは、まだありません。":"写真を撮って、最初の一つを残してみましょう。"));
-      else{
+      var emptyState=h("div","empty-collection");
+      if(!shown.length){
+        emptyState.textContent=mode==="fav"?"お気に入りは、まだありません。":"写真を撮って、最初の一つを残してみましょう。";
+        screen.append(emptyState)
+      }else{
         var ln=h("div","entry-list");shown.forEach(function(e){
-          var row=h("div","entry-row "+(b.layout==="compact"?"compact":b.layout==="relaxed"?"relaxed":"")),img=document.createElement("img");img.className="entry-photo";img.alt="";img.src=urlFor(e);
+          var row=h("div","entry-row "+(b.layout==="compact"?"compact":b.layout==="relaxed"?"relaxed":"")),img=document.createElement("img");
+          row.dataset.search=[e.name||"",e.place||"",Array.isArray(e.tags)?e.tags.join(" "):""].join(" ").toLowerCase();
+          img.className="entry-photo";img.alt="";img.src=urlFor(e);
           var op=h("button","entry-open");op.type="button";op.append(h("div","entry-name",e.name),h("div","entry-meta",showDate(e.date)+(e.place?"　•　"+e.place:"")));op.addEventListener("click",function(){go("#/b/"+b.id+"/e/"+e.no)});
           var fav=h("button","heart-btn"+(e.favorite?" on":""),e.favorite?"♥":"♡");fav.type="button";fav.addEventListener("click",function(){e.favorite=!e.favorite;store.updateEntry(e).then(render)});
           row.append(img,op,fav);ln.append(row)
-        });screen.append(ln)
+        });screen.append(ln);
+        emptyState.textContent="条件に合う記録が見つかりません。";
+        emptyState.hidden=true;screen.append(emptyState);
+
+        function applySearch(){
+          var q=(searchInput.value||"").trim().toLowerCase(),visible=0;
+          bookSearchText[bookId]=searchInput.value||"";
+          Array.prototype.forEach.call(ln.children,function(row){
+            var hit=!q||(row.dataset.search||"").indexOf(q)>=0;
+            row.hidden=!hit;if(hit)visible+=1
+          });
+          emptyState.hidden=visible!==0
+        }
+        searchInput.addEventListener("input",applySearch);
+        applySearch()
       }
       var add=h("button","add-entry-btn","＋　新しく登録する");add.type="button";add.addEventListener("click",function(){startCapture(b.id)});screen.append(add);app.append(screen)
     })
