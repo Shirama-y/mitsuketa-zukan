@@ -1191,6 +1191,10 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
 .native-app button{-webkit-tap-highlight-color:transparent}
 @media(max-width:360px){.native-detail-actions{grid-template-columns:1fr}.native-detail-actions button{min-height:44px}}
 </style>
+<style id="native-legal-polish">
+.privacy-copy{display:grid;gap:9px;margin-top:14px}
+.support-mail{display:block;text-align:center;text-decoration:none;margin-top:16px}
+</style>
 </head>
 <body>
 
@@ -3443,6 +3447,46 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
     })
   }
 
+  function openPrivacySheet(){
+    var c=h("div","card");
+    c.setAttribute("role","dialog");c.setAttribute("aria-modal","true");
+    c.append(h("h2","display","プライバシー"));
+
+    var body=h("div","privacy-copy");
+    [
+      ["保存場所","図鑑・写真・記録は、現行版では原則としてこの端末内に保存されます。"],
+      ["写真","写真登録のために、利用者の操作時だけカメラまたは写真ライブラリを使用します。"],
+      ["位置情報","GPS位置情報は自動取得しません。場所欄へ入力した文字だけを記録します。"],
+      ["広告・追跡","現行版では広告SDKや広告目的のトラッキング機能を使用しません。"],
+      ["バックアップ","バックアップを共有した後のファイルは、利用者が選んだ保存先・共有先で管理されます。"],
+      ["削除","記録や図鑑はアプリ内から削除できます。アプリ削除前には必要に応じてバックアップしてください。"]
+    ].forEach(function(x){
+      var sec=h("section","detail-note");
+      sec.append(h("h3",null,x[0]),h("p",null,x[1]));
+      body.append(sec)
+    });
+    c.append(body);
+
+    var acts=h("div","acts"),close=h("button","go","閉じる");
+    close.type="button";close.addEventListener("click",closeSheet);acts.append(close);c.append(acts);
+    openSheet(c)
+  }
+
+  function openSupportSheet(){
+    var c=h("div","card");
+    c.setAttribute("role","dialog");c.setAttribute("aria-modal","true");
+    c.append(h("h2","display","サポート"));
+    c.append(h("p","note","不具合のご連絡では、iPhoneの機種、iOSのバージョン、起きた画面、操作内容があると確認しやすくなります。"));
+    var mail=document.createElement("a");
+    mail.className="primary-pill support-mail";
+    mail.href="mailto:suganotatsuki@gmail.com?subject="+encodeURIComponent("わたしの図鑑 サポート");
+    mail.textContent="メールで問い合わせる";
+    c.append(mail);
+    var acts=h("div","acts"),close=h("button",null,"閉じる");
+    close.type="button";close.addEventListener("click",closeSheet);acts.append(close);c.append(acts);
+    openSheet(c)
+  }
+
   function renderSettings(){
     renderAppNav("settings");app.replaceChildren();
     var head=h("div","screen-head"),copy=h("div");copy.append(h("h1",null,"マイページ"),h("p",null,"データとアプリの管理"));head.append(copy);app.append(head);
@@ -3453,6 +3497,8 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
     row("バックアップ","図鑑・記録・写真をJSONに保存","保存",function(){exportBackup()});
     row("復元","バックアップを追加として読み込む","選ぶ",chooseRestoreFile);
     row("保存状態","この端末の保存状況を確認","確認",function(){go("#/storage")});
+    row("プライバシー","保存する情報と端末内データについて","見る",openPrivacySheet);
+    row("サポート","使い方や不具合について問い合わせ","開く",openSupportSheet);
     app.append(list,h("div","app-nav-spacer"))
   }
 
