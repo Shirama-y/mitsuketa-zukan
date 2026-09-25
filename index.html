@@ -678,7 +678,7 @@ body{
 .library-tools{display:flex;justify-content:flex-end;margin:0 2px 12px}
 .ghost-btn{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:8px 13px;font:inherit;font-size:12px;cursor:pointer}
 .shelf-stage{overflow:hidden;background:transparent}
-.book-rail{display:flex;align-items:flex-end;gap:11px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:24px 14px 0;min-height:405px}
+.book-rail{display:flex;align-items:flex-end;gap:11px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:20px 14px 0;min-height:345px}
 .book-rail::-webkit-scrollbar{display:none}
 .shelf-board{height:18px;background:linear-gradient(180deg,var(--wood-hi),var(--wood));box-shadow:0 5px 10px rgba(0,0,0,.36),inset 0 1px rgba(255,255,255,.10)}
 .shelf-lower{height:92px;background:transparent;position:relative}
@@ -759,7 +759,12 @@ body{
 
 /* design editor */
 .design-head{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:8px}.design-head h1{font-family:var(--klee);font-size:20px;text-align:center;font-weight:600;margin:0}.save-design{border:0;background:var(--rose);color:#2d1418;border-radius:999px;padding:8px 14px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
-.design-preview{display:flex;justify-content:center;padding:18px 0 24px;border-bottom:1px solid var(--line)}.design-section{padding:17px 0;border-bottom:1px solid var(--line)}.design-section h2{margin:0 0 10px;font-size:13px;color:#d8c9a3;font-weight:600}
+.design-preview{display:flex;justify-content:center;padding:18px 0 24px;border-bottom:1px solid var(--line)}.design-section{padding:17px 0;border-bottom:1px solid var(--line)}
+.advanced-option{display:none}
+.design-screen.advanced-open .advanced-option{display:block}
+.advanced-toggle{width:100%;margin:14px 0 4px;border:1px solid #40586d;background:transparent;color:#d7c59a;border-radius:12px;padding:12px 14px;font:inherit;cursor:pointer;text-align:center}
+.advanced-toggle::after{content:" ＋";color:var(--rose)}
+.design-screen.advanced-open .advanced-toggle::after{content:" −"}.design-section h2{margin:0 0 10px;font-size:13px;color:#d8c9a3;font-weight:600}
 .design-input{width:100%;border:1px solid #344d62;background:#0b2034;color:var(--ink);border-radius:10px;padding:11px 12px;font:inherit;margin-top:8px}
 .preset-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .preset-card{border:1px solid #344d62;background:#0b2034;color:var(--ink);border-radius:14px;padding:12px;text-align:left;font:inherit;cursor:pointer;min-height:92px}
@@ -790,7 +795,7 @@ body{
 @media(max-width:430px){
   .wrap{padding-inline:14px}
   .library-shell{padding-top:clamp(38px,7svh,68px)}
-  .book-rail{min-height:390px;padding:22px 10px 0;gap:9px;scroll-padding-inline:10px}
+  .book-rail{min-height:340px;padding:18px 10px 0;gap:9px;scroll-padding-inline:10px}
   .spine-card{flex-basis:76px;height:296px}
   .cover-stage{padding-top:16px}.book-face{width:min(72vw,275px)}
   .entry-row{grid-template-columns:64px minmax(0,1fr) 38px;gap:10px}
@@ -800,7 +805,7 @@ body{
 }
 @media(max-width:380px){
   .library-shell{padding-top:34px}
-  .book-rail{min-height:370px;padding-inline:8px}.spine-card{flex-basis:70px;height:278px}
+  .book-rail{min-height:326px;padding-inline:8px}.spine-card{flex-basis:70px;height:278px}
   .book-face{width:min(74vw,245px)}
   .preset-grid{grid-template-columns:1fr 1fr}
   .design-choice{min-width:62px;padding:9px 10px}
@@ -2658,21 +2663,27 @@ body{
       ti.addEventListener("input",repaint);si.addEventListener("input",repaint);
 
       var fs=sec("フォント"),fg=h("div","design-grid");BOOK_FONTS.forEach(function(f,i){var bt=h("button","design-choice font-choice","あ　"+f.name);bt.type="button";bt.dataset.font=i;bt.style.fontFamily=f.css;bt.addEventListener("click",function(){draft.font=i;repaint()});fg.append(bt)});fs.append(fg);screen.append(fs);
-      var titleSizeSec=sec("タイトルの大きさ"),titleSizeGrid=h("div","design-grid");
+      var titleSizeSec=sec("タイトルの大きさ"),titleSizeGrid=h("div","design-grid");titleSizeSec.classList.add("advanced-option");
       [["small","小さめ"],["medium","標準"],["large","大きめ"]].forEach(function(x){
         var bt=h("button","design-choice density-choice",x[1]);bt.type="button";bt.dataset.titleSize=x[0];
         bt.addEventListener("click",function(){draft.titleSize=x[0];repaint()});titleSizeGrid.append(bt)
       });
       titleSizeSec.append(titleSizeGrid);screen.append(titleSizeSec);
 
-      var titleAlignSec=sec("タイトルの位置"),titleAlignGrid=h("div","design-grid");
+      var titleAlignSec=sec("タイトルの位置"),titleAlignGrid=h("div","design-grid");titleAlignSec.classList.add("advanced-option");
       [["left","左"],["center","中央"],["right","右"]].forEach(function(x){
         var bt=h("button","design-choice density-choice",x[1]);bt.type="button";bt.dataset.titleAlign=x[0];
         bt.addEventListener("click",function(){draft.titleAlign=x[0];repaint()});titleAlignGrid.append(bt)
       });
       titleAlignSec.append(titleAlignGrid);screen.append(titleAlignSec);
       var cs=sec("カラー"),cg=h("div","design-grid");COVERS.forEach(function(co,i){var bt=h("button","design-choice color-choice");bt.type="button";bt.dataset.color=i;bt.style.setProperty("--swatch",co.bg);bt.setAttribute("aria-label",co.name);bt.addEventListener("click",function(){draft.color=i;draft.customBg="";draft.customAccent="";draft.customInk="";if(typeof freeCg!=="undefined"){var ins=freeCg.querySelectorAll('input[type="color"]');if(ins[0])ins[0].value=co.bg;if(ins[1])ins[1].value="#e6c579";if(ins[2])ins[2].value=co.ink}repaint()});cg.append(bt)});cs.append(cg);screen.append(cs);
-      var freeCs=sec("好きな色を使う"),freeCg=h("div","custom-color-row");
+      var advancedToggle=h("button","advanced-toggle","こだわり設定を開く");advancedToggle.type="button";
+      advancedToggle.addEventListener("click",function(){
+        var open=screen.classList.toggle("advanced-open");
+        advancedToggle.textContent=open?"こだわり設定を閉じる":"こだわり設定を開く"
+      });
+      screen.append(advancedToggle);
+      var freeCs=sec("好きな色を使う"),freeCg=h("div","custom-color-row");freeCs.classList.add("advanced-option");
       function colorField(label,prop,fallback){
         var lab=h("label","color-field");lab.append(h("span",null,label));
         var inp=document.createElement("input");inp.type="color";inp.value=draft[prop]||fallback;
@@ -2687,11 +2698,11 @@ body{
       var resetColor=h("button","color-reset","プリセットの色に戻す");resetColor.type="button";
       resetColor.addEventListener("click",function(){draft.customBg="";draft.customAccent="";draft.customInk="";Array.prototype.forEach.call(freeCg.querySelectorAll('input[type="color"]'),function(inp,j){inp.value=j===0?cover(draft.color).bg:j===1?"#e6c579":cover(draft.color).ink});repaint()});
       freeCs.append(resetColor);screen.append(freeCs);
-      var xs=sec("表紙の質感"),xg=h("div","design-grid");PATTERNS.forEach(function(pt,i){var bt=h("button","design-choice texture-choice");bt.type="button";bt.dataset.theme=i;bt.setAttribute("aria-label",pt.name);bt.append(h("span","texture-label",pt.name));bt.addEventListener("click",function(){draft.theme=i;repaint()});xg.append(bt)});xs.append(xg);screen.append(xs);
-      var rs=sec("装丁"),rg=h("div","design-grid");FRAMES.forEach(function(fr,i){var bt=h("button","design-choice",fr.name);bt.type="button";bt.dataset.frame=i;bt.addEventListener("click",function(){draft.frame=i;repaint()});rg.append(bt)});rs.append(rg);screen.append(rs);
-      var isec=sec("アイコン"),ig=h("div","design-grid");BOOK_ICONS.forEach(function(ic,i){var bt=h("button","design-choice icon-choice",ic.mark||"—");bt.type="button";bt.dataset.icon=i;bt.addEventListener("click",function(){draft.icon=i;repaint()});ig.append(bt)});isec.append(ig);screen.append(isec);
-      var ds=sec("一覧の表示"),dg=h("div","design-grid");[["relaxed","ゆったり"],["normal","標準"],["compact","コンパクト"]].forEach(function(x){var bt=h("button","design-choice density-choice",x[1]);bt.type="button";bt.dataset.layout=x[0];bt.addEventListener("click",function(){draft.layout=x[0];repaint()});dg.append(bt)});ds.append(dg);screen.append(ds);
-      var ns=sec("名前の表示"),ng=h("div","design-grid");
+      var xs=sec("表紙の質感"),xg=h("div","design-grid");xs.classList.add("advanced-option");PATTERNS.forEach(function(pt,i){var bt=h("button","design-choice texture-choice");bt.type="button";bt.dataset.theme=i;bt.setAttribute("aria-label",pt.name);bt.append(h("span","texture-label",pt.name));bt.addEventListener("click",function(){draft.theme=i;repaint()});xg.append(bt)});xs.append(xg);screen.append(xs);
+      var rs=sec("装丁"),rg=h("div","design-grid");rs.classList.add("advanced-option");FRAMES.forEach(function(fr,i){var bt=h("button","design-choice",fr.name);bt.type="button";bt.dataset.frame=i;bt.addEventListener("click",function(){draft.frame=i;repaint()});rg.append(bt)});rs.append(rg);screen.append(rs);
+      var isec=sec("アイコン"),ig=h("div","design-grid");isec.classList.add("advanced-option");BOOK_ICONS.forEach(function(ic,i){var bt=h("button","design-choice icon-choice",ic.mark||"—");bt.type="button";bt.dataset.icon=i;bt.addEventListener("click",function(){draft.icon=i;repaint()});ig.append(bt)});isec.append(ig);screen.append(isec);
+      var ds=sec("一覧の表示"),dg=h("div","design-grid");ds.classList.add("advanced-option");[["relaxed","ゆったり"],["normal","標準"],["compact","コンパクト"]].forEach(function(x){var bt=h("button","design-choice density-choice",x[1]);bt.type="button";bt.dataset.layout=x[0];bt.addEventListener("click",function(){draft.layout=x[0];repaint()});dg.append(bt)});ds.append(dg);screen.append(ds);
+      var ns=sec("名前の表示"),ng=h("div","design-grid");ns.classList.add("advanced-option");
       [["both","名前＋漢字・別名"],["name","名前だけ"],["alt","漢字・別名を大きく"]].forEach(function(x){
         var bt=h("button","design-choice density-choice",x[1]);bt.type="button";bt.dataset.nameMode=x[0];
         bt.addEventListener("click",function(){draft.nameMode=x[0];repaint()});ng.append(bt)
