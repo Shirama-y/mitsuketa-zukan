@@ -74,9 +74,11 @@ try {
 
   await page.screenshot({ path: "/tmp/zukan-detail-375.png", fullPage: true });
 
-  await page.goto(BASE + "#/", { waitUntil: "networkidle" });
+  await page.goto(BASE + "#/settings", { waitUntil: "networkidle" });
+  await page.waitForURL(/#\/settings$/);
+  const backupRow = page.locator(".settings-row").filter({ hasText: "バックアップ" }).first();
   const downloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: "バックアップ" }).click();
+  await backupRow.getByRole("button", { name: "保存" }).click();
   const download = await downloadPromise;
   const suggested = download.suggestedFilename();
   if (!suggested.endsWith(".json")) throw new Error("Backup download is not JSON");
