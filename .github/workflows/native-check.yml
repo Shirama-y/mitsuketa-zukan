@@ -32,5 +32,13 @@ jobs:
         run: |
           test -f www/index.html
           test -f www/app-icon.svg
+          test -f www/native-bridge.js
           test -d www/assets
           grep -q "system-update-v2\|flat-luxury-v5\|わたしの図鑑" www/index.html
+          grep -q "NativeZukan" www/native-bridge.js
+          grep -q "pickPhoto" www/native-bridge.js
+          grep -q "shareBackup" www/native-bridge.js
+          if grep -q "fonts.googleapis.com" www/index.html; then
+            echo "External Google Fonts must not remain in native bundle"
+            exit 1
+          fi
