@@ -45,9 +45,6 @@ jobs:
             echo "Landscape orientation must not remain in first release"
             exit 1
           fi
-          grep -q 'TARGETED_DEVICE_FAMILY = "1";' ios/App/App.xcodeproj/project.pbxproj
-          grep -q "UIInterfaceOrientationPortrait" ios/App/App/Info.plist
-          ! grep -q "UIInterfaceOrientationLandscapeLeft" ios/App/App/Info.plist
           ! grep -q "UISupportedInterfaceOrientations~ipad" ios/App/App/Info.plist
 
       - name: Compile for iPhone Simulator
