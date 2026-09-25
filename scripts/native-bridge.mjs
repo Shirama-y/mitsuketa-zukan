@@ -12,7 +12,7 @@ async function configureChrome() {
   if (!isNative) return;
 
   try {
-    await StatusBar.setStyle({ style: Style.Light });
+    await StatusBar.setStyle({ style: Style.Dark });
     await StatusBar.setBackgroundColor({ color: '#0F172A' });
     await StatusBar.setOverlaysWebView({ overlay: false });
   } catch {
