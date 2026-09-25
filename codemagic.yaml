@@ -15,7 +15,7 @@ workflows:
         XCODE_PROJECT: "ios/App/App.xcodeproj"
         XCODE_SCHEME: "App"
       node: 22
-      xcode: 26.5
+      xcode: latest
 
     scripts:
       - name: Install dependencies
