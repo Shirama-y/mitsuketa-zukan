@@ -54,6 +54,7 @@ jobs:
             build
 
       - name: Launch on iPhone Simulator
+        timeout-minutes: 3
         run: |
           DEVICE_ID=$(xcrun simctl list devices available -j | python3 -c '
           import json, sys
@@ -66,15 +67,42 @@ jobs:
           raise SystemExit("No available iPhone simulator")
           ')
 
+          echo "Using simulator: $DEVICE_ID"
           xcrun simctl boot "$DEVICE_ID" || true
-          xcrun simctl bootstatus "$DEVICE_ID" -b
+
+          BOOTED=0
+          for i in $(seq 1 30); do
+            STATE=$(xcrun simctl list devices -j | python3 -c '
+          import json, sys
+          target = sys.argv[1]
+          data = json.load(sys.stdin)
+          for devices in data["devices"].values():
+              for device in devices:
+                  if device.get("udid") == target:
+                      print(device.get("state", "Unknown"))
+                      raise SystemExit
+          print("Missing")
+          ' "$DEVICE_ID")
+            echo "Simulator state: $STATE"
+            if [ "$STATE" = "Booted" ]; then
+              BOOTED=1
+              break
+            fi
+            sleep 2
+          done
+
+          if [ "$BOOTED" != "1" ]; then
+            xcrun simctl list devices
+            echo "Simulator did not boot within 60 seconds."
+            exit 1
+          fi
 
           APP_PATH=$(find /tmp/zukan-derived/Build/Products/Debug-iphonesimulator -maxdepth 1 -name "*.app" | head -n 1)
           test -d "$APP_PATH"
 
           xcrun simctl install "$DEVICE_ID" "$APP_PATH"
           xcrun simctl launch "$DEVICE_ID" com.dodolabo.mitsuketazukan
-          sleep 5
+          sleep 6
           xcrun simctl io "$DEVICE_ID" screenshot /tmp/zukan-native-simulator.png
 
       - name: Upload native simulator screenshot
