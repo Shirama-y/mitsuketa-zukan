@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#071727">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="図鑑ライブラリ">
+<link rel="manifest" href="./manifest.webmanifest">
 <title>わたしの図鑑ライブラリ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -743,6 +748,12 @@ body{
 .design-head{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:8px}.design-head h1{font-family:var(--klee);font-size:20px;text-align:center;font-weight:600;margin:0}.save-design{border:0;background:var(--rose);color:#2d1418;border-radius:999px;padding:8px 14px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
 .design-preview{display:flex;justify-content:center;padding:18px 0 24px;border-bottom:1px solid var(--line)}.design-section{padding:17px 0;border-bottom:1px solid var(--line)}.design-section h2{margin:0 0 10px;font-size:13px;color:#d8c9a3;font-weight:600}
 .design-input{width:100%;border:1px solid #344d62;background:#0b2034;color:var(--ink);border-radius:10px;padding:11px 12px;font:inherit;margin-top:8px}
+.preset-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.preset-card{border:1px solid #344d62;background:#0b2034;color:var(--ink);border-radius:14px;padding:12px;text-align:left;font:inherit;cursor:pointer;min-height:92px}
+.preset-card.active{border-color:var(--rose);box-shadow:inset 0 0 0 1px var(--rose)}
+.preset-name{display:block;font-family:var(--klee);font-size:15px;line-height:1.3}
+.preset-note{display:block;margin-top:6px;color:var(--muted);font-size:10px;line-height:1.5}
+.preset-dots{display:flex;gap:5px;margin-top:9px}.preset-dots i{width:13px;height:13px;border-radius:50%;display:block;border:1px solid rgba(255,255,255,.18)}
 .design-grid{display:flex;flex-wrap:wrap;gap:8px}.design-choice{min-width:68px;border:1px solid #344d62;background:transparent;color:var(--muted);border-radius:10px;padding:10px 12px;font:inherit;cursor:pointer}.design-choice.active{border-color:var(--rose);color:var(--ink);box-shadow:inset 0 0 0 1px var(--rose)}
 .font-choice{font-size:17px}.color-choice{width:38px;min-width:38px;height:38px;padding:0;border-radius:50%;background:var(--swatch);border:3px solid transparent}.color-choice.active{border-color:#f6d7d9;box-shadow:0 0 0 2px var(--rose)}.icon-choice{min-width:48px;font-size:22px;padding:8px 10px}.texture-choice{width:82px;height:64px;min-width:82px;padding:6px;background-color:var(--tex-bg);background-image:var(--tex-img);display:flex;align-items:flex-end;justify-content:center;color:#fff;font-size:10px;text-shadow:0 1px 3px rgba(0,0,0,.75)}.texture-label{background:rgba(4,14,24,.52);border-radius:999px;padding:2px 7px;white-space:nowrap}
 .density-choice{flex:1 1 90px}
@@ -763,7 +774,22 @@ body{
 .fld .lb{color:var(--muted)}.fld input,.fld textarea,.free input{color:var(--ink);background:#10283e;border:1px solid #365069;border-radius:10px}
 .acts button{border-radius:999px;border-color:#3b5369;color:var(--muted)}.acts .go{background:var(--rose);color:#2d1418;border-radius:999px;box-shadow:none}
 .bar{background:var(--bar);border-color:var(--line)}.bar button{background:var(--rose);color:#2d1418;border-radius:999px;box-shadow:none}
-@media(max-width:380px){.book-rail{min-height:350px;padding-inline:14px}.spine-card{flex-basis:70px;height:270px}.book-face{width:min(70vw,250px)}}
+@media(max-width:430px){
+  .wrap{padding-inline:14px}
+  .book-rail{min-height:360px;padding:24px 14px 0;gap:9px;scroll-padding-inline:14px}
+  .spine-card{flex-basis:74px;height:280px}
+  .cover-stage{padding-top:16px}.book-face{width:min(72vw,275px)}
+  .entry-row{grid-template-columns:64px minmax(0,1fr) 38px;gap:10px}
+  .entry-photo{width:64px}
+  .collection-title h1{font-size:22px}
+  .detail-photo{border-radius:14px}
+}
+@media(max-width:380px){
+  .book-rail{min-height:340px;padding-inline:12px}.spine-card{flex-basis:68px;height:262px}
+  .book-face{width:min(74vw,245px)}
+  .preset-grid{grid-template-columns:1fr 1fr}
+  .design-choice{min-width:62px;padding:9px 10px}
+}
 </style>
 </head>
 <body>
@@ -842,6 +868,15 @@ body{
   ];
   function bookFont(i){return BOOK_FONTS[(Number(i)||0)%BOOK_FONTS.length]}
   function bookIcon(i){return BOOK_ICONS[(Number(i)||0)%BOOK_ICONS.length]}
+  var BOOK_PRESETS=[
+    {name:"Night Library",note:"夜の図書館。落ち着いた一冊。",color:3,theme:0,frame:1,font:0,icon:5,layout:"normal"},
+    {name:"Nature",note:"草花や生きもの、自然の記録に。",color:2,theme:5,frame:2,font:1,icon:0,layout:"relaxed"},
+    {name:"Block",note:"ブロックやミニチュアをすっきり整理。",color:3,theme:3,frame:2,font:3,icon:2,layout:"compact"},
+    {name:"Sticker",note:"シールや紙ものをやさしく可愛く。",color:6,theme:3,frame:2,font:2,icon:3,layout:"normal"},
+    {name:"Plush",note:"ぬいぐるみや小物の思い出に。",color:9,theme:5,frame:1,font:0,icon:4,layout:"relaxed"},
+    {name:"Classic",note:"集めるものを選ばない定番の装丁。",color:0,theme:0,frame:1,font:1,icon:5,layout:"normal"}
+  ];
+
 
 
   /* 旧データの置きかえ表。version 3 への更新で一度だけ使う。
@@ -2266,6 +2301,11 @@ body{
 
   /* ================= 夜の図書館 UI（共同制作ブランチ） ================= */
   var bookFilterMode=Object.create(null);
+  function applyPreset(draft,p){
+    draft.color=p.color;draft.theme=p.theme;draft.frame=p.frame;draft.font=p.font;draft.icon=p.icon;draft.layout=p.layout;
+    draft.customBg="";draft.customAccent="";draft.customInk="";
+  }
+
 
   function textureCss(themeIdx){
     var n=(Number(themeIdx)||0)%8;
@@ -2423,11 +2463,30 @@ body{
       var screen=h("section","design-screen"),head=h("div","design-head"),back=h("button","round-btn","‹"),save=h("button","save-design","保存");back.type=save.type="button";back.addEventListener("click",function(){go("#/b/"+bookId)});head.append(back,h("h1",null,"デザインをカスタマイズ"),save);screen.append(head);
       var preview=h("div","design-preview");screen.append(preview);
       function sec(name){var n=h("section","design-section");n.append(h("h2",null,name));return n}
+      var ps=sec("デザインテーマ"),pg=h("div","preset-grid");
+      BOOK_PRESETS.forEach(function(p,i){
+        var bt=h("button","preset-card");bt.type="button";bt.dataset.preset=i;
+        var co=cover(p.color),dots=h("span","preset-dots");
+        co.set.forEach(function(c){var d=h("i");d.style.background=c;dots.append(d)});
+        bt.append(h("span","preset-name",p.name),h("span","preset-note",p.note),dots);
+        bt.addEventListener("click",function(){
+          applyPreset(draft,p);
+          if(typeof freeCg!=="undefined"){var ins=freeCg.querySelectorAll('input[type="color"]');if(ins[0])ins[0].value=cover(draft.color).bg;if(ins[1])ins[1].value="#e6c579";if(ins[2])ins[2].value=cover(draft.color).ink}
+          repaint()
+        });
+        pg.append(bt)
+      });
+      ps.append(pg);screen.append(ps);
       var ts=sec("タイトル"),ti=document.createElement("input"),si=document.createElement("input");ti.className=si.className="design-input";ti.maxLength=24;si.maxLength=48;ti.value=draft.title||"";si.value=draft.subtitle||"";ti.placeholder="図鑑のタイトル";si.placeholder="サブタイトル（任意）";ts.append(ti,si);screen.append(ts);
       function repaint(){
         draft.title=ti.value;draft.subtitle=si.value;preview.replaceChildren(makeBookFace(draft,true));
         [["font",draft.font],["color",draft.color],["theme",draft.theme],["icon",draft.icon],["frame",draft.frame]].forEach(function(p){Array.prototype.forEach.call(screen.querySelectorAll("[data-"+p[0]+"]"),function(n){n.classList.toggle("active",Number(n.dataset[p[0]])===Number(p[1]||0))})});
         Array.prototype.forEach.call(screen.querySelectorAll("[data-layout]"),function(n){n.classList.toggle("active",n.dataset.layout===draft.layout)});
+        Array.prototype.forEach.call(screen.querySelectorAll("[data-preset]"),function(n){
+          var p=BOOK_PRESETS[Number(n.dataset.preset)];
+          var same=p&&Number(draft.color||0)===p.color&&Number(draft.theme||0)===p.theme&&Number(draft.frame||0)===p.frame&&Number(draft.font||0)===p.font&&Number(draft.icon||0)===p.icon&&draft.layout===p.layout&&!draft.customBg&&!draft.customAccent&&!draft.customInk;
+          n.classList.toggle("active",!!same)
+        });
         Array.prototype.forEach.call(screen.querySelectorAll("[data-theme]"),function(n){n.style.setProperty("--tex-bg",draft.customBg||cover(draft.color).bg);n.style.setProperty("--tex-img",textureCss(Number(n.dataset.theme)))})
       }
       ti.addEventListener("input",repaint);si.addEventListener("input",repaint);
@@ -2466,7 +2525,7 @@ body{
   function openNewBook(){
     var c=h("div","card");c.setAttribute("role","dialog");c.setAttribute("aria-modal","true");
     c.append(h("h2","display","新しい図鑑"));
-    var draft={title:"",subtitle:"",color:0,theme:3,frame:2,font:0,icon:0,layout:"normal",customBg:"",customAccent:"",customInk:""};
+    var draft={title:"",subtitle:"",color:3,theme:0,frame:1,font:0,icon:5,layout:"normal",customBg:"",customAccent:"",customInk:""};
     var preview=h("div","design-preview");c.append(preview);
 
     var title=field("タイトル","input",{id:"new-title",cls:"big",ph:"ぬいぐるみ図鑑",max:24});
@@ -2487,6 +2546,26 @@ body{
     title.input.addEventListener("input",paint);sub.input.addEventListener("input",paint);
 
     function label(text){var l=h("label","fld");l.append(h("span","lb",text));c.append(l)}
+    label("デザインテーマ");
+    var pg=h("div","preset-grid");
+    BOOK_PRESETS.forEach(function(p,i){
+      var bt=h("button","preset-card"+(i===0?" active":""));bt.type="button";
+      var co=cover(p.color),dots=h("span","preset-dots");co.set.forEach(function(col){var d=h("i");d.style.background=col;dots.append(d)});
+      bt.append(h("span","preset-name",p.name),h("span","preset-note",p.note),dots);
+      bt.addEventListener("click",function(){
+        applyPreset(draft,p);
+        Array.prototype.forEach.call(pg.children,function(x,j){x.classList.toggle("active",j===i)});
+        if(typeof cg!=="undefined")Array.prototype.forEach.call(cg.children,function(x,j){x.classList.toggle("active",j===draft.color)});
+        if(typeof fg!=="undefined")Array.prototype.forEach.call(fg.children,function(x,j){x.classList.toggle("active",j===draft.font)});
+        if(typeof rg!=="undefined")Array.prototype.forEach.call(rg.children,function(x,j){x.classList.toggle("active",j===draft.frame)});
+        if(typeof ig!=="undefined")Array.prototype.forEach.call(ig.children,function(x,j){x.classList.toggle("active",j===draft.icon)});
+        if(typeof freeCg!=="undefined"){var ins=freeCg.querySelectorAll('input[type="color"]');if(ins[0])ins[0].value=cover(draft.color).bg;if(ins[1])ins[1].value="#e6c579";if(ins[2])ins[2].value=cover(draft.color).ink}
+        paint()
+      });
+      pg.append(bt)
+    });
+    c.append(pg);
+
     label("フォント");
     var fg=h("div","design-grid");BOOK_FONTS.forEach(function(f,i){
       var bt=h("button","design-choice font-choice"+(i===0?" active":""),"あ　"+f.name);bt.type="button";bt.style.fontFamily=f.css;
@@ -2589,6 +2668,10 @@ body{
   /* データベースが開くまで画面を空にしない。開けない端末でも見出しは出る。 */
   document.documentElement.setAttribute("data-view", "shelf");
   app.append(h("p", "lead", "ライブラリをひらいています…"));
+
+  if("serviceWorker" in navigator){
+    window.addEventListener("load",function(){navigator.serviceWorker.register("./service-worker.js").catch(function(){})})
+  }
 
   store.open().then(function (d) {
     db = d;
