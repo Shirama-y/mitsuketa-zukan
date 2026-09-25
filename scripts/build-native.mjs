@@ -38,6 +38,10 @@ await build({
 const indexPath = 'www/index.html';
 let html = await readFile(indexPath, 'utf8');
 
+html = html
+  .replace(/<link[^>]+href="https:\/\/fonts\.googleapis\.com[^"]*"[^>]*>\s*/g, '')
+  .replace(/<link[^>]+href="https:\/\/fonts\.gstatic\.com[^"]*"[^>]*>\s*/g, '');
+
 if (!html.includes('./native-bridge.js')) {
   html = html.replace(
     '</head>',
