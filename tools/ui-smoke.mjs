@@ -175,6 +175,7 @@ try {
   await page.getByRole("button", { name: "保存" }).click();
   await page.locator(".cover-screen").waitFor();
   await page.getByRole("button", { name: "デザインを編集" }).click();
+  await page.locator(".advanced-toggle").click();
   await page.locator('[data-theme="0"].active').waitFor();
   await page.locator('[data-color].active').nth(0).waitFor();
 
