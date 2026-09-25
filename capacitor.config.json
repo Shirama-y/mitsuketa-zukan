@@ -1,0 +1,9 @@
+{
+  "appId": "com.dodolabo.mitsuketazukan",
+  "appName": "わたしの図鑑",
+  "webDir": "www",
+  "server": {
+    "iosScheme": "capacitor",
+    "androidScheme": "https"
+  }
+}
