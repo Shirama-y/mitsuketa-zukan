@@ -1,0 +1,49 @@
+name: iOS Xcode project check
+
+on:
+  push:
+    branches:
+      - native-app-v1
+  pull_request:
+    branches:
+      - system-update-v2
+
+jobs:
+  ios-project:
+    name: Generate and build iOS project
+    runs-on: macos-latest
+    steps:
+      - name: Get source
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate iOS project
+        run: npm run native:ios:add
+
+      - name: Verify iOS privacy descriptions
+        run: |
+          plutil -p ios/App/App/Info.plist | grep NSCameraUsageDescription
+          plutil -p ios/App/App/Info.plist | grep NSPhotoLibraryUsageDescription
+          plutil -p ios/App/App/Info.plist | grep ITSAppUsesNonExemptEncryption
+
+      - name: Show Xcode project
+        run: xcodebuild -list -project ios/App/App.xcodeproj
+
+      - name: Build for iPhone Simulator
+        run: |
+          xcodebuild             -project ios/App/App.xcodeproj             -scheme App             -configuration Debug             -sdk iphonesimulator             -destination 'generic/platform=iOS Simulator'             CODE_SIGNING_ALLOWED=NO             build
+
+      - name: Upload generated Xcode project
+        uses: actions/upload-artifact@v4
+        with:
+          name: mitsuketa-zukan-ios-project
+          path: ios/
+          if-no-files-found: error
+          retention-days: 7
