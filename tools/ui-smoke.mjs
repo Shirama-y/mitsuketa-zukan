@@ -24,7 +24,11 @@ try {
   await page.getByRole("button", { name: /この図鑑をひらく/ }).click();
   await page.waitForURL(/\/list$/);
 
-  await page.locator("#pick").setInputFiles("/tmp/zukan-test.png");
+  const [chooser] = await Promise.all([
+    page.waitForEvent("filechooser"),
+    page.locator(".add-entry-btn").click()
+  ]);
+  await chooser.setFiles("/tmp/zukan-test.png");
   await page.locator("#new-entry-name").fill("たんぽぽ");
   await page.locator("#new-entry-kanji").fill("蒲公英");
   await page.locator("#new-entry-place").fill("近所の公園");
