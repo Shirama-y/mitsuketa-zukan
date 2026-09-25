@@ -702,7 +702,7 @@ body{
 
 /* cover */
 .cover-screen{min-height:calc(100svh - 48px);display:flex;flex-direction:column}
-.cover-stage{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 0 16px}
+.cover-stage{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 0 16px}.cover-stage.entering{animation:coverIn .24s ease both}@keyframes coverIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .book-face{
   --book-bg:#315b47;--book-font:var(--klee);position:relative;width:min(68vw,285px);aspect-ratio:3/4;border-radius:4px 14px 14px 4px;
   background-color:var(--book-bg);background-image:var(--book-texture,none);color:var(--book-accent,#e6c579);
@@ -2513,7 +2513,7 @@ body{
     return store.book(bookId).then(function(b){
       app.replaceChildren();if(!b){go("#/");return}setCover(cover(b.color));
       var screen=h("section","cover-screen"),back=h("a","back","← 本棚");back.href="#/";screen.append(back);
-      var stage=h("div","cover-stage");stage.append(makeBookFace(b,false));screen.append(stage);
+      var stage=h("div","cover-stage entering");stage.append(makeBookFace(b,false));screen.append(stage);
       var acts=h("div","cover-actions"),open=h("button","primary-pill","この図鑑をひらく　→"),design=h("button","secondary-pill","デザインを編集");
       open.type=design.type="button";open.addEventListener("click",function(){go("#/b/"+b.id+"/list")});design.addEventListener("click",function(){go("#/b/"+b.id+"/design")});
       var del=h("button","danger-link","この図鑑を削除"),armed=false;del.type="button";del.addEventListener("click",function(){if(!armed){armed=true;del.textContent="もう一度押すと削除します";return}del.disabled=true;store.dropBook(b.id).then(function(){go("#/")},function(){del.disabled=false;del.textContent="削除できませんでした"})});
@@ -2811,7 +2811,7 @@ body{
           subtitle:sub.input.value.trim(),font:draft.font,icon:draft.icon,layout:draft.layout,nameMode:draft.nameMode||"both",titleSize:draft.titleSize||"medium",titleAlign:draft.titleAlign||"center",
           customBg:draft.customBg||"",customAccent:draft.customAccent||"",customInk:draft.customInk||""
         })
-      }).then(function(b){closeSheet();go("#/b/"+b.id)},function(){make.disabled=false;make.textContent="もう一度ためす"})
+      }).then(function(b){closeSheet(true);go("#/b/"+b.id)},function(){make.disabled=false;make.textContent="もう一度ためす"})
     });
     paint();openSheet(c)
   }
