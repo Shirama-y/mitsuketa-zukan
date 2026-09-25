@@ -14,6 +14,7 @@
 
 ```
 index.html   アプリ本体。これ1枚で動く。ビルドもサーバーも不要
+             （このファイルがそのまま GitHub Pages で配信される）
 CLAUDE.md    設計の判断と理由。Claude Code が自動で読み込む
 tools/       手元の作業道具（アプリの動作には不要）
 ```
@@ -65,8 +66,20 @@ node tools/reload-test.mjs 9333 run /path/to/なにかの写真.jpg
 
 ## 公開する
 
-claude.ai のアーティファクトとして公開している。アーティファクトは
-`<html>` `<head>` `<body>` を自前で付けるので、そのぶんを外したものを渡す。
+**本番： https://shirama-y.github.io/mitsuketa-zukan/**
+
+GitHub Pages で `main` をそのまま配信している。**`main` に送れば1〜2分で自動的に
+反映される。** 別途の公開操作は要らない。アカウント不要で、どの端末からでも開ける。
+会場のタブレットで使うのはこちら。
+
+```
+直す → コミット → main に送る → 自動で反映
+```
+
+### claude.ai のアーティファクト（試作の確認用）
+
+手元の確認用に、claude.ai のアーティファクトとしても置いてある。こちらは手動更新。
+アーティファクトは `<html>` `<head>` `<body>` を自前で付けるので、そのぶんを外して渡す。
 
 ```sh
 python3 tools/build-artifact.py index.html artifact.html
