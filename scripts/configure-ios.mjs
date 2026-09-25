@@ -67,9 +67,19 @@ if (existsSync(projectPath)) {
 
   const projectText = project.writeSync();
   if (!projectText.includes('PrivacyInfo.xcprivacy')) {
-    project.addResourceFile('App/PrivacyInfo.xcprivacy', {
-      target: project.getFirstTarget().uuid,
-    });
+    const appGroupKey =
+      project.findPBXGroupKey({ path: 'App' }) ||
+      project.findPBXGroupKey({ name: 'App' });
+
+    if (!appGroupKey) {
+      throw new Error('Could not find the App PBXGroup in the Xcode project');
+    }
+
+    project.addResourceFile(
+      'PrivacyInfo.xcprivacy',
+      { target: project.getFirstTarget().uuid },
+      appGroupKey
+    );
     writeFileSync(projectPath, project.writeSync(), 'utf8');
   }
 }
