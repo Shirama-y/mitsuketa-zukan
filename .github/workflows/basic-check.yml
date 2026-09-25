@@ -1,0 +1,22 @@
+name: Basic app check
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - night-library
+
+jobs:
+  syntax:
+    name: HTML / JavaScript check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get source
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run simple check
+        run: node tools/syntax-check.mjs
