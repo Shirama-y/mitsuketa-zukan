@@ -104,6 +104,14 @@ if (existsSync(projectPath)) {
     .replace(/TARGETED_DEVICE_FAMILY = "[^"]+";/g, 'TARGETED_DEVICE_FAMILY = "1";')
     .replace(/IPHONEOS_DEPLOYMENT_TARGET = [^;]+;/g, 'IPHONEOS_DEPLOYMENT_TARGET = 15.0;');
 
+  // Codemagic updates CFBundleVersion with agvtool before making the signed IPA.
+  // Capacitor's generated Xcode project does not always declare Apple Generic
+  // versioning explicitly, so add it idempotently to each build configuration.
+  project = project.replace(
+    /(CURRENT_PROJECT_VERSION = 1;)(?!\s*\n\s*VERSIONING_SYSTEM = "apple-generic";)/g,
+    '$1\n\t\t\t\tVERSIONING_SYSTEM = "apple-generic";'
+  );
+
   if (!project.includes('PrivacyInfo.xcprivacy')) {
     const id = seed =>
       createHash('sha1').update(seed).digest('hex').slice(0, 24).toUpperCase();
