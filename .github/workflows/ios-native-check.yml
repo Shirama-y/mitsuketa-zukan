@@ -1,0 +1,61 @@
+name: iOS native build check
+
+on:
+  push:
+    branches:
+      - native-app-v1
+    paths:
+      - "package.json"
+      - "capacitor.config.json"
+      - "index.html"
+      - "assets/**"
+      - "resources/**"
+      - "scripts/**"
+      - ".github/workflows/ios-native-check.yml"
+
+jobs:
+  ios-build:
+    name: Build iOS simulator app
+    runs-on: macos-latest
+    steps:
+      - name: Get source
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Create iOS project
+        run: npm run native:ios:add
+
+      - name: Verify privacy descriptions
+        run: |
+          grep -q "NSCameraUsageDescription" ios/App/App/Info.plist
+          grep -q "NSPhotoLibraryUsageDescription" ios/App/App/Info.plist
+          grep -q "図鑑に写真を登録するためにカメラを使用します。" ios/App/App/Info.plist
+
+      - name: Compile for iPhone Simulator
+        run: |
+          xcodebuild \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath /tmp/zukan-derived \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Package Xcode project
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent ios /tmp/mitsuketa-zukan-ios-project.zip
+
+      - name: Upload Xcode project
+        uses: actions/upload-artifact@v4
+        with:
+          name: mitsuketa-zukan-ios-project
+          path: /tmp/mitsuketa-zukan-ios-project.zip
+          retention-days: 7
