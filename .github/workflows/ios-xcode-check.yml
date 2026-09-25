@@ -32,6 +32,9 @@ jobs:
           plutil -p ios/App/App/Info.plist | grep NSCameraUsageDescription
           plutil -p ios/App/App/Info.plist | grep NSPhotoLibraryUsageDescription
           plutil -p ios/App/App/Info.plist | grep ITSAppUsesNonExemptEncryption
+          test -f ios/App/App/PrivacyInfo.xcprivacy
+          plutil -lint ios/App/App/PrivacyInfo.xcprivacy
+          grep -q "PrivacyInfo.xcprivacy" ios/App/App.xcodeproj/project.pbxproj
 
       - name: Show Xcode project
         run: xcodebuild -list -project ios/App/App.xcodeproj
