@@ -3,8 +3,28 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Share } from '@capacitor/share';
 import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { SplashScreen } from '@capacitor/splash-screen';
 
 const isNative = Capacitor.isNativePlatform();
+
+async function configureChrome() {
+  if (!isNative) return;
+
+  try {
+    await StatusBar.setStyle({ style: Style.Light });
+    await StatusBar.setBackgroundColor({ color: '#0F172A' });
+    await StatusBar.setOverlaysWebView({ overlay: false });
+  } catch {
+    // Status bar differences between iOS/Android are non-fatal.
+  }
+
+  try {
+    await SplashScreen.hide({ fadeOutDuration: 160 });
+  } catch {
+    // Native splash may already be hidden.
+  }
+}
 
 async function dataUrlToBlob(dataUrl) {
   const response = await fetch(dataUrl);
@@ -91,6 +111,8 @@ async function shareText(title, text) {
 
   return true;
 }
+
+configureChrome();
 
 window.NativeZukan = {
   isNative,
