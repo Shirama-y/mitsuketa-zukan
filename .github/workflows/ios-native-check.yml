@@ -50,6 +50,10 @@ jobs:
           grep -q "PrivacyInfo.xcprivacy" ios/App/App.xcodeproj/project.pbxproj
           grep -q "MARKETING_VERSION = 1.0.0;" ios/App/App.xcodeproj/project.pbxproj
           grep -q "CURRENT_PROJECT_VERSION = 1;" ios/App/App.xcodeproj/project.pbxproj
+          grep -q 'TARGETED_DEVICE_FAMILY = "1";' ios/App/App.xcodeproj/project.pbxproj
+          grep -q "UIInterfaceOrientationPortrait" ios/App/App/Info.plist
+          ! grep -q "UIInterfaceOrientationLandscapeLeft" ios/App/App/Info.plist
+          ! grep -q "UISupportedInterfaceOrientations~ipad" ios/App/App/Info.plist
 
       - name: Compile for iPhone Simulator
         run: |
