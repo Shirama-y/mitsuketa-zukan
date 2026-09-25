@@ -117,11 +117,36 @@ iOSの権限説明：
 - Apple Developer Program加入
 - App Store Connectで新規アプリ作成
 - Bundle ID登録
-- Xcodeで署名
-- TestFlightアップロード
-- App Store用スクリーンショット作成
-- サポートURL
-- プライバシーポリシーURL
-- 年齢レーティング回答
+- CodemagicにApp Store Connect APIキーを接続
+- Apple Distribution証明書 / App Store Provisioning Profileを用意
+- Codemagicで署名済みIPAを作成・App Store Connectへアップロード
+- TestFlight内部テスト
+- 年齢レーティングの最新質問に回答
 - App Privacy回答
 - 輸出コンプライアンス回答
+
+## 9. 提出用URL・アセット
+
+- Support URL: https://shirama-y.github.io/mitsuketa-zukan/support.html
+- Privacy Policy URL: https://shirama-y.github.io/mitsuketa-zukan/privacy.html
+- スクリーンショット: 1290×2796 PNG × 5枚
+- スクリーンショット生成Workflow: `App Store screenshots`
+- Bundle ID: `com.dodolabo.mitsuketazukan`
+- Version: `1.0.0`
+- 対象: iPhone / 縦画面
+- Minimum iOS: 15.0
+- 2026年のApp Store要件に合わせ、CodemagicではXcode 26 / iOS 26 SDK以上を自動検証
+
+## 10. Codemagic初回実行時の期待結果
+
+Codemagic Workflow `ios-testflight` は次の順に実行します。
+
+1. npm依存関係をインストール
+2. Capacitor iOSプロジェクトを生成
+3. Xcode / iOS SDK / PrivacyInfo / 権限文言 / 公開URLを検証
+4. App Store署名を適用
+5. クラウドBuild番号を設定
+6. 署名済みIPAを作成
+7. IPAをApp Store Connectへアップロード
+
+初回は `submit_to_testflight: false` のままにし、アップロードされたBuildを内部テストで確認してからTestFlight自動配布を有効化します。
