@@ -43,14 +43,19 @@ jobs:
       - name: Verify exact App Store size
         run: |
           python3 - <<'PY'
-          from PIL import Image
-          import glob
+          import glob, struct
           paths=sorted(glob.glob('/tmp/appstore-*.png'))
           assert len(paths)==5, f'Expected 5 screenshots, got {len(paths)}'
           for p in paths:
-              im=Image.open(p)
-              assert im.size==(1290,2796), f'{p}: {im.size}'
-              print(p, im.size)
+              with open(p,'rb') as f:
+                  sig=f.read(8)
+                  assert sig==b'\x89PNG\r\n\x1a\n', f'{p}: not PNG'
+                  length=struct.unpack('>I',f.read(4))[0]
+                  kind=f.read(4)
+                  assert kind==b'IHDR', f'{p}: missing IHDR'
+                  width,height=struct.unpack('>II',f.read(8))
+              assert (width,height)==(1290,2796), f'{p}: {(width,height)}'
+              print(p,(width,height))
           PY
 
       - name: Upload App Store screenshots
