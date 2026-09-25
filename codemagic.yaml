@@ -24,13 +24,41 @@ workflows:
       - name: Create native iOS project
         script: npm run native:ios:add
 
-      - name: Verify release configuration
+      - name: Verify App Store toolchain and metadata
         script: |
+          set -euo pipefail
+
+          echo "Xcode:"
+          xcodebuild -version
+
+          XCODE_MAJOR="$(xcodebuild -version | awk '/Xcode/{split($2,v,"."); print v[1]}')"
+          if [ "$XCODE_MAJOR" -lt 26 ]; then
+            echo "App Store Connect requires Xcode 26 or later."
+            exit 1
+          fi
+
+          IOS_SDK="$(xcrun --sdk iphoneos --show-sdk-version)"
+          echo "iPhoneOS SDK: $IOS_SDK"
+          IOS_SDK_MAJOR="${IOS_SDK%%.*}"
+          if [ "$IOS_SDK_MAJOR" -lt 26 ]; then
+            echo "App Store Connect requires the iOS 26 SDK or later."
+            exit 1
+          fi
+
           test -f ios/App/App/Info.plist
           test -f ios/App/App/PrivacyInfo.xcprivacy
+          plutil -lint ios/App/App/Info.plist
+          plutil -lint ios/App/App/PrivacyInfo.xcprivacy
           grep -q "NSCameraUsageDescription" ios/App/App/Info.plist
           grep -q "NSPhotoLibraryUsageDescription" ios/App/App/Info.plist
+          grep -q "ITSAppUsesNonExemptEncryption" ios/App/App/Info.plist
+          grep -q 'VERSIONING_SYSTEM = "apple-generic";' ios/App/App.xcodeproj/project.pbxproj
           grep -Eq 'TARGETED_DEVICE_FAMILY = "?1"?;' ios/App/App.xcodeproj/project.pbxproj
+
+          curl --fail --silent --show-error --location \
+            "https://shirama-y.github.io/mitsuketa-zukan/privacy.html" >/dev/null
+          curl --fail --silent --show-error --location \
+            "https://shirama-y.github.io/mitsuketa-zukan/support.html" >/dev/null
 
       - name: Apply App Store signing
         script: xcode-project use-profiles
@@ -42,7 +70,9 @@ workflows:
 
       - name: Build signed IPA
         script: |
-          xcode-project build-ipa             --project "$CM_BUILD_DIR/$XCODE_PROJECT"             --scheme "$XCODE_SCHEME"
+          xcode-project build-ipa \
+            --project "$CM_BUILD_DIR/$XCODE_PROJECT" \
+            --scheme "$XCODE_SCHEME"
 
     artifacts:
       - ios/App/build/ios/ipa/*.ipa
@@ -51,6 +81,8 @@ workflows:
 
     publishing:
       app_store_connect:
+        # auth: integration uploads the signed IPA to App Store Connect.
+        # Keep beta/App Store submission manual until the first internal build is verified.
         auth: integration
         submit_to_testflight: false
         submit_to_app_store: false
