@@ -1,6 +1,6 @@
 {
   "name": "わたしの図鑑ライブラリ",
-  "short_name": "図鑑ライブラリ",
+  "short_name": "図鑑",
   "description": "写真を撮って、自分だけの図鑑やコレクションをつくるアプリ",
   "lang": "ja",
   "start_url": "./",
