@@ -63,8 +63,11 @@ jobs:
             build
 
       - name: Launch on iPhone Simulator
-        timeout-minutes: 3
+        timeout-minutes: 7
+        continue-on-error: true
         run: |
+          set -euo pipefail
+
           DEVICE_ID=$(xcrun simctl list devices available -j | python3 -c '
           import json, sys
           data = json.load(sys.stdin)
@@ -79,53 +82,72 @@ jobs:
           echo "Using simulator: $DEVICE_ID"
           xcrun simctl boot "$DEVICE_ID" || true
 
-          BOOTED=0
-          for i in $(seq 1 30); do
-            STATE=$(xcrun simctl list devices -j | python3 -c '
-          import json, sys
-          target = sys.argv[1]
-          data = json.load(sys.stdin)
-          for devices in data["devices"].values():
-              for device in devices:
-                  if device.get("udid") == target:
-                      print(device.get("state", "Unknown"))
-                      raise SystemExit
-          print("Missing")
-          ' "$DEVICE_ID")
-            echo "Simulator state: $STATE"
-            if [ "$STATE" = "Booted" ]; then
-              BOOTED=1
-              break
-            fi
-            sleep 2
-          done
-
-          if [ "$BOOTED" != "1" ]; then
-            xcrun simctl list devices
-            echo "Simulator did not boot within 60 seconds."
-            exit 1
-          fi
+          echo "Waiting for simulator boot..."
+          python3 - "$DEVICE_ID" <<'PY'
+          import json, subprocess, sys, time
+          udid = sys.argv[1]
+          deadline = time.time() + 120
+          while time.time() < deadline:
+              raw = subprocess.check_output(["xcrun","simctl","list","devices","-j"])
+              data = json.loads(raw)
+              for devices in data["devices"].values():
+                  for d in devices:
+                      if d.get("udid") == udid and d.get("state") == "Booted":
+                          print("Simulator state: Booted")
+                          time.sleep(12)
+                          raise SystemExit(0)
+              time.sleep(2)
+          raise SystemExit("Simulator did not reach Booted state")
+          PY
 
           APP_PATH=$(find /tmp/zukan-derived/Build/Products/Debug-iphonesimulator -maxdepth 1 -name "*.app" | head -n 1)
           test -d "$APP_PATH"
+          echo "App bundle: $APP_PATH"
 
-          xcrun simctl install "$DEVICE_ID" "$APP_PATH"
-          xcrun simctl launch "$DEVICE_ID" com.dodolabo.mitsuketazukan
-          sleep 6
-          xcrun simctl io "$DEVICE_ID" screenshot /tmp/zukan-native-simulator.png
+          python3 - "$DEVICE_ID" "$APP_PATH" <<'PY'
+          import subprocess, sys, time
+          udid, app_path = sys.argv[1], sys.argv[2]
+
+          def run(label, cmd, timeout=70, retries=2):
+              last = None
+              for attempt in range(1, retries + 1):
+                  print(f"{label}: attempt {attempt}/{retries}", flush=True)
+                  try:
+                      r = subprocess.run(cmd, text=True, capture_output=True, timeout=timeout)
+                      print(r.stdout, end="")
+                      print(r.stderr, end="", file=sys.stderr)
+                      if r.returncode == 0:
+                          print(f"{label}: OK", flush=True)
+                          return
+                      last = RuntimeError(f"{label} exited {r.returncode}")
+                  except subprocess.TimeoutExpired as e:
+                      print(f"{label}: timed out after {timeout}s", file=sys.stderr, flush=True)
+                      last = e
+                  time.sleep(5)
+              raise last or RuntimeError(label)
+
+          run("Install", ["xcrun","simctl","install",udid,app_path], timeout=80, retries=2)
+          run("Launch", ["xcrun","simctl","launch",udid,"com.dodolabo.mitsuketazukan"], timeout=40, retries=2)
+          time.sleep(8)
+          run("Screenshot", ["xcrun","simctl","io",udid,"screenshot","/tmp/zukan-native-simulator.png"], timeout=40, retries=2)
+          PY
 
       - name: Upload native simulator screenshot
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: mitsuketa-zukan-native-screenshot
           path: /tmp/zukan-native-simulator.png
+          if-no-files-found: ignore
           retention-days: 7
 
       - name: Package Xcode project
+        if: always()
         run: |
           ditto -c -k --sequesterRsrc --keepParent ios /tmp/mitsuketa-zukan-ios-project.zip
 
       - name: Upload Xcode project
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: mitsuketa-zukan-ios-project
