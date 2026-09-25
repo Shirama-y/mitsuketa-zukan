@@ -1185,6 +1185,12 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
   .button-theme-choice{font-size:11px;padding-inline:5px}
 }
 </style>
+<style id="native-app-polish">
+.native-detail-actions{grid-template-columns:repeat(3,minmax(0,1fr))}
+.native-app .add-entry-btn,.native-app .primary-pill,.native-app .save-design{min-height:48px}
+.native-app button{-webkit-tap-highlight-color:transparent}
+@media(max-width:360px){.native-detail-actions{grid-template-columns:1fr}.native-detail-actions button{min-height:44px}}
+</style>
 </head>
 <body>
 
@@ -2545,6 +2551,26 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
     }
   }
 
+  function shareEntry(book,entry){
+    var title=(book&&book.title?book.title+" / ":"")+(entry.name||"記録");
+    var bits=[entry.name||""];
+    if(entry.kanji)bits.push(entry.kanji);
+    if(entry.date)bits.push(showDate(entry.date));
+    if(entry.place)bits.push(entry.place);
+    var text=bits.filter(Boolean).join(" ・ ");
+    var n=nativeApi();
+
+    nativeHaptic("light");
+
+    if(n&&n.shareText){
+      return n.shareText(title,text)["catch"](function(){})
+    }
+    if(navigator.share){
+      return navigator.share({title:title,text:text})["catch"](function(){})
+    }
+    return Promise.resolve(false)
+  }
+
   function openCapturedPhoto(bookId,file){
     if(!file)return;
     squeeze(file).then(
@@ -3066,9 +3092,12 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
         if(!x[1])return;var n=h("section","detail-note");n.append(h("h3",null,x[0]),h("p",null,x[1]));notes.append(n)
       });
       if(notes.children.length)screen.append(notes);
-      var acts=h("div","detail-actions"),ed=h("button",null,"編集する"),del=h("button",null,"削除する"),armed=false;ed.type=del.type="button";ed.addEventListener("click",function(){openEditForm(bookId,e)});
+      var acts=h("div","detail-actions native-detail-actions"),share=h("button",null,"共有"),ed=h("button",null,"編集する"),del=h("button",null,"削除する"),armed=false;
+      share.type=ed.type=del.type="button";
+      share.addEventListener("click",function(){shareEntry(b,e)});
+      ed.addEventListener("click",function(){openEditForm(bookId,e)});
       del.addEventListener("click",function(){if(!armed){armed=true;del.textContent="もう一度押すと削除";return}del.disabled=true;store.dropEntry(bookId,e.id).then(function(){if(urls[e.id])URL.revokeObjectURL(urls[e.id]);delete urls[e.id];go("#/b/"+bookId+"/list")})});
-      acts.append(ed,del);screen.append(acts);app.append(screen)
+      acts.append(share,ed,del);screen.append(acts);app.append(screen)
     })
   }
 
