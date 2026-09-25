@@ -1,5 +1,6 @@
-import { cp, mkdir, rm } from 'node:fs/promises';
+import { cp, mkdir, rm, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { build } from 'esbuild';
 
 const sourceFiles = [
   'index.html',
@@ -23,4 +24,28 @@ if (!existsSync('assets')) {
 }
 await cp('assets', 'www/assets', { recursive: true });
 
+await build({
+  entryPoints: ['scripts/native-bridge.mjs'],
+  bundle: true,
+  format: 'iife',
+  platform: 'browser',
+  target: ['ios16', 'chrome110'],
+  outfile: 'www/native-bridge.js',
+  minify: false,
+  sourcemap: false,
+});
+
+const indexPath = 'www/index.html';
+let html = await readFile(indexPath, 'utf8');
+
+if (!html.includes('./native-bridge.js')) {
+  html = html.replace(
+    '</body>',
+    '  <script src="./native-bridge.js"></script>\n</body>'
+  );
+}
+
+await writeFile(indexPath, html, 'utf8');
+
 console.log('Native web bundle created in ./www');
+console.log('Native bridge bundled as ./www/native-bridge.js');
