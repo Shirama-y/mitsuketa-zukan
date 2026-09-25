@@ -3435,7 +3435,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
   document.documentElement.setAttribute("data-view", "shelf");
   app.append(h("p", "lead", "ライブラリをひらいています…"));
 
-  if("serviceWorker" in navigator){
+  if("serviceWorker" in navigator&&!(window.NativeZukan&&window.NativeZukan.isNative)){
     window.addEventListener("load",function(){navigator.serviceWorker.register("./service-worker.js").catch(function(){})})
   }
 
