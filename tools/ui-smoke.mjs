@@ -21,6 +21,7 @@ try {
 
   await page.waitForURL(/#\/b\/[^/]+$/);
   await page.locator(".cover-screen").waitFor();
+  await page.screenshot({ path: "/tmp/zukan-cover-375.png", fullPage: true });
   await page.getByRole("button", { name: /この図鑑をひらく/ }).click();
   await page.waitForURL(/\/list$/);
 
@@ -41,7 +42,7 @@ try {
   await page.getByText("たんぽぽ", { exact: true }).waitFor();
   await page.getByText("蒲公英", { exact: true }).waitFor();
 
-  await page.screenshot({ path: "/tmp/zukan-375.png", fullPage: true });
+  await page.screenshot({ path: "/tmp/zukan-detail-375.png", fullPage: true });
 
   await page.goto(BASE + "#/", { waitUntil: "networkidle" });
   const downloadPromise = page.waitForEvent("download");
@@ -52,7 +53,13 @@ try {
 
   await page.setViewportSize({ width: 430, height: 932 });
   await page.goto(BASE + "#/", { waitUntil: "networkidle" });
-  await page.screenshot({ path: "/tmp/zukan-430.png", fullPage: true });
+  await page.screenshot({ path: "/tmp/zukan-shelf-430.png", fullPage: true });
+
+  await page.locator(".spine-card:not(.new-spine)").first().click();
+  await page.locator(".cover-screen").waitFor();
+  await page.getByRole("button", { name: "デザインを編集" }).click();
+  await page.locator(".design-screen").waitFor();
+  await page.screenshot({ path: "/tmp/zukan-design-430.png", fullPage: true });
 
   console.log("OK: UI smoke test passed");
 } catch (error) {
