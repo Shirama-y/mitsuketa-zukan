@@ -1,0 +1,20 @@
+{
+  "name": "わたしの図鑑ライブラリ",
+  "short_name": "図鑑ライブラリ",
+  "description": "写真を撮って、自分だけの図鑑やコレクションをつくるアプリ",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#071727",
+  "theme_color": "#071727",
+  "icons": [
+    {
+      "src": "./app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
