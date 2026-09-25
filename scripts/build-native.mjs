@@ -40,8 +40,8 @@ let html = await readFile(indexPath, 'utf8');
 
 if (!html.includes('./native-bridge.js')) {
   html = html.replace(
-    '</body>',
-    '  <script src="./native-bridge.js"></script>\n</body>'
+    '</head>',
+    '  <script src="./native-bridge.js"></script>\n</head>'
   );
 }
 
