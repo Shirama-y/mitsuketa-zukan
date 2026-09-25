@@ -8,6 +8,9 @@ on:
   push:
     branches:
       - native-app-v1
+  pull_request:
+    branches:
+      - system-update-v2
     paths:
       - "package.json"
       - "capacitor.config.json"
@@ -36,11 +39,15 @@ jobs:
       - name: Create iOS project
         run: npm run native:ios:add
 
-      - name: Verify privacy descriptions
+      - name: Verify privacy and App Store metadata
         run: |
-          grep -q "NSCameraUsageDescription" ios/App/App/Info.plist
-          grep -q "NSPhotoLibraryUsageDescription" ios/App/App/Info.plist
+          plutil -p ios/App/App/Info.plist | grep NSCameraUsageDescription
+          plutil -p ios/App/App/Info.plist | grep NSPhotoLibraryUsageDescription
+          plutil -p ios/App/App/Info.plist | grep ITSAppUsesNonExemptEncryption
           grep -q "図鑑に写真を登録するためにカメラを使用します。" ios/App/App/Info.plist
+          test -f ios/App/App/PrivacyInfo.xcprivacy
+          plutil -lint ios/App/App/PrivacyInfo.xcprivacy
+          grep -q "PrivacyInfo.xcprivacy" ios/App/App.xcodeproj/project.pbxproj
 
       - name: Compile for iPhone Simulator
         run: |
