@@ -40,7 +40,12 @@ const page = await browser.newPage({ viewport: { width: 375, height: 812 } });
 try {
   await page.goto(BASE, { waitUntil: "networkidle" });
 
-  await page.locator(".new-spine").click();
+  const createFirst = page.locator(".library-start");
+  if (await createFirst.count()) {
+    await createFirst.click();
+  } else {
+    await page.locator(".library-add").click();
+  }
   await page.locator("#new-title").fill("草花図鑑");
   await page.getByRole("button", { name: "この図鑑をつくる" }).click();
 
