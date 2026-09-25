@@ -731,7 +731,7 @@ body{
   min-height:50px;border:0;background:transparent;color:#7f93a5;font:inherit;
   font-size:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer
 }
-.app-nav button .nav-ico{font-size:19px;line-height:1}
+.app-nav button .nav-ico{width:22px;height:22px;display:block}.app-nav button .nav-ico img{width:100%;height:100%;display:block;filter:brightness(0) saturate(100%) invert(61%) sepia(11%) saturate(586%) hue-rotate(164deg) brightness(92%) contrast(86%)}.app-nav button.active .nav-ico img{filter:brightness(0) saturate(100%) invert(79%) sepia(19%) saturate(736%) hue-rotate(306deg) brightness(100%) contrast(88%)}
 .app-nav button.active{color:#f2d8d9}
 .app-nav button.active .nav-ico{color:var(--rose)}
 .app-nav-spacer{height:74px}
@@ -2530,13 +2530,14 @@ body{
     var old=document.getElementById("app-nav");if(old)old.remove();
     var nav=h("nav","app-nav");nav.id="app-nav";nav.setAttribute("aria-label","メインメニュー");
     [
-      ["home","⌂","ホーム","#/"],
-      ["search","⌕","さがす","#/search"],
-      ["collections","▥","図鑑","#/collections"],
-      ["settings","⚙","設定","#/settings"]
+      ["home","./assets/nav-home.svg","ホーム","#/"],
+      ["search","./assets/nav-search.svg","さがす","#/search"],
+      ["collections","./assets/nav-books.svg","図鑑","#/collections"],
+      ["settings","./assets/nav-settings.svg","設定","#/settings"]
     ].forEach(function(item){
       var b=h("button",item[0]===active?"active":"");b.type="button";
-      b.append(h("span","nav-ico",item[1]),h("span",null,item[2]));
+      var ico=h("span","nav-ico"),img=document.createElement("img");img.src=item[1];img.alt="";ico.append(img);
+      b.append(ico,h("span",null,item[2]));
       b.addEventListener("click",function(){go(item[3])});nav.append(b)
     });
     document.body.append(nav)
