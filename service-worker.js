@@ -13,7 +13,13 @@ const APP_SHELL = [
   "./assets/nav-home.svg",
   "./assets/nav-search.svg",
   "./assets/nav-books.svg",
-  "./assets/nav-settings.svg"
+  "./assets/nav-settings.svg",
+  "./assets/theme-night-library.svg",
+  "./assets/theme-nature.svg",
+  "./assets/theme-block.svg",
+  "./assets/theme-sticker.svg",
+  "./assets/theme-plush.svg",
+  "./assets/theme-classic.svg"
 ];
 
 self.addEventListener("install", event => {
