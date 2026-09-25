@@ -754,6 +754,10 @@ body{
 
 
 /* legacy sheets/forms retained, recolored */
+.record-sheet-photo{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;border-radius:14px;background:var(--shade);margin:4px 0 14px}
+.tag-help{margin:5px 0 0;color:var(--muted);font-size:11px;line-height:1.6}
+.tag-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag-pill{display:inline-flex;align-items:center;border:1px solid #3c5368;border-radius:999px;padding:4px 9px;color:#c4ced7;font-size:11px;background:rgba(255,255,255,.025)}
 #veil{background:rgba(0,8,16,.72);backdrop-filter:blur(7px)}
 .card{background:#0d2135;color:var(--ink);border:1px solid #2b4358;border-radius:20px;box-shadow:0 24px 70px rgba(0,0,0,.45)}
 .fld .lb{color:var(--muted)}.fld input,.fld textarea,.free input{color:var(--ink);background:#10283e;border:1px solid #365069;border-radius:10px}
@@ -766,7 +770,7 @@ body{
 
 <div class="wrap" id="app"></div>
 <div class="bar" id="bar" hidden><div class="in"><button type="button" id="barBtn"></button></div></div>
-<input type="file" id="pick" accept="image/*" capture="environment" hidden>
+<input type="file" id="pick" accept="image/*" hidden>
 <div id="veil" hidden></div>
 
 <script>
@@ -2369,23 +2373,47 @@ body{
       var fav=h("button","heart-btn"+(e.favorite?" on":""),e.favorite?"♥":"♡");fav.type="button";fav.addEventListener("click",function(){e.favorite=!e.favorite;store.updateEntry(e).then(render)});top.append(back,fav);screen.append(top);
       var img=document.createElement("img");img.className="detail-photo";img.alt="";img.src=urlFor(e);screen.append(img,h("div","detail-no","No."+pad(e.no)),h("h1","detail-name",e.name));
       var meta=h("div","detail-meta");[["見つけた日",showDate(e.date)],["見つけたところ",e.place||"——"]].forEach(function(x){var r=h("div","detail-meta-row");r.append(h("span",null,x[0]),h("span",null,x[1]));meta.append(r)});screen.append(meta);
-      var notes=h("div","detail-notes");[["見てわかったこと",e.observed],["想像したこと",e.imagined]].forEach(function(x){var n=h("section","detail-note");n.append(h("h3",null,x[0]),h("p",null,x[1]||"まだ書かれていません"));notes.append(n)});screen.append(notes);
+      if(e.tags&&e.tags.length){var tagList=h("div","tag-list");e.tags.forEach(function(t){tagList.append(h("span","tag-pill",t))});screen.append(tagList)}
+      var notes=h("div","detail-notes");
+      [["見て気づいたこと",e.observed],["思ったこと・ストーリー",e.imagined]].forEach(function(x){
+        if(!x[1])return;var n=h("section","detail-note");n.append(h("h3",null,x[0]),h("p",null,x[1]));notes.append(n)
+      });
+      if(notes.children.length)screen.append(notes);
       var acts=h("div","detail-actions"),ed=h("button",null,"編集する"),del=h("button",null,"削除する"),armed=false;ed.type=del.type="button";ed.addEventListener("click",function(){openEditForm(bookId,e)});
       del.addEventListener("click",function(){if(!armed){armed=true;del.textContent="もう一度押すと削除";return}del.disabled=true;store.dropEntry(bookId,e.id).then(function(){if(urls[e.id])URL.revokeObjectURL(urls[e.id]);delete urls[e.id];go("#/b/"+bookId+"/list")})});
       acts.append(ed,del);screen.append(acts);app.append(screen)
     })
   }
 
+  function parseTags(text){
+    var seen=Object.create(null),out=[];
+    String(text||"").split(/[,、\n]/).forEach(function(v){
+      var t=v.trim();if(!t||seen[t])return;seen[t]=true;out.push(t)
+    });
+    return out.slice(0,12)
+  }
+
   function openEditForm(bookId,e){
     var c=h("div","card");c.setAttribute("role","dialog");c.setAttribute("aria-modal","true");c.append(h("h2","display","記録を編集"));
-    var nm=field("なまえ","input",{id:"ed-name",cls:"big",max:24}),dt=field("見つけた日","input",{id:"ed-date",type:"date"}),pl=field("見つけたところ","input",{id:"ed-place",max:30});
-    var ob=field("見てわかったこと","textarea",{id:"ed-observed",max:500}),im=field("想像したこと","textarea",{id:"ed-imagined",max:300});
-    nm.input.value=e.name||"";dt.input.value=e.date||todayISO();pl.input.value=e.place||"";ob.input.value=e.observed||"";im.input.value=e.imagined||"";
-    c.append(nm.label,dt.label,pl.label,ob.label,im.label);var acts=h("div","acts"),save=h("button","go","保存する"),cancel=h("button",null,"やめる");save.type=cancel.type="button";cancel.addEventListener("click",closeSheet);acts.append(save,cancel);c.append(acts);
-    save.addEventListener("click",function(){var name=nm.input.value.trim();if(!name){nm.input.focus();return}save.disabled=true;
-      e.name=name;e.date=dt.input.value||todayISO();e.place=pl.input.value.trim();e.observed=ob.input.value.trim();e.imagined=im.input.value.trim();delete e.answers;
+    var nm=field("名前","input",{id:"ed-name",cls:"big",max:24});
+    var dt=field("日付","input",{id:"ed-date",type:"date"});
+    var pl=field("見つけた・入手した場所","input",{id:"ed-place",max:40});
+    var tg=field("タグ","input",{id:"ed-tags",max:120,ph:"花, 春, 公園"});
+    var ob=field("見て気づいたこと（任意）","textarea",{id:"ed-observed",max:500});
+    var im=field("思ったこと・ストーリー（任意）","textarea",{id:"ed-imagined",max:300});
+    nm.input.value=e.name||"";dt.input.value=e.date||todayISO();pl.input.value=e.place||"";
+    tg.input.value=(e.tags||[]).join(", ");ob.input.value=e.observed||"";im.input.value=e.imagined||"";
+    c.append(nm.label,dt.label,pl.label,tg.label,h("p","tag-help","タグは「花, 春, 公園」のように区切って入力できます。"),ob.label,im.label);
+    var acts=h("div","acts"),save=h("button","go","保存する"),cancel=h("button",null,"やめる");
+    save.type=cancel.type="button";cancel.addEventListener("click",closeSheet);acts.append(save,cancel);c.append(acts);
+    save.addEventListener("click",function(){
+      var name=nm.input.value.trim();if(!name){nm.input.focus();return}
+      save.disabled=true;
+      e.name=name;e.date=dt.input.value||todayISO();e.place=pl.input.value.trim();e.tags=parseTags(tg.input.value);
+      e.observed=ob.input.value.trim();e.imagined=im.input.value.trim();delete e.answers;
       store.updateEntry(e).then(function(){closeSheet();render()},function(){save.disabled=false;save.textContent="もう一度ためす"})
-    });openSheet(c)
+    });
+    openSheet(c)
   }
 
   function renderDesign(bookId){
@@ -2504,6 +2532,48 @@ body{
       }).then(function(b){closeSheet();go("#/b/"+b.id)},function(){make.disabled=false;make.textContent="もう一度ためす"})
     });
     paint();openSheet(c)
+  }
+
+
+  function openEntryForm(bookId,photo){
+    var url=URL.createObjectURL(photo);
+    var c=h("div","card");c.setAttribute("role","dialog");c.setAttribute("aria-modal","true");
+    c.append(h("h2","display","コレクションに追加"));
+    var img=document.createElement("img");img.className="record-sheet-photo";img.src=url;img.alt="選んだ写真";c.append(img);
+
+    var nm=field("名前","input",{id:"new-entry-name",cls:"big",ph:"お気に入りの名前",max:24});
+    var dt=field("日付","input",{id:"new-entry-date",type:"date",value:todayISO()});
+    var pl=field("見つけた・入手した場所","input",{id:"new-entry-place",ph:"公園 / お店 / 旅行先 など",max:40});
+    var tg=field("タグ","input",{id:"new-entry-tags",ph:"花, 春, ピンク",max:120});
+    var ob=field("見て気づいたこと（任意）","textarea",{id:"new-entry-observed",max:500});
+    var im=field("思ったこと・ストーリー（任意）","textarea",{id:"new-entry-imagined",max:300});
+    c.append(nm.label,dt.label,pl.label,tg.label,h("p","tag-help","タグは自由です。レゴ、限定、旅行、推し、春など、自分が探しやすい言葉を付けられます。"),ob.label,im.label);
+
+    var acts=h("div","acts"),save=h("button","go","コレクションに追加"),cancel=h("button",null,"やめる");
+    save.type=cancel.type="button";
+    cancel.addEventListener("click",function(){URL.revokeObjectURL(url);closeSheet()});
+    acts.append(save,cancel);c.append(acts);
+
+    save.addEventListener("click",function(){
+      var name=nm.input.value.trim();if(!name){nm.input.focus();return}
+      save.disabled=true;cancel.disabled=true;save.textContent="保存しています…";
+      toBuffer(photo).then(function(buf){
+        return store.addEntry(bookId,{
+          id:"e-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,7),
+          name:name,date:dt.input.value||todayISO(),place:pl.input.value.trim(),
+          tags:parseTags(tg.input.value),observed:ob.input.value.trim(),imagined:im.input.value.trim(),
+          photoBuf:buf,photoType:photo.type||"image/jpeg",createdAt:Date.now()
+        })
+      }).then(function(){
+        URL.revokeObjectURL(url);closeSheet();render()
+      })["catch"](function(err){
+        save.disabled=false;cancel.disabled=false;save.textContent="コレクションに追加";
+        var w=c.querySelector(".warn")||h("div","warn");
+        w.textContent=err&&err.name==="QuotaExceededError"?"この端末の保存容量がいっぱいです。":"保存できませんでした。もう一度お試しください。";
+        if(!w.parentNode)c.insertBefore(w,acts)
+      })
+    });
+    openSheet(c)
   }
 
   /* ================= 起動 ================= */
