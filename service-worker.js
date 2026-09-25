@@ -1,4 +1,4 @@
-const CACHE_NAME = "mitsuketa-zukan-system-v2";
+const CACHE_NAME = "mitsuketa-zukan-flat-luxury-v5";
 const APP_SHELL = [
   "./",
   "./index.html",
