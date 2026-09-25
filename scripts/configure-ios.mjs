@@ -64,6 +64,10 @@ await writeFile(privacyPath, privacyManifest, 'utf8');
 if (existsSync(projectPath)) {
   let project = await readFile(projectPath, 'utf8');
 
+  project = project
+    .replace(/MARKETING_VERSION = [^;]+;/g, 'MARKETING_VERSION = 1.0.0;')
+    .replace(/CURRENT_PROJECT_VERSION = [^;]+;/g, 'CURRENT_PROJECT_VERSION = 1;');
+
   if (!project.includes('PrivacyInfo.xcprivacy')) {
     const id = seed =>
       createHash('sha1').update(seed).digest('hex').slice(0, 24).toUpperCase();
