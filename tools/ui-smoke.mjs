@@ -3,11 +3,36 @@ import fs from "node:fs";
 
 const BASE = process.env.APP_URL || "http://127.0.0.1:8777/";
 
-const png = Buffer.from(
-  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9ZQmcAAAAASUVORK5CYII=",
-  "base64"
-);
-fs.writeFileSync("/tmp/zukan-test.png", png);
+const samplePhoto = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="675" viewBox="0 0 900 675">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4f7041"/>
+      <stop offset="1" stop-color="#173c2e"/>
+    </linearGradient>
+    <radialGradient id="petal" cx=".5" cy=".45" r=".7">
+      <stop offset="0" stop-color="#fffdf5"/>
+      <stop offset="1" stop-color="#e8e3cf"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="675" fill="url(#bg)"/>
+  <g opacity=".22" fill="#b8d19b">
+    <circle cx="120" cy="100" r="95"/><circle cx="780" cy="145" r="120"/><circle cx="650" cy="600" r="130"/>
+  </g>
+  <path d="M450 620 C430 500,470 420,450 325" fill="none" stroke="#487f42" stroke-width="22" stroke-linecap="round"/>
+  <g transform="translate(450 280)">
+    <ellipse rx="74" ry="155" fill="url(#petal)" transform="rotate(0) translate(0 -85)"/>
+    <ellipse rx="74" ry="155" fill="url(#petal)" transform="rotate(45) translate(0 -85)"/>
+    <ellipse rx="74" ry="155" fill="url(#petal)" transform="rotate(90) translate(0 -85)"/>
+    <ellipse rx="74" ry="155" fill="url(#petal)" transform="rotate(135) translate(0 -85)"/>
+    <ellipse rx="74" ry="155" fill="url(#petal)" transform="rotate(180) translate(0 -85)"/>
+    <ellipse rx="74" ry="155" fill="url(#petal)" transform="rotate(225) translate(0 -85)"/>
+    <ellipse rx="74" ry="155" fill="url(#petal)" transform="rotate(270) translate(0 -85)"/>
+    <ellipse rx="74" ry="155" fill="url(#petal)" transform="rotate(315) translate(0 -85)"/>
+    <circle r="88" fill="#d9a72e"/>
+    <circle r="58" fill="#9f741b"/>
+  </g>
+</svg>`;
+fs.writeFileSync("/tmp/zukan-test.svg", samplePhoto);
 
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 375, height: 812 } });
@@ -29,7 +54,7 @@ try {
     page.waitForEvent("filechooser"),
     page.locator(".add-entry-btn").click()
   ]);
-  await chooser.setFiles("/tmp/zukan-test.png");
+  await chooser.setFiles("/tmp/zukan-test.svg");
   await page.locator("#new-entry-name").fill("たんぽぽ");
   await page.locator("#new-entry-kanji").fill("蒲公英");
   await page.locator("#new-entry-place").fill("近所の公園");
