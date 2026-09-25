@@ -25,16 +25,36 @@ async function configureKeyboard() {
   }
 }
 
-async function configureChrome() {
+async function setChromeTheme(theme = 'dark') {
   if (!isNative) return;
 
+  const platform = Capacitor.getPlatform();
+
   try {
-    await StatusBar.setStyle({ style: Style.Dark });
-    await StatusBar.setBackgroundColor({ color: '#0F172A' });
+    // Android keeps a navy native status-bar background, so use light icons.
+    // On iOS the status bar follows the current app screen: dark icons on
+    // ivory screens, light icons on the navy library/cover screens.
+    const style =
+      platform === 'ios' && theme === 'light'
+        ? Style.Dark
+        : Style.Light;
+
+    await StatusBar.setStyle({ style });
+
+    if (platform === 'android') {
+      await StatusBar.setBackgroundColor({ color: '#0F172A' });
+    }
+
     await StatusBar.setOverlaysWebView({ overlay: false });
   } catch {
     // Status bar differences between iOS/Android are non-fatal.
   }
+}
+
+async function configureChrome() {
+  if (!isNative) return;
+
+  await setChromeTheme('dark');
 
   try {
     await SplashScreen.hide({ fadeOutDuration: 160 });
@@ -139,6 +159,7 @@ window.NativeZukan = {
   haptic,
   shareBackup,
   shareText,
+  setChromeTheme,
 };
 
 document.documentElement.classList.toggle('native-app', isNative);
