@@ -696,6 +696,9 @@ body{
 .new-spine{background:transparent;border-style:dashed;color:#91a3b3;justify-content:center;gap:8px}
 .new-spine .spine-icon{color:var(--rose);font-size:30px}
 .shelf-hint{text-align:center;color:var(--muted);font-size:12px;margin:14px 0 0}
+.library-admin{display:flex;justify-content:center;gap:8px;margin-top:10px}
+.library-admin button{border:0;background:transparent;color:#718599;font:inherit;font-size:11px;padding:6px 8px;cursor:pointer}
+.library-admin button:hover{color:#d7c59a}
 
 /* cover */
 .cover-screen{min-height:calc(100svh - 48px);display:flex;flex-direction:column}
@@ -1370,6 +1373,32 @@ body{
     return done(t).then(function(){return out})
   }
 
+
+  function restoreBackupData(payload){
+    var books=Array.isArray(payload.books)?payload.books:[],entries=Array.isArray(payload.entries)?payload.entries:[];
+    var t=db.transaction(["books","entries"],"readwrite"),bs=t.objectStore("books"),es=t.objectStore("entries");
+    var map=Object.create(null),stamp=Date.now().toString(36);
+
+    books.forEach(function(src,idx){
+      var oldId=src.id,newId="b-restore-"+stamp+"-"+idx+"-"+Math.random().toString(36).slice(2,6),b={};
+      Object.keys(src).forEach(function(k){if(k!=="id")b[k]=src[k]});
+      b.id=newId;b.createdAt=Date.now()+idx;map[oldId]=newId;bs.put(b)
+    });
+
+    entries.forEach(function(src,idx){
+      var newBookId=map[src.bookId];if(!newBookId)return;
+      var e={};
+      Object.keys(src).forEach(function(k){
+        if(k!=="id"&&k!=="bookId"&&k!=="photoBase64")e[k]=src[k]
+      });
+      e.id="e-restore-"+stamp+"-"+idx+"-"+Math.random().toString(36).slice(2,6);
+      e.bookId=newBookId;
+      if(src.photoBase64)e.photoBuf=base64ToBuffer(src.photoBase64);
+      es.put(e)
+    });
+    return done(t)
+  }
+
   /* 保存の窓口。画面はここだけを呼び、IndexedDB を直接さわらない。
      将来サーバーに移すときは、この中身を差し替えれば済む。 */
   var store = {
@@ -1386,6 +1415,7 @@ body{
     dropEntry: dropEntry,
     dropBook: dropBook,
     updateBook: updateBook,
+    restoreBackup: restoreBackupData,
     info: function () {
       return { name: DB_NAME, version: db ? db.version : null, expected: DB_VER };
     }
@@ -1451,6 +1481,25 @@ body{
     return n;
   }
   function pad(n) { return String(n).padStart(3, "0"); }
+  function bufferToBase64(buf){
+    if(!buf)return"";
+    var bytes=new Uint8Array(buf),parts=[],step=0x8000;
+    for(var i=0;i<bytes.length;i+=step){
+      parts.push(String.fromCharCode.apply(null,bytes.subarray(i,Math.min(i+step,bytes.length))))
+    }
+    return btoa(parts.join(""))
+  }
+  function base64ToBuffer(str){
+    var bin=atob(str||""),bytes=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+    return bytes.buffer
+  }
+  function downloadBlob(blob,name){
+    var url=URL.createObjectURL(blob),a=document.createElement("a");
+    a.href=url;a.download=name;document.body.append(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(url)},1200)
+  }
+
   /* 傾き・ずれ・重なり順は、すべて番号から決まる。毎回おなじ見え方になる。 */
   /* 傾きは番号から決まる。毎回おなじ角度になる。
      ずらしと重なり順は、シール同士が接触するのでやめた。 */
@@ -2309,6 +2358,71 @@ body{
   }
 
 
+
+  function exportBackup(){
+    return store.books().then(function(books){
+      return Promise.all(books.map(function(b){
+        return store.entries(b.id).then(function(entries){return{book:b,entries:entries}})
+      }))
+    }).then(function(groups){
+      var payload={
+        type:"mitsuketa-zukan-backup",
+        version:1,
+        createdAt:new Date().toISOString(),
+        books:groups.map(function(g){return g.book}),
+        entries:[]
+      };
+      groups.forEach(function(g){
+        g.entries.forEach(function(src){
+          var e={};
+          Object.keys(src).forEach(function(k){
+            if(k!=="photoBuf"&&k!=="photo")e[k]=src[k]
+          });
+          if(src.photoBuf)e.photoBase64=bufferToBase64(src.photoBuf);
+          payload.entries.push(e)
+        })
+      });
+      var d=new Date(),p=function(n){return String(n).padStart(2,"0")};
+      var name="zukan-backup-"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+".json";
+      downloadBlob(new Blob([JSON.stringify(payload)],{type:"application/json"}),name)
+    })
+  }
+
+  function chooseRestoreFile(){
+    var input=document.createElement("input");
+    input.type="file";input.accept=".json,application/json";
+    input.addEventListener("change",function(){
+      var file=input.files&&input.files[0];if(!file)return;
+      file.text().then(function(text){
+        var data=JSON.parse(text);
+        if(!data||data.type!=="mitsuketa-zukan-backup"||!Array.isArray(data.books)||!Array.isArray(data.entries)){
+          throw new Error("invalid backup")
+        }
+        openRestoreConfirm(data)
+      })["catch"](function(){
+        var c=h("div","card");c.append(h("h2","display","このファイルは読み込めません"));
+        c.append(h("p","note","このアプリで作ったバックアップファイルを選んでください。"));
+        var acts=h("div","acts"),ok=h("button","go","閉じる");ok.type="button";ok.addEventListener("click",closeSheet);acts.append(ok);c.append(acts);openSheet(c)
+      })
+    });
+    input.click()
+  }
+
+  function openRestoreConfirm(data){
+    var c=h("div","card");c.append(h("h2","display","バックアップを復元"));
+    c.append(h("p","note","図鑑 "+data.books.length+"冊、記録 "+data.entries.length+"件を追加します。"));
+    c.append(h("p","note","今この端末にある図鑑や写真は消しません。同じバックアップを2回読み込むと、同じ図鑑がもう一度追加されます。"));
+    var acts=h("div","acts"),goBtn=h("button","go","追加して復元する"),cancel=h("button",null,"やめる");
+    goBtn.type=cancel.type="button";cancel.addEventListener("click",closeSheet);
+    goBtn.addEventListener("click",function(){
+      goBtn.disabled=true;cancel.disabled=true;goBtn.textContent="復元しています…";
+      store.restoreBackup(data).then(function(){closeSheet();go("#/");render()},function(){
+        goBtn.disabled=false;cancel.disabled=false;goBtn.textContent="もう一度ためす"
+      })
+    });
+    acts.append(goBtn,cancel);c.append(acts);openSheet(c)
+  }
+
   /* ================= 夜の図書館 UI（共同制作ブランチ） ================= */
   var bookFilterMode=Object.create(null);
   var bookSearchText=Object.create(null);
@@ -2385,7 +2499,13 @@ body{
         bt.addEventListener("click",function(){go("#/b/"+b.id)});rail.append(bt)
       });
       var add=h("button","spine-card new-spine");add.type="button";add.append(h("span","spine-icon","＋"),h("span","spine-title","新しい図鑑"));add.addEventListener("click",openNewBook);rail.append(add);
-      stage.append(rail,h("div","shelf-board"),h("div","shelf-lower"));shell.append(stage,h("p","shelf-hint",books.length?"横にスライドして、開きたい本を選ぶ":"最初の一冊をつくってみましょう"));app.append(shell)
+      stage.append(rail,h("div","shelf-board"),h("div","shelf-lower"));
+      shell.append(stage,h("p","shelf-hint",books.length?"横にスライドして、開きたい本を選ぶ":"最初の一冊をつくってみましょう"));
+      var admin=h("div","library-admin"),backup=h("button",null,"バックアップ"),restore=h("button",null,"復元");
+      backup.type=restore.type="button";
+      backup.addEventListener("click",function(){backup.disabled=true;backup.textContent="準備中…";exportBackup().then(function(){backup.disabled=false;backup.textContent="バックアップ"},function(){backup.disabled=false;backup.textContent="もう一度ためす"})});
+      restore.addEventListener("click",chooseRestoreFile);
+      admin.append(backup,restore);shell.append(admin);app.append(shell)
     })
   }
 
