@@ -65,8 +65,39 @@ workflows:
 
       - name: Set cloud build number
         script: |
+          set -euo pipefail
           cd ios/App
-          agvtool new-version -all "$BUILD_NUMBER"
+
+          NEXT_BUILD="$BUILD_NUMBER"
+          if [ -n "${APP_STORE_APPLE_ID:-}" ]; then
+            LATEST_BUILD="$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID" || true)"
+            if echo "$LATEST_BUILD" | grep -Eq '^[0-9]+
+
+      - name: Build signed IPA
+        script: |
+          xcode-project build-ipa \
+            --project "$CM_BUILD_DIR/$XCODE_PROJECT" \
+            --scheme "$XCODE_SCHEME"
+
+    artifacts:
+      - ios/App/build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+
+    publishing:
+      app_store_connect:
+        # auth: integration uploads the signed IPA to App Store Connect.
+        # Keep beta/App Store submission manual until the first internal build is verified.
+        auth: integration
+        submit_to_testflight: false
+        submit_to_app_store: false
+; then
+              NEXT_BUILD="$((LATEST_BUILD + 1))"
+            fi
+          fi
+
+          echo "Using iOS build number: $NEXT_BUILD"
+          agvtool new-version -all "$NEXT_BUILD"
 
       - name: Build signed IPA
         script: |
