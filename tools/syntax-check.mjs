@@ -26,7 +26,11 @@ const required = [
   "function openEditForm",
   "IndexedDB",
   "BOOK_PRESETS",
-  "nameMode"
+  "nameMode",
+  "function exportBackup",
+  "restoreBackup: restoreBackupData",
+  "BOOK_PRESETS",
+  "serviceWorker.register"
 ];
 
 for (const marker of required) {
