@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0b2035"/><stop offset=".55" stop-color="#071827"/><stop offset="1" stop-color="#05111d"/>
+  </linearGradient>
+  <radialGradient id="glow" cx=".5" cy="0" r=".75">
+    <stop offset="0" stop-color="#40617e" stop-opacity=".28"/><stop offset=".55" stop-color="#18344f" stop-opacity=".08"/><stop offset="1" stop-color="#071727" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="3" seed="7"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 .08 0"/></filter>
+</defs>
+<rect width="1600" height="1200" fill="url(#bg)"/>
+<rect width="1600" height="800" fill="url(#glow)"/>
+<g opacity=".10" fill="#88a6bd">
+  <rect x="88" y="0" width="2" height="1200"/><rect x="420" y="0" width="1.5" height="1200"/>
+  <rect x="788" y="0" width="2" height="1200"/><rect x="1190" y="0" width="1.5" height="1200"/>
+</g>
+<rect width="1600" height="1200" filter="url(#grain)" opacity=".5"/>
+</svg>
