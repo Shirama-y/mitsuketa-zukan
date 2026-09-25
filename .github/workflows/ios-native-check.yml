@@ -53,6 +53,37 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             build
 
+      - name: Launch on iPhone Simulator
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          data = json.load(sys.stdin)
+          for devices in data["devices"].values():
+              for device in devices:
+                  if device.get("isAvailable") and device.get("name", "").startswith("iPhone"):
+                      print(device["udid"])
+                      raise SystemExit
+          raise SystemExit("No available iPhone simulator")
+          ')
+
+          xcrun simctl boot "$DEVICE_ID" || true
+          xcrun simctl bootstatus "$DEVICE_ID" -b
+
+          APP_PATH=$(find /tmp/zukan-derived/Build/Products/Debug-iphonesimulator -maxdepth 1 -name "*.app" | head -n 1)
+          test -d "$APP_PATH"
+
+          xcrun simctl install "$DEVICE_ID" "$APP_PATH"
+          xcrun simctl launch "$DEVICE_ID" com.dodolabo.mitsuketazukan
+          sleep 5
+          xcrun simctl io "$DEVICE_ID" screenshot /tmp/zukan-native-simulator.png
+
+      - name: Upload native simulator screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: mitsuketa-zukan-native-screenshot
+          path: /tmp/zukan-native-simulator.png
+          retention-days: 7
+
       - name: Package Xcode project
         run: |
           ditto -c -k --sequesterRsrc --keepParent ios /tmp/mitsuketa-zukan-ios-project.zip
