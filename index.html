@@ -905,7 +905,7 @@ body{
     {name:"ぬいぐるみ",mark:"♧"},{name:"もの",mark:"✦"},{name:"カフェ",mark:"☕"},{name:"なし",mark:""}
   ];
   function bookFont(i){return BOOK_FONTS[(Number(i)||0)%BOOK_FONTS.length]}
-  function bookIcon(i){return BOOK_ICONS[(Number(i)||0)%BOOK_ICONS.length]}
+  function bookIcon(i){var n=(i==null||i==="")?5:Number(i);if(isNaN(n))n=5;return BOOK_ICONS[n%BOOK_ICONS.length]}
   var BOOK_PRESETS=[
     {name:"Night Library",note:"夜の図書館。落ち着いた一冊。",color:3,theme:0,frame:1,font:0,icon:5,layout:"normal",titleSize:"medium",titleAlign:"center"},
     {name:"Nature",note:"草花や生きもの、自然の記録に。",color:2,theme:5,frame:2,font:1,icon:0,layout:"relaxed",titleSize:"medium",titleAlign:"center"},
