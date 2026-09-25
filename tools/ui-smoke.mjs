@@ -89,7 +89,7 @@ try {
   // Collections screen opens and contains the created book.
   await page.locator("#app-nav button").nth(2).click();
   await page.waitForURL(/#\/collections$/);
-  await page.getByText("草花図鑑", { exact: true }).waitFor();
+  await page.locator(".book-grid-title", { hasText: "草花図鑑" }).first().waitFor();
 
   // Settings screen exposes backup and restore.
   await page.locator("#app-nav button").nth(3).click();
