@@ -1294,7 +1294,7 @@ body{
     var b = {
       id: "b-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7),
       title: title, color: color, theme: themeIdx, frame: frameIdx,
-      subtitle:"", font:0, icon:0, layout:"normal",
+      subtitle:"", font:0, icon:0, layout:"normal", nameMode:"both",
       createdAt: Date.now(), nextNo: 1, count: 0
     };
     var t = db.transaction("books", "readwrite");
@@ -2332,6 +2332,13 @@ body{
     node.style.setProperty("--book-ink",b.customInk||co.ink);
     return node
   }
+  function displayNames(book,e){
+    var mode=(book&&book.nameMode)||"both",main=e.name||"",alt=e.kanji||"";
+    if(mode==="alt"&&alt)return{main:alt,sub:main};
+    if(mode==="name")return{main:main,sub:""};
+    return{main:main,sub:alt}
+  }
+
   function makeBookFace(b,small){
     var face=h("div","book-face frame-"+frameOf(b.frame).key+(small?" small":""));styleBookNode(face,b);
     var inner=h("div","book-face-inner"),mark=bookIcon(b.icon).mark;if(mark)inner.append(h("div","book-face-icon",mark));
@@ -2410,9 +2417,9 @@ body{
       }else{
         var ln=h("div","entry-list");shown.forEach(function(e){
           var row=h("div","entry-row "+(b.layout==="compact"?"compact":b.layout==="relaxed"?"relaxed":"")),img=document.createElement("img");
-          row.dataset.search=[e.name||"",e.place||"",Array.isArray(e.tags)?e.tags.join(" "):""].join(" ").toLowerCase();
+          row.dataset.search=[e.name||"",e.kanji||"",e.place||"",Array.isArray(e.tags)?e.tags.join(" "):""].join(" ").toLowerCase();
           img.className="entry-photo";img.alt="";img.src=urlFor(e);
-          var op=h("button","entry-open");op.type="button";op.append(h("div","entry-name",e.name),h("div","entry-meta",showDate(e.date)+(e.place?"　•　"+e.place:"")));op.addEventListener("click",function(){go("#/b/"+b.id+"/e/"+e.no)});
+          var names=displayNames(b,e),op=h("button","entry-open");op.type="button";op.append(h("div","entry-name",names.main));if(names.sub)op.append(h("div","entry-alias",names.sub));op.append(h("div","entry-meta",showDate(e.date)+(e.place?"　•　"+e.place:"")));op.addEventListener("click",function(){go("#/b/"+b.id+"/e/"+e.no)});
           var fav=h("button","heart-btn"+(e.favorite?" on":""),e.favorite?"♥":"♡");fav.type="button";fav.addEventListener("click",function(){e.favorite=!e.favorite;store.updateEntry(e).then(render)});
           row.append(img,op,fav);ln.append(row)
         });screen.append(ln);
@@ -2441,7 +2448,7 @@ body{
       var screen=h("section","detail-screen");screen.style.setProperty("--book-font",bookFont(b.font).css);
       var top=h("div","detail-top"),back=h("a","back","← "+b.title);back.href="#/b/"+b.id+"/list";
       var fav=h("button","heart-btn"+(e.favorite?" on":""),e.favorite?"♥":"♡");fav.type="button";fav.addEventListener("click",function(){e.favorite=!e.favorite;store.updateEntry(e).then(render)});top.append(back,fav);screen.append(top);
-      var img=document.createElement("img");img.className="detail-photo";img.alt="";img.src=urlFor(e);screen.append(img,h("div","detail-no","No."+pad(e.no)),h("h1","detail-name",e.name));
+      var img=document.createElement("img");img.className="detail-photo";img.alt="";img.src=urlFor(e);var names=displayNames(b,e);screen.append(img,h("div","detail-no","No."+pad(e.no)),h("h1","detail-name",names.main));if(names.sub)screen.append(h("div","detail-alias",names.sub));
       var meta=h("div","detail-meta");[["見つけた日",showDate(e.date)],["見つけたところ",e.place||"——"]].forEach(function(x){var r=h("div","detail-meta-row");r.append(h("span",null,x[0]),h("span",null,x[1]));meta.append(r)});screen.append(meta);
       if(e.tags&&e.tags.length){var tagList=h("div","tag-list");e.tags.forEach(function(t){tagList.append(h("span","tag-pill",t))});screen.append(tagList)}
       var notes=h("div","detail-notes");
@@ -2466,20 +2473,21 @@ body{
   function openEditForm(bookId,e){
     var c=h("div","card");c.setAttribute("role","dialog");c.setAttribute("aria-modal","true");c.append(h("h2","display","記録を編集"));
     var nm=field("名前","input",{id:"ed-name",cls:"big",max:24});
+    var kn=field("漢字・別名（任意）","input",{id:"ed-kanji",max:32,ph:"蒲公英 / 宇宙飛行士 など"});
     var dt=field("日付","input",{id:"ed-date",type:"date"});
     var pl=field("見つけた・入手した場所","input",{id:"ed-place",max:40});
     var tg=field("タグ","input",{id:"ed-tags",max:120,ph:"花, 春, 公園"});
     var ob=field("見て気づいたこと（任意）","textarea",{id:"ed-observed",max:500});
     var im=field("思ったこと・ストーリー（任意）","textarea",{id:"ed-imagined",max:300});
-    nm.input.value=e.name||"";dt.input.value=e.date||todayISO();pl.input.value=e.place||"";
+    nm.input.value=e.name||"";kn.input.value=e.kanji||"";dt.input.value=e.date||todayISO();pl.input.value=e.place||"";
     tg.input.value=(e.tags||[]).join(", ");ob.input.value=e.observed||"";im.input.value=e.imagined||"";
-    c.append(nm.label,dt.label,pl.label,tg.label,h("p","tag-help","タグは「花, 春, 公園」のように区切って入力できます。"),ob.label,im.label);
+    c.append(nm.label,kn.label,dt.label,pl.label,tg.label,h("p","tag-help","タグは「花, 春, 公園」のように区切って入力できます。"),ob.label,im.label);
     var acts=h("div","acts"),save=h("button","go","保存する"),cancel=h("button",null,"やめる");
     save.type=cancel.type="button";cancel.addEventListener("click",closeSheet);acts.append(save,cancel);c.append(acts);
     save.addEventListener("click",function(){
       var name=nm.input.value.trim();if(!name){nm.input.focus();return}
       save.disabled=true;
-      e.name=name;e.date=dt.input.value||todayISO();e.place=pl.input.value.trim();e.tags=parseTags(tg.input.value);
+      e.name=name;e.kanji=kn.input.value.trim();e.date=dt.input.value||todayISO();e.place=pl.input.value.trim();e.tags=parseTags(tg.input.value);
       e.observed=ob.input.value.trim();e.imagined=im.input.value.trim();delete e.answers;
       store.updateEntry(e).then(function(){closeSheet();render()},function(){save.disabled=false;save.textContent="もう一度ためす"})
     });
@@ -2489,7 +2497,7 @@ body{
   function renderDesign(bookId){
     return store.book(bookId).then(function(original){
       app.replaceChildren();if(!original){go("#/");return}
-      var draft={};Object.keys(original).forEach(function(k){draft[k]=original[k]});if(draft.font==null)draft.font=0;if(draft.icon==null)draft.icon=0;if(!draft.layout)draft.layout="normal";if(draft.subtitle==null)draft.subtitle="";if(draft.customBg==null)draft.customBg="";if(draft.customAccent==null)draft.customAccent="";if(draft.customInk==null)draft.customInk="";
+      var draft={};Object.keys(original).forEach(function(k){draft[k]=original[k]});if(draft.font==null)draft.font=0;if(draft.icon==null)draft.icon=0;if(!draft.layout)draft.layout="normal";if(!draft.nameMode)draft.nameMode="both";if(draft.subtitle==null)draft.subtitle="";if(draft.customBg==null)draft.customBg="";if(draft.customAccent==null)draft.customAccent="";if(draft.customInk==null)draft.customInk="";
       var screen=h("section","design-screen"),head=h("div","design-head"),back=h("button","round-btn","‹"),save=h("button","save-design","保存");back.type=save.type="button";back.addEventListener("click",function(){go("#/b/"+bookId)});head.append(back,h("h1",null,"デザインをカスタマイズ"),save);screen.append(head);
       var preview=h("div","design-preview");screen.append(preview);
       function sec(name){var n=h("section","design-section");n.append(h("h2",null,name));return n}
@@ -2511,7 +2519,7 @@ body{
       function repaint(){
         draft.title=ti.value;draft.subtitle=si.value;preview.replaceChildren(makeBookFace(draft,true));
         [["font",draft.font],["color",draft.color],["theme",draft.theme],["icon",draft.icon],["frame",draft.frame]].forEach(function(p){Array.prototype.forEach.call(screen.querySelectorAll("[data-"+p[0]+"]"),function(n){n.classList.toggle("active",Number(n.dataset[p[0]])===Number(p[1]||0))})});
-        Array.prototype.forEach.call(screen.querySelectorAll("[data-layout]"),function(n){n.classList.toggle("active",n.dataset.layout===draft.layout)});
+        Array.prototype.forEach.call(screen.querySelectorAll("[data-layout]"),function(n){n.classList.toggle("active",n.dataset.layout===draft.layout)});Array.prototype.forEach.call(screen.querySelectorAll("[data-name-mode]"),function(n){n.classList.toggle("active",n.dataset.nameMode===draft.nameMode)});
         Array.prototype.forEach.call(screen.querySelectorAll("[data-preset]"),function(n){
           var p=BOOK_PRESETS[Number(n.dataset.preset)];
           var same=p&&Number(draft.color||0)===p.color&&Number(draft.theme||0)===p.theme&&Number(draft.frame||0)===p.frame&&Number(draft.font||0)===p.font&&Number(draft.icon||0)===p.icon&&draft.layout===p.layout&&!draft.customBg&&!draft.customAccent&&!draft.customInk;
@@ -2542,10 +2550,16 @@ body{
       var rs=sec("装丁"),rg=h("div","design-grid");FRAMES.forEach(function(fr,i){var bt=h("button","design-choice",fr.name);bt.type="button";bt.dataset.frame=i;bt.addEventListener("click",function(){draft.frame=i;repaint()});rg.append(bt)});rs.append(rg);screen.append(rs);
       var isec=sec("アイコン"),ig=h("div","design-grid");BOOK_ICONS.forEach(function(ic,i){var bt=h("button","design-choice icon-choice",ic.mark||"—");bt.type="button";bt.dataset.icon=i;bt.addEventListener("click",function(){draft.icon=i;repaint()});ig.append(bt)});isec.append(ig);screen.append(isec);
       var ds=sec("一覧の表示"),dg=h("div","design-grid");[["relaxed","ゆったり"],["normal","標準"],["compact","コンパクト"]].forEach(function(x){var bt=h("button","design-choice density-choice",x[1]);bt.type="button";bt.dataset.layout=x[0];bt.addEventListener("click",function(){draft.layout=x[0];repaint()});dg.append(bt)});ds.append(dg);screen.append(ds);
+      var ns=sec("名前の表示"),ng=h("div","design-grid");
+      [["both","名前＋漢字・別名"],["name","名前だけ"],["alt","漢字・別名を大きく"]].forEach(function(x){
+        var bt=h("button","design-choice density-choice",x[1]);bt.type="button";bt.dataset.nameMode=x[0];
+        bt.addEventListener("click",function(){draft.nameMode=x[0];repaint()});ng.append(bt)
+      });
+      ns.append(ng);screen.append(ns);
 
       save.addEventListener("click",function(){save.disabled=true;save.textContent="保存中…";store.updateBook(bookId,{
         title:(ti.value||"").trim()||"わたしの図鑑",subtitle:(si.value||"").trim(),font:Number(draft.font)||0,icon:Number(draft.icon)||0,
-        color:Number(draft.color)||0,theme:Number(draft.theme)||0,frame:Number(draft.frame)||0,layout:draft.layout||"normal",customBg:draft.customBg||"",customAccent:draft.customAccent||"",customInk:draft.customInk||""
+        color:Number(draft.color)||0,theme:Number(draft.theme)||0,frame:Number(draft.frame)||0,layout:draft.layout||"normal",nameMode:draft.nameMode||"both",customBg:draft.customBg||"",customAccent:draft.customAccent||"",customInk:draft.customInk||""
       }).then(function(){go("#/b/"+bookId)},function(){save.disabled=false;save.textContent="保存"})});
       app.append(screen);repaint()
     })
@@ -2555,7 +2569,7 @@ body{
   function openNewBook(){
     var c=h("div","card");c.setAttribute("role","dialog");c.setAttribute("aria-modal","true");
     c.append(h("h2","display","新しい図鑑"));
-    var draft={title:"",subtitle:"",color:3,theme:0,frame:1,font:0,icon:5,layout:"normal",customBg:"",customAccent:"",customInk:""};
+    var draft={title:"",subtitle:"",color:3,theme:0,frame:1,font:0,icon:5,layout:"normal",nameMode:"both",customBg:"",customAccent:"",customInk:""};
     var preview=h("div","design-preview");c.append(preview);
 
     var title=field("タイトル","input",{id:"new-title",cls:"big",ph:"ぬいぐるみ図鑑",max:24});
@@ -2641,7 +2655,7 @@ body{
       make.disabled=true;make.textContent="つくっています…";
       store.createBook(name,draft.color,draft.theme,draft.frame).then(function(b){
         return store.updateBook(b.id,{
-          subtitle:sub.input.value.trim(),font:draft.font,icon:draft.icon,layout:draft.layout,
+          subtitle:sub.input.value.trim(),font:draft.font,icon:draft.icon,layout:draft.layout,nameMode:draft.nameMode||"both",
           customBg:draft.customBg||"",customAccent:draft.customAccent||"",customInk:draft.customInk||""
         })
       }).then(function(b){closeSheet();go("#/b/"+b.id)},function(){make.disabled=false;make.textContent="もう一度ためす"})
@@ -2657,12 +2671,13 @@ body{
     var img=document.createElement("img");img.className="record-sheet-photo";img.src=url;img.alt="選んだ写真";c.append(img);
 
     var nm=field("名前","input",{id:"new-entry-name",cls:"big",ph:"お気に入りの名前",max:24});
+    var kn=field("漢字・別名（任意）","input",{id:"new-entry-kanji",ph:"蒲公英 / 宇宙飛行士 など",max:32});
     var dt=field("日付","input",{id:"new-entry-date",type:"date",value:todayISO()});
     var pl=field("見つけた・入手した場所","input",{id:"new-entry-place",ph:"公園 / お店 / 旅行先 など",max:40});
     var tg=field("タグ","input",{id:"new-entry-tags",ph:"花, 春, ピンク",max:120});
     var ob=field("見て気づいたこと（任意）","textarea",{id:"new-entry-observed",max:500});
     var im=field("思ったこと・ストーリー（任意）","textarea",{id:"new-entry-imagined",max:300});
-    c.append(nm.label,dt.label,pl.label,tg.label,h("p","tag-help","タグは自由です。レゴ、限定、旅行、推し、春など、自分が探しやすい言葉を付けられます。"),ob.label,im.label);
+    c.append(nm.label,kn.label,dt.label,pl.label,tg.label,h("p","tag-help","タグは自由です。レゴ、限定、旅行、推し、春など、自分が探しやすい言葉を付けられます。"),ob.label,im.label);
 
     var acts=h("div","acts"),save=h("button","go","コレクションに追加"),cancel=h("button",null,"やめる");
     save.type=cancel.type="button";
@@ -2675,7 +2690,7 @@ body{
       toBuffer(photo).then(function(buf){
         return store.addEntry(bookId,{
           id:"e-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,7),
-          name:name,date:dt.input.value||todayISO(),place:pl.input.value.trim(),
+          name:name,kanji:kn.input.value.trim(),date:dt.input.value||todayISO(),place:pl.input.value.trim(),
           tags:parseTags(tg.input.value),observed:ob.input.value.trim(),imagined:im.input.value.trim(),
           photoBuf:buf,photoType:photo.type||"image/jpeg",createdAt:Date.now()
         })
