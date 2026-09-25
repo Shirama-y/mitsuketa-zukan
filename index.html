@@ -1162,7 +1162,31 @@ html[data-view="design"] .design-section h2,
 html[data-view="entry"] .detail-note h3{
   color:#0F172A!important
 }
+
 html[data-view="entry"] .heart-btn{color:#0F172A!important}
+
+/* v6: texture/color independence + preview fidelity */
+.spine-card{
+  background-color:var(--spine-bg,#315b47)!important;
+  background-image:var(--spine-texture,none)!important;
+  background-repeat:repeat!important;
+  background-size:auto!important
+}
+html[data-view="design"] .texture-choice{
+  background-color:var(--tex-bg,#536b78)!important;
+  background-image:var(--tex-img,none)!important;
+  background-repeat:repeat!important;
+  background-size:auto!important;
+  color:#FAF7F2!important
+}
+html[data-view="design"] .color-choice{
+  background:var(--swatch)!important
+}
+html[data-view="design"] .texture-choice.active,
+html[data-view="design"] .color-choice.active{
+  border-color:var(--ui-pink)!important;
+  color:#FAF7F2!important
+}
 html[data-view="entry"] .heart-btn.on{color:#C77B7B!important}
 html[data-view="design"] .preset-card.active{border-color:#C77B7B!important}
 html[data-view="design"] .button-theme-choice.active{outline-color:#C77B7B!important}
@@ -3093,8 +3117,11 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
 
   function textureCss(themeIdx){
     var n=(Number(themeIdx)||0)%8;
-    if(n===0)return'url("./assets/texture-leather.svg")';
-    if(n===5)return'url("./assets/texture-linen.svg")';
+    /* テクスチャは必ず透明レイヤーだけにする。
+       表紙色は --book-bg / --spine-bg / --tex-bg 側で決まり、
+       レザーやリネンを選んでも色が固定されない。 */
+    if(n===0)return"radial-gradient(circle at 20% 18%,rgba(255,255,255,.085) 0 1px,transparent 1.6px),radial-gradient(circle at 72% 64%,rgba(0,0,0,.085) 0 1px,transparent 1.7px),repeating-linear-gradient(17deg,rgba(255,255,255,.025) 0 1px,transparent 1px 5px),repeating-linear-gradient(-21deg,rgba(0,0,0,.025) 0 1px,transparent 1px 7px)";
+    if(n===5)return"repeating-linear-gradient(0deg,rgba(255,255,255,.085) 0 1px,transparent 1px 4px),repeating-linear-gradient(90deg,rgba(0,0,0,.07) 0 1px,transparent 1px 5px),repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 1px,transparent 1px 2px)";
     if(n===1)return"repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0 1px,transparent 1px 7px),repeating-linear-gradient(-45deg,rgba(0,0,0,.025) 0 1px,transparent 1px 8px)";
     if(n===2)return"repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 1px,transparent 1px 5px),repeating-linear-gradient(0deg,rgba(0,0,0,.02) 0 1px,transparent 1px 6px)";
     if(n===3)return"linear-gradient(135deg,rgba(255,255,255,.025),transparent 45%,rgba(0,0,0,.035))";
