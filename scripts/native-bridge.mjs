@@ -5,8 +5,25 @@ import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { SplashScreen } from '@capacitor/splash-screen';
+import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 
 const isNative = Capacitor.isNativePlatform();
+
+async function configureKeyboard() {
+  if (!isNative || Capacitor.getPlatform() !== 'ios') return;
+
+  try {
+    await Keyboard.setResizeMode({ mode: KeyboardResize.Body });
+  } catch {
+    // Keep the default WebView behavior if keyboard configuration is unavailable.
+  }
+
+  try {
+    await Keyboard.setScroll({ isDisabled: false });
+  } catch {
+    // Scrolling remains enabled by default.
+  }
+}
 
 async function configureChrome() {
   if (!isNative) return;
@@ -112,6 +129,7 @@ async function shareText(title, text) {
   return true;
 }
 
+configureKeyboard();
 configureChrome();
 
 window.NativeZukan = {
