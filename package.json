@@ -6,12 +6,14 @@
   "scripts": {
     "build:native": "node scripts/build-native.mjs",
     "native:prepare": "npm run build:native && npx cap sync",
-    "native:ios:add": "npm run build:native && npx cap add ios && node scripts/configure-ios.mjs && npx cap sync ios",
+    "native:ios:add": "npm run build:native && npx cap add ios && node scripts/configure-ios.mjs && npm run native:assets:ios && npx cap sync ios",
     "native:ios:open": "npm run native:ios:sync && npx cap open ios",
-    "native:android:add": "npm run build:native && npx cap add android && npx cap sync android",
+    "native:android:add": "npm run build:native && npx cap add android && npm run native:assets:android && npx cap sync android",
     "native:android:open": "npm run native:android:sync && npx cap open android",
-    "native:ios:sync": "npm run build:native && npx cap sync ios && node scripts/configure-ios.mjs",
-    "native:android:sync": "npm run build:native && npx cap sync android"
+    "native:ios:sync": "npm run build:native && npx cap sync ios && node scripts/configure-ios.mjs && npm run native:assets:ios",
+    "native:android:sync": "npm run build:native && npx cap sync android && npm run native:assets:android",
+    "native:assets:ios": "npx capacitor-assets generate --ios --assetPath resources --iconBackgroundColor '#0F172A' --iconBackgroundColorDark '#0F172A' --splashBackgroundColor '#0F172A' --splashBackgroundColorDark '#0F172A' --logoSplashScale 0.18",
+    "native:assets:android": "npx capacitor-assets generate --android --assetPath resources --iconBackgroundColor '#0F172A' --iconBackgroundColorDark '#0F172A' --splashBackgroundColor '#0F172A' --splashBackgroundColorDark '#0F172A' --logoSplashScale 0.18"
   },
   "dependencies": {
     "@capacitor/android": "^8.0.0",
@@ -24,6 +26,7 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^8.0.0",
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.25.0",
+    "@capacitor/assets": "^3.0.5"
   }
 }
