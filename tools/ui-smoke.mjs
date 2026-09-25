@@ -20,6 +20,7 @@ try {
   await page.getByRole("button", { name: "この図鑑をつくる" }).click();
 
   await page.waitForURL(/#\/b\/[^/]+$/);
+  await page.locator(".cover-screen").waitFor();
   await page.getByRole("button", { name: /この図鑑をひらく/ }).click();
   await page.waitForURL(/\/list$/);
 
@@ -50,6 +51,10 @@ try {
   await page.screenshot({ path: "/tmp/zukan-430.png", fullPage: true });
 
   console.log("OK: UI smoke test passed");
+} catch (error) {
+  await page.screenshot({ path: "/tmp/zukan-failure.png", fullPage: true }).catch(() => {});
+  console.error(error);
+  process.exitCode = 1;
 } finally {
   await browser.close();
 }
