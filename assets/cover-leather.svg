@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 720">
 <defs>
-  <filter id="leather">
-    <feTurbulence type="fractalNoise" baseFrequency=".28" numOctaves="4" seed="19"/>
-    <feDiffuseLighting surfaceScale="1.2" diffuseConstant=".9" lighting-color="#fff"><feDistantLight azimuth="225" elevation="55"/></feDiffuseLighting>
-    <feBlend mode="soft-light" in2="SourceGraphic"/>
+  <filter id="leather" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency=".26" numOctaves="4" seed="19" result="n"/>
+    <feColorMatrix in="n" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 .22 0"/>
   </filter>
-  <linearGradient id="v" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".08"/><stop offset=".5" stop-color="#ffffff" stop-opacity="0"/><stop offset="1" stop-color="#000000" stop-opacity=".11"/></linearGradient>
+  <linearGradient id="shine" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff" stop-opacity=".07"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".10"/>
+  </linearGradient>
 </defs>
-<rect width="480" height="720" fill="#777"/>
-<rect width="480" height="720" filter="url(#leather)" opacity=".28"/>
-<rect width="480" height="720" fill="url(#v)"/>
+<rect width="480" height="720" fill="transparent" filter="url(#leather)" opacity=".55"/>
+<rect width="480" height="720" fill="url(#shine)"/>
 </svg>
