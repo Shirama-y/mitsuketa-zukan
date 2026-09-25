@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 720">
+<defs>
+  <pattern id="linen" width="10" height="10" patternUnits="userSpaceOnUse">
+    <path d="M0 2H10M0 7H10" stroke="#fff" stroke-opacity=".055" stroke-width="1"/>
+    <path d="M3 0V10M8 0V10" stroke="#000" stroke-opacity=".06" stroke-width="1"/>
+  </pattern>
+  <filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".65" numOctaves="2" seed="4"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 .07 0"/></filter>
+</defs>
+<rect width="480" height="720" fill="#777"/><rect width="480" height="720" fill="url(#linen)"/><rect width="480" height="720" filter="url(#n)"/>
+</svg>
