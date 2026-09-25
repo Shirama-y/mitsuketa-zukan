@@ -1,0 +1,152 @@
+name: iOS native build check
+
+concurrency:
+  group: ios-native-app-v1
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - native-app-v1
+
+jobs:
+  ios-build:
+    name: Build iOS simulator app
+    runs-on: macos-latest
+    steps:
+      - name: Get source
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Create iOS project
+        run: npm run native:ios:add
+
+      - name: Verify privacy and App Store metadata
+        run: |
+          plutil -p ios/App/App/Info.plist | grep NSCameraUsageDescription
+          plutil -p ios/App/App/Info.plist | grep NSPhotoLibraryUsageDescription
+          plutil -p ios/App/App/Info.plist | grep ITSAppUsesNonExemptEncryption
+          grep -q "図鑑に写真を登録するためにカメラを使用します。" ios/App/App/Info.plist
+          test -f ios/App/App/PrivacyInfo.xcprivacy
+          plutil -lint ios/App/App/PrivacyInfo.xcprivacy
+          grep -q "PrivacyInfo.xcprivacy" ios/App/App.xcodeproj/project.pbxproj
+          grep -q "MARKETING_VERSION = 1.0.0;" ios/App/App.xcodeproj/project.pbxproj
+          grep -q "CURRENT_PROJECT_VERSION = 1;" ios/App/App.xcodeproj/project.pbxproj
+          grep -q 'VERSIONING_SYSTEM = "apple-generic";' ios/App/App.xcodeproj/project.pbxproj
+          grep -Eq 'TARGETED_DEVICE_FAMILY = "?1"?;' ios/App/App.xcodeproj/project.pbxproj
+          grep -q "UIInterfaceOrientationPortrait" ios/App/App/Info.plist
+          if grep -q "UIInterfaceOrientationLandscapeLeft" ios/App/App/Info.plist; then
+            echo "Landscape orientation must not remain in first release"
+            exit 1
+          fi
+          ! grep -q "UISupportedInterfaceOrientations~ipad" ios/App/App/Info.plist
+
+      - name: Compile for iPhone Simulator
+        run: |
+          xcodebuild \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath /tmp/zukan-derived \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Launch on iPhone Simulator
+        timeout-minutes: 7
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+
+          DEVICE_ID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          data = json.load(sys.stdin)
+          for devices in data["devices"].values():
+              for device in devices:
+                  if device.get("isAvailable") and device.get("name", "").startswith("iPhone"):
+                      print(device["udid"])
+                      raise SystemExit
+          raise SystemExit("No available iPhone simulator")
+          ')
+
+          echo "Using simulator: $DEVICE_ID"
+          xcrun simctl boot "$DEVICE_ID" || true
+
+          echo "Waiting for simulator boot..."
+          python3 - "$DEVICE_ID" <<'PY'
+          import json, subprocess, sys, time
+          udid = sys.argv[1]
+          deadline = time.time() + 120
+          while time.time() < deadline:
+              raw = subprocess.check_output(["xcrun","simctl","list","devices","-j"])
+              data = json.loads(raw)
+              for devices in data["devices"].values():
+                  for d in devices:
+                      if d.get("udid") == udid and d.get("state") == "Booted":
+                          print("Simulator state: Booted")
+                          time.sleep(12)
+                          raise SystemExit(0)
+              time.sleep(2)
+          raise SystemExit("Simulator did not reach Booted state")
+          PY
+
+          APP_PATH=$(find /tmp/zukan-derived/Build/Products/Debug-iphonesimulator -maxdepth 1 -name "*.app" | head -n 1)
+          test -d "$APP_PATH"
+          echo "App bundle: $APP_PATH"
+
+          python3 - "$DEVICE_ID" "$APP_PATH" <<'PY'
+          import subprocess, sys, time
+          udid, app_path = sys.argv[1], sys.argv[2]
+
+          def run(label, cmd, timeout=70, retries=2):
+              last = None
+              for attempt in range(1, retries + 1):
+                  print(f"{label}: attempt {attempt}/{retries}", flush=True)
+                  try:
+                      r = subprocess.run(cmd, text=True, capture_output=True, timeout=timeout)
+                      print(r.stdout, end="")
+                      print(r.stderr, end="", file=sys.stderr)
+                      if r.returncode == 0:
+                          print(f"{label}: OK", flush=True)
+                          return
+                      last = RuntimeError(f"{label} exited {r.returncode}")
+                  except subprocess.TimeoutExpired as e:
+                      print(f"{label}: timed out after {timeout}s", file=sys.stderr, flush=True)
+                      last = e
+                  time.sleep(5)
+              raise last or RuntimeError(label)
+
+          run("Install", ["xcrun","simctl","install",udid,app_path], timeout=80, retries=2)
+          run("Launch", ["xcrun","simctl","launch",udid,"com.dodolabo.mitsuketazukan"], timeout=40, retries=2)
+          time.sleep(8)
+          run("Screenshot", ["xcrun","simctl","io",udid,"screenshot","/tmp/zukan-native-simulator.png"], timeout=40, retries=2)
+          PY
+
+      - name: Upload native simulator screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mitsuketa-zukan-native-screenshot
+          path: /tmp/zukan-native-simulator.png
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Package Xcode project
+        if: always()
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent ios /tmp/mitsuketa-zukan-ios-project.zip
+
+      - name: Upload Xcode project
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mitsuketa-zukan-ios-project
+          path: /tmp/mitsuketa-zukan-ios-project.zip
+          retention-days: 7

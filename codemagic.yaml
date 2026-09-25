@@ -1,0 +1,119 @@
+workflows:
+  ios-testflight:
+    name: iOS TestFlight - Macなし配信
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+
+    integrations:
+      app_store_connect: dodolabo-appstore
+
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.dodolabo.mitsuketazukan
+      vars:
+        XCODE_PROJECT: "ios/App/App.xcodeproj"
+        XCODE_SCHEME: "App"
+      node: 22
+      xcode: latest
+
+    scripts:
+      - name: Install dependencies
+        script: npm install
+
+      - name: Create native iOS project
+        script: npm run native:ios:add
+
+      - name: Verify App Store toolchain and metadata
+        script: |
+          set -euo pipefail
+
+          echo "Xcode:"
+          xcodebuild -version
+
+          XCODE_MAJOR="$(xcodebuild -version | awk '/Xcode/{split($2,v,"."); print v[1]}')"
+          if [ "$XCODE_MAJOR" -lt 26 ]; then
+            echo "App Store Connect requires Xcode 26 or later."
+            exit 1
+          fi
+
+          IOS_SDK="$(xcrun --sdk iphoneos --show-sdk-version)"
+          echo "iPhoneOS SDK: $IOS_SDK"
+          IOS_SDK_MAJOR="${IOS_SDK%%.*}"
+          if [ "$IOS_SDK_MAJOR" -lt 26 ]; then
+            echo "App Store Connect requires the iOS 26 SDK or later."
+            exit 1
+          fi
+
+          test -f ios/App/App/Info.plist
+          test -f ios/App/App/PrivacyInfo.xcprivacy
+          plutil -lint ios/App/App/Info.plist
+          plutil -lint ios/App/App/PrivacyInfo.xcprivacy
+          grep -q "NSCameraUsageDescription" ios/App/App/Info.plist
+          grep -q "NSPhotoLibraryUsageDescription" ios/App/App/Info.plist
+          grep -q "ITSAppUsesNonExemptEncryption" ios/App/App/Info.plist
+          grep -q 'VERSIONING_SYSTEM = "apple-generic";' ios/App/App.xcodeproj/project.pbxproj
+          grep -Eq 'TARGETED_DEVICE_FAMILY = "?1"?;' ios/App/App.xcodeproj/project.pbxproj
+
+          curl --fail --silent --show-error --location \
+            "https://shirama-y.github.io/mitsuketa-zukan/privacy.html" >/dev/null
+          curl --fail --silent --show-error --location \
+            "https://shirama-y.github.io/mitsuketa-zukan/support.html" >/dev/null
+
+      - name: Apply App Store signing
+        script: xcode-project use-profiles
+
+      - name: Set cloud build number
+        script: |
+          set -euo pipefail
+          cd ios/App
+
+          NEXT_BUILD="$BUILD_NUMBER"
+          if [ -n "${APP_STORE_APPLE_ID:-}" ]; then
+            LATEST_BUILD="$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID" || true)"
+            if echo "$LATEST_BUILD" | grep -Eq '^[0-9]+
+
+      - name: Build signed IPA
+        script: |
+          xcode-project build-ipa \
+            --project "$CM_BUILD_DIR/$XCODE_PROJECT" \
+            --scheme "$XCODE_SCHEME"
+
+    artifacts:
+      - ios/App/build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+
+    publishing:
+      app_store_connect:
+        # auth: integration uploads the signed IPA to App Store Connect.
+        # Keep beta/App Store submission manual until the first internal build is verified.
+        auth: integration
+        submit_to_testflight: false
+        submit_to_app_store: false
+; then
+              NEXT_BUILD="$((LATEST_BUILD + 1))"
+            fi
+          fi
+
+          echo "Using iOS build number: $NEXT_BUILD"
+          agvtool new-version -all "$NEXT_BUILD"
+
+      - name: Build signed IPA
+        script: |
+          xcode-project build-ipa \
+            --project "$CM_BUILD_DIR/$XCODE_PROJECT" \
+            --scheme "$XCODE_SCHEME"
+
+    artifacts:
+      - ios/App/build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+
+    publishing:
+      app_store_connect:
+        # auth: integration uploads the signed IPA to App Store Connect.
+        # Keep beta/App Store submission manual until the first internal build is verified.
+        auth: integration
+        submit_to_testflight: false
+        submit_to_app_store: false

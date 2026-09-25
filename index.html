@@ -1162,7 +1162,31 @@ html[data-view="design"] .design-section h2,
 html[data-view="entry"] .detail-note h3{
   color:#0F172A!important
 }
+
 html[data-view="entry"] .heart-btn{color:#0F172A!important}
+
+/* v6: texture/color independence + preview fidelity */
+.spine-card{
+  background-color:var(--spine-bg,#315b47)!important;
+  background-image:var(--spine-texture,none)!important;
+  background-repeat:repeat!important;
+  background-size:auto!important
+}
+html[data-view="design"] .texture-choice{
+  background-color:var(--tex-bg,#536b78)!important;
+  background-image:var(--tex-img,none)!important;
+  background-repeat:repeat!important;
+  background-size:auto!important;
+  color:#FAF7F2!important
+}
+html[data-view="design"] .color-choice{
+  background:var(--swatch)!important
+}
+html[data-view="design"] .texture-choice.active,
+html[data-view="design"] .color-choice.active{
+  border-color:var(--ui-pink)!important;
+  color:#FAF7F2!important
+}
 html[data-view="entry"] .heart-btn.on{color:#C77B7B!important}
 html[data-view="design"] .preset-card.active{border-color:#C77B7B!important}
 html[data-view="design"] .button-theme-choice.active{outline-color:#C77B7B!important}
@@ -1184,6 +1208,186 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
 @media(max-width:380px){
   .button-theme-choice{font-size:11px;padding-inline:5px}
 }
+</style>
+<style id="native-app-polish">
+.new-spine .spine-icon{background:currentColor!important;width:28px;height:28px;color:var(--ui-pink,#C77B7B)!important}
+.new-spine{border:1px solid rgba(250,247,242,.28)!important;color:rgba(250,247,242,.72)!important}
+.new-spine .spine-title{font-family:var(--kaku)!important;font-size:16px;letter-spacing:.05em}
+.native-app .shelf-hint{font-family:var(--kaku)!important;color:rgba(250,247,242,.72)}
+.native-app .library-admin button{font-family:var(--kaku)!important;color:rgba(250,247,242,.58)!important}
+
+.native-detail-actions{grid-template-columns:repeat(3,minmax(0,1fr))}
+.native-app .add-entry-btn,.native-app .primary-pill,.native-app .save-design{min-height:48px}
+.native-app button{-webkit-tap-highlight-color:transparent}
+@media(max-width:360px){.native-detail-actions{grid-template-columns:1fr}.native-detail-actions button{min-height:44px}}
+
+.polished-home{
+  min-height:calc(100svh - 106px);
+  padding-top:16px!important
+}
+.library-head{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 48px;
+  gap:16px;
+  align-items:start;
+  padding:4px 6px 20px;
+  border-bottom:1px solid rgba(250,247,242,.14)
+}
+.library-eyebrow{
+  margin:0 0 6px;
+  color:#C77B7B;
+  font-family:var(--kaku);
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.18em
+}
+.library-title{
+  margin:0;
+  color:#FAF7F2;
+  font-family:var(--kaku);
+  font-size:clamp(23px,6.4vw,30px);
+  font-weight:500;
+  line-height:1.35;
+  letter-spacing:.035em
+}
+.library-subtitle{
+  margin:8px 0 0;
+  color:rgba(250,247,242,.64);
+  font-family:var(--kaku);
+  font-size:12px;
+  line-height:1.7
+}
+.library-add{
+  width:46px;
+  height:46px;
+  border:1px solid rgba(250,247,242,.28);
+  border-radius:50%;
+  background:#FAF7F2!important;
+  color:#0F172A!important;
+  display:grid;
+  place-items:center;
+  padding:0
+}
+.library-add-icon{width:21px;height:21px}
+.library-empty{
+  margin:auto 6px;
+  padding:48px 22px 30px;
+  text-align:center;
+  color:#FAF7F2
+}
+.library-empty-mark{
+  width:78px;height:78px;
+  margin:0 auto 22px;
+  border:1px solid rgba(250,247,242,.24);
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  color:#C77B7B
+}
+.library-empty-icon{width:38px;height:38px}
+.library-empty h2{
+  margin:0;
+  font-family:var(--kaku);
+  font-size:19px;
+  font-weight:600;
+  letter-spacing:.03em
+}
+.library-empty p{
+  margin:12px auto 26px;
+  max-width:310px;
+  white-space:pre-line;
+  color:rgba(250,247,242,.62);
+  font-family:var(--kaku);
+  font-size:12px;
+  line-height:1.9
+}
+.library-start{
+  width:min(100%,320px);
+  min-height:50px;
+  border:0;
+  border-radius:999px;
+  background:#C77B7B!important;
+  color:#FAF7F2!important;
+  font-family:var(--kaku);
+  font-size:14px;
+  font-weight:700
+}
+.polished-shelf{margin-top:20px}
+.polished-shelf .book-rail{
+  min-height:365px;
+  padding-top:26px
+}
+.polished-shelf .shelf-lower{height:84px}
+.polished-shelf .shelf-shadow-books{bottom:26px}
+.native-app .polished-home{min-height:calc(100svh - 112px)}
+@media(max-width:380px){
+  .library-head{padding-inline:2px}
+  .library-empty{padding-top:34px}
+  .polished-shelf .book-rail{min-height:342px}
+}
+
+
+.new-book-sheet{
+  max-width:520px
+}
+.new-book-head{
+  text-align:center;
+  margin-bottom:4px
+}
+.new-book-eyebrow{
+  margin:0 0 4px;
+  color:#C77B7B;
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.18em
+}
+.new-book-preview{
+  padding:12px 0 18px!important
+}
+.new-book-preview .book-face.small{
+  width:132px
+}
+.new-book-section-title{
+  margin:18px 0 10px;
+  color:var(--muted);
+  font-family:var(--kaku);
+  font-size:12px;
+  font-weight:600
+}
+.new-book-presets{
+  grid-template-columns:repeat(2,minmax(0,1fr))
+}
+.new-book-presets .preset-card{
+  min-width:0
+}
+.new-book-presets .preset-thumb{
+  aspect-ratio:16/10
+}
+.new-book-help{
+  margin:14px 0 0;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.7
+}
+.new-book-actions{
+  position:sticky;
+  bottom:-16px;
+  padding-top:16px;
+  padding-bottom:max(2px,env(safe-area-inset-bottom));
+  background:var(--card)
+}
+.native-app .new-book-sheet{
+  padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))
+}
+@media(max-width:380px){
+  .new-book-presets{gap:7px}
+  .new-book-presets .preset-note{display:none}
+}
+
+</style>
+<style id="native-legal-polish">
+.privacy-copy{display:grid;gap:9px;margin-top:14px}
+.support-mail{display:block;text-align:center;text-decoration:none;margin-top:16px}
 </style>
 </head>
 <body>
@@ -2533,8 +2737,61 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
 
   /* ================= 記録をくわえる ================= */
 
+  function nativeApi(){
+    var n=window.NativeZukan;
+    return n&&n.isNative?n:null
+  }
+
+  function nativeHaptic(kind){
+    var n=nativeApi();
+    if(n&&n.haptic){
+      n.haptic(kind||"light")["catch"](function(){})
+    }
+  }
+
+  function shareEntry(book,entry){
+    var title=(book&&book.title?book.title+" / ":"")+(entry.name||"記録");
+    var bits=[entry.name||""];
+    if(entry.kanji)bits.push(entry.kanji);
+    if(entry.date)bits.push(showDate(entry.date));
+    if(entry.place)bits.push(entry.place);
+    var text=bits.filter(Boolean).join(" ・ ");
+    var n=nativeApi();
+
+    nativeHaptic("light");
+
+    if(n&&n.shareText){
+      return n.shareText(title,text)["catch"](function(){})
+    }
+    if(navigator.share){
+      return navigator.share({title:title,text:text})["catch"](function(){})
+    }
+    return Promise.resolve(false)
+  }
+
+  function openCapturedPhoto(bookId,file){
+    if(!file)return;
+    squeeze(file).then(
+      function(blob){openEntryForm(bookId,blob)},
+      function(){openEntryForm(bookId,file)}
+    )
+  }
+
   function startCapture(bookId) {
     pendingBookId = bookId;
+    var n=nativeApi();
+    if(n&&n.pickPhoto){
+      nativeHaptic("light");
+      n.pickPhoto().then(function(file){
+        if(!file||!pendingBookId)return;
+        var id=pendingBookId;
+        pendingBookId=null;
+        openCapturedPhoto(id,file)
+      })["catch"](function(){
+        pendingBookId=null
+      });
+      return
+    }
     pick.click();
   }
 
@@ -2544,8 +2801,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
     if (!file || !pendingBookId) return;
     var bookId = pendingBookId;
     pendingBookId = null;
-    squeeze(file).then(function (blob) { openEntryForm(bookId, blob); },
-                       function () { openEntryForm(bookId, file); });
+    openCapturedPhoto(bookId,file);
   });
 
   function openEntryForm(bookId, photo) {
@@ -2800,7 +3056,18 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
       });
       var d=new Date(),p=function(n){return String(n).padStart(2,"0")};
       var name="zukan-backup-"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+".json";
-      downloadBlob(new Blob([JSON.stringify(payload)],{type:"application/json"}),name)
+      var json=JSON.stringify(payload),n=nativeApi();
+      if(n&&n.shareBackup){
+        return n.shareBackup(name,json).then(function(){
+          nativeHaptic("success");
+          return true
+        })["catch"](function(){
+          downloadBlob(new Blob([json],{type:"application/json"}),name);
+          return false
+        })
+      }
+      downloadBlob(new Blob([json],{type:"application/json"}),name);
+      return true
     })
   }
 
@@ -2850,8 +3117,11 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
 
   function textureCss(themeIdx){
     var n=(Number(themeIdx)||0)%8;
-    if(n===0)return'url("./assets/texture-leather.svg")';
-    if(n===5)return'url("./assets/texture-linen.svg")';
+    /* テクスチャは必ず透明レイヤーだけにする。
+       表紙色は --book-bg / --spine-bg / --tex-bg 側で決まり、
+       レザーやリネンを選んでも色が固定されない。 */
+    if(n===0)return"radial-gradient(circle at 20% 18%,rgba(255,255,255,.085) 0 1px,transparent 1.6px),radial-gradient(circle at 72% 64%,rgba(0,0,0,.085) 0 1px,transparent 1.7px),repeating-linear-gradient(17deg,rgba(255,255,255,.025) 0 1px,transparent 1px 5px),repeating-linear-gradient(-21deg,rgba(0,0,0,.025) 0 1px,transparent 1px 7px)";
+    if(n===5)return"repeating-linear-gradient(0deg,rgba(255,255,255,.085) 0 1px,transparent 1px 4px),repeating-linear-gradient(90deg,rgba(0,0,0,.07) 0 1px,transparent 1px 5px),repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 1px,transparent 1px 2px)";
     if(n===1)return"repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0 1px,transparent 1px 7px),repeating-linear-gradient(-45deg,rgba(0,0,0,.025) 0 1px,transparent 1px 8px)";
     if(n===2)return"repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 1px,transparent 1px 5px),repeating-linear-gradient(0deg,rgba(0,0,0,.02) 0 1px,transparent 1px 6px)";
     if(n===3)return"linear-gradient(135deg,rgba(255,255,255,.025),transparent 45%,rgba(0,0,0,.035))";
@@ -2909,6 +3179,11 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
   }
   function render(){
     if(!db)return Promise.resolve();var r=route();document.documentElement.setAttribute("data-view",r.view);bar.hidden=true;
+    var nativeChrome=window.NativeZukan;
+    if(nativeChrome&&nativeChrome.isNative&&nativeChrome.setChromeTheme){
+      var lightNativeViews={book:1,entry:1,design:1,search:1,collections:1,settings:1};
+      nativeChrome.setChromeTheme(lightNativeViews[r.view]?"light":"dark")["catch"](function(){})
+    }
     if(r.view==="cover")return renderBookCover(r.bookId);
     if(r.view==="book")return renderBook(r.bookId);
     if(r.view==="entry")return renderEntry(r.bookId,r.no);
@@ -2919,28 +3194,75 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
   function renderShelf(){
     return store.books().then(function(books){
       app.replaceChildren();renderAppNav("home");setCover(COVERS[6]);
-      var shell=h("section","library-shell");
-      var stage=h("div","shelf-stage"),rail=h("div","book-rail");if(books.length<3)rail.style.justifyContent="center";
+
+      var shell=h("section","library-shell polished-home");
+      var head=h("header","library-head");
+      var copy=h("div","library-head-copy");
+      copy.append(
+        h("p","library-eyebrow","MY COLLECTION LIBRARY"),
+        h("h1","library-title","わたしの図鑑ライブラリ"),
+        h("p","library-subtitle","好きなもので、日常をちょっと豊かに。")
+      );
+
+      var addTop=h("button","library-add");
+      addTop.type="button";
+      addTop.setAttribute("aria-label","新しい図鑑をつくる");
+      addTop.append(maskIcon("./assets/icon-plus.svg","library-add-icon"));
+      addTop.addEventListener("click",function(){nativeHaptic("light");openNewBook()});
+      head.append(copy,addTop);
+      shell.append(head);
+
+      if(!books.length){
+        var empty=h("section","library-empty");
+        var mark=h("div","library-empty-mark");
+        mark.append(maskIcon("./assets/nav-books.svg","library-empty-icon"));
+        empty.append(
+          mark,
+          h("h2",null,"最初の一冊をつくりましょう"),
+          h("p",null,"草花、シール、ぬいぐるみ、旅先のもの。\n好きなものから、自分だけの図鑑を始められます。")
+        );
+
+        var startBtn=h("button","library-start","最初の図鑑をつくる");
+        startBtn.type="button";
+        startBtn.addEventListener("click",function(){nativeHaptic("light");openNewBook()});
+        empty.append(startBtn);
+        shell.append(empty);
+        app.append(shell);
+        return
+      }
+
+      var stage=h("div","shelf-stage polished-shelf"),rail=h("div","book-rail");
+      if(books.length<3)rail.style.justifyContent="center";
+
       books.forEach(function(b){
         var co=cover(b.color),bt=h("button","spine-card");bt.type="button";
         bt.style.setProperty("--spine-bg",b.customBg||co.bg);
         bt.style.setProperty("--spine-ink",b.customInk||co.ink);
-        bt.style.setProperty("--spine-accent",b.customAccent||"#d9b86d");
+        bt.style.setProperty("--spine-accent",b.customAccent||"#FAF7F2");
         bt.style.setProperty("--spine-texture",textureCss(b.theme));
         bt.style.setProperty("--book-font",bookFont(b.font).css);
-        var sic=bookIcon(b.icon);if(sic.src)bt.append(maskIcon(sic.src,"spine-icon"));bt.append(h("span","spine-title",b.title),h("span","spine-count",(b.count||0)+" items"));
-        bt.addEventListener("click",function(){go("#/b/"+b.id)});rail.append(bt)
+
+        var sic=bookIcon(b.icon);
+        if(sic.src)bt.append(maskIcon(sic.src,"spine-icon"));
+        bt.append(
+          h("span","spine-title",b.title),
+          h("span","spine-count",(b.count||0)+" items")
+        );
+        bt.addEventListener("click",function(){nativeHaptic("light");go("#/b/"+b.id)});
+        rail.append(bt)
       });
-      var add=h("button","spine-card new-spine");add.type="button";add.append(h("span","spine-icon","＋"),h("span","spine-title","新しい図鑑"));add.addEventListener("click",openNewBook);rail.append(add);
+
       var lower=h("div","shelf-lower"),shadows=h("div","shelf-shadow-books");
-      shadows.append(h("i"),h("i"),h("i"),h("i"));lower.append(shadows);
+      shadows.append(h("i"),h("i"),h("i"),h("i"));
+      lower.append(shadows);
       stage.append(rail,h("div","shelf-board"),lower);
-      shell.append(stage,h("p","shelf-hint",books.length?"横にスライドして、開きたい本を選ぶ":"最初の一冊をつくってみましょう"));
-      var admin=h("div","library-admin"),backup=h("button",null,"バックアップ"),restore=h("button",null,"復元");
-      backup.type=restore.type="button";
-      backup.addEventListener("click",function(){backup.disabled=true;backup.textContent="準備中…";exportBackup().then(function(){backup.disabled=false;backup.textContent="バックアップ"},function(){backup.disabled=false;backup.textContent="もう一度ためす"})});
-      restore.addEventListener("click",chooseRestoreFile);
-      admin.append(backup,restore);shell.append(admin);app.append(shell)
+
+      shell.append(
+        stage,
+        h("p","shelf-hint","横にスライドして、開きたい本を選ぶ")
+      );
+
+      app.append(shell)
     })
   }
 
@@ -2987,7 +3309,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
           row.dataset.search=[e.name||"",e.kanji||"",e.place||"",Array.isArray(e.tags)?e.tags.join(" "):""].join(" ").toLowerCase();
           img.className="entry-photo";img.alt="";img.src=urlFor(e);
           var names=displayNames(b,e),op=h("button","entry-open");op.type="button";op.append(h("div","entry-name",names.main));if(names.sub)op.append(h("div","entry-alias",names.sub));op.append(h("div","entry-meta",showDate(e.date)+(e.place?"　•　"+e.place:"")));op.addEventListener("click",function(){go("#/b/"+b.id+"/e/"+e.no)});
-          var fav=h("button","heart-btn"+(e.favorite?" on":""));fav.type="button";fav.setAttribute("aria-label",e.favorite?"お気に入りを外す":"お気に入りに追加");fav.append(maskIcon("./assets/icon-heart.svg","heart-mask"));fav.addEventListener("click",function(){e.favorite=!e.favorite;store.updateEntry(e).then(render)});
+          var fav=h("button","heart-btn"+(e.favorite?" on":""));fav.type="button";fav.setAttribute("aria-label",e.favorite?"お気に入りを外す":"お気に入りに追加");fav.append(maskIcon("./assets/icon-heart.svg","heart-mask"));fav.addEventListener("click",function(){nativeHaptic("light");e.favorite=!e.favorite;store.updateEntry(e).then(render)});
           row.append(img,op,fav);ln.append(row)
         });screen.append(ln);
         emptyState.textContent="条件に合う記録が見つかりません。";
@@ -3014,7 +3336,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
       var b=out[0],list=out[1],e=list.filter(function(x){return x.no===no})[0];app.replaceChildren();clearAppNav();if(!b||!e){go("#/b/"+bookId+"/list");return}
       var screen=h("section","detail-screen");applyButtonTheme(screen,b);screen.style.setProperty("--book-font",bookFont(b.font).css);
       var top=h("div","detail-top"),back=h("a","back","← "+b.title);back.href="#/b/"+b.id+"/list";
-      var fav=h("button","heart-btn"+(e.favorite?" on":""));fav.type="button";fav.setAttribute("aria-label",e.favorite?"お気に入りを外す":"お気に入りに追加");fav.append(maskIcon("./assets/icon-heart.svg","heart-mask"));fav.addEventListener("click",function(){e.favorite=!e.favorite;store.updateEntry(e).then(render)});top.append(back,fav);screen.append(top);
+      var fav=h("button","heart-btn"+(e.favorite?" on":""));fav.type="button";fav.setAttribute("aria-label",e.favorite?"お気に入りを外す":"お気に入りに追加");fav.append(maskIcon("./assets/icon-heart.svg","heart-mask"));fav.addEventListener("click",function(){nativeHaptic("light");e.favorite=!e.favorite;store.updateEntry(e).then(render)});top.append(back,fav);screen.append(top);
       var img=document.createElement("img");img.className="detail-photo";img.alt="";img.src=urlFor(e);var names=displayNames(b,e);screen.append(img,h("div","detail-no","No."+pad(e.no)),h("h1","detail-name",names.main));if(names.sub)screen.append(h("div","detail-alias",names.sub));
       var meta=h("div","detail-meta");[["見つけた日",showDate(e.date)],["見つけたところ",e.place||"——"]].forEach(function(x){var r=h("div","detail-meta-row");r.append(h("span",null,x[0]),h("span",null,x[1]));meta.append(r)});screen.append(meta);
       if(e.tags&&e.tags.length){var tagList=h("div","tag-list");e.tags.forEach(function(t){tagList.append(h("span","tag-pill",t))});screen.append(tagList)}
@@ -3023,9 +3345,12 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
         if(!x[1])return;var n=h("section","detail-note");n.append(h("h3",null,x[0]),h("p",null,x[1]));notes.append(n)
       });
       if(notes.children.length)screen.append(notes);
-      var acts=h("div","detail-actions"),ed=h("button",null,"編集する"),del=h("button",null,"削除する"),armed=false;ed.type=del.type="button";ed.addEventListener("click",function(){openEditForm(bookId,e)});
+      var acts=h("div","detail-actions native-detail-actions"),share=h("button",null,"共有"),ed=h("button",null,"編集する"),del=h("button",null,"削除する"),armed=false;
+      share.type=ed.type=del.type="button";
+      share.addEventListener("click",function(){shareEntry(b,e)});
+      ed.addEventListener("click",function(){openEditForm(bookId,e)});
       del.addEventListener("click",function(){if(!armed){armed=true;del.textContent="もう一度押すと削除";return}del.disabled=true;store.dropEntry(bookId,e.id).then(function(){if(urls[e.id])URL.revokeObjectURL(urls[e.id]);delete urls[e.id];go("#/b/"+bookId+"/list")})});
-      acts.append(ed,del);screen.append(acts);app.append(screen)
+      acts.append(share,ed,del);screen.append(acts);app.append(screen)
     })
   }
 
@@ -3152,133 +3477,157 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
       save.addEventListener("click",function(){save.disabled=true;save.textContent="保存中…";store.updateBook(bookId,{
         title:(ti.value||"").trim()||"わたしの図鑑",subtitle:(si.value||"").trim(),font:Number(draft.font)||0,icon:Number(draft.icon)||0,
         color:Number(draft.color)||0,theme:Number(draft.theme)||0,frame:Number(draft.frame)||0,layout:draft.layout||"normal",nameMode:draft.nameMode||"both",titleSize:draft.titleSize||"medium",titleAlign:draft.titleAlign||"center",buttonTheme:draft.buttonTheme||"pink",customBg:draft.customBg||"",customAccent:draft.customAccent||"",customInk:draft.customInk||""
-      }).then(function(){go("#/b/"+bookId)},function(){save.disabled=false;save.textContent="保存"})});
+      }).then(function(){nativeHaptic("success");go("#/b/"+bookId)},function(){save.disabled=false;save.textContent="保存"})});
       app.append(screen);repaint()
     })
   }
 
 
   function openNewBook(){
-    var c=h("div","card");c.setAttribute("role","dialog");c.setAttribute("aria-modal","true");
-    c.append(h("h2","display","新しい図鑑"));
-    var draft={title:"",subtitle:"",color:3,theme:0,frame:1,font:0,icon:5,layout:"normal",nameMode:"both",titleSize:"medium",titleAlign:"center",buttonTheme:"pink",customBg:"",customAccent:"",customInk:""};
-    var preview=h("div","design-preview");c.append(preview);
+    var c=h("div","card new-book-sheet");
+    c.setAttribute("role","dialog");
+    c.setAttribute("aria-modal","true");
 
-    var title=field("タイトル","input",{id:"new-title",cls:"big",ph:"ぬいぐるみ図鑑",max:24});
-    var sub=field("サブタイトル（任意）","input",{id:"new-subtitle",ph:"大切なものを、少しずつ。",max:48});
+    var head=h("div","new-book-head");
+    head.append(
+      h("p","new-book-eyebrow","NEW COLLECTION"),
+      h("h2","display","新しい図鑑")
+    );
+    c.append(head);
+
+    var draft={
+      title:"",
+      subtitle:"",
+      color:3,
+      theme:0,
+      frame:1,
+      font:0,
+      icon:5,
+      layout:"normal",
+      nameMode:"both",
+      titleSize:"medium",
+      titleAlign:"center",
+      buttonTheme:"pink",
+      customBg:"",
+      customAccent:"",
+      customInk:""
+    };
+
+    var preview=h("div","design-preview new-book-preview");
+    c.append(preview);
+
+    var title=field("タイトル","input",{
+      id:"new-title",
+      cls:"big",
+      ph:"草花図鑑",
+      max:24
+    });
+    var sub=field("サブタイトル（任意）","input",{
+      id:"new-subtitle",
+      ph:"Nature / 大切なものを、少しずつ。",
+      max:48
+    });
     c.append(title.label,sub.label);
+
+    var themeLabel=h("div","new-book-section-title","デザインテーマ");
+    c.append(themeLabel);
+
+    var pg=h("div","preset-grid new-book-presets");
 
     function paint(){
       draft.title=title.input.value.trim()||"わたしの図鑑";
       draft.subtitle=sub.input.value.trim();
       applyButtonTheme(c,draft);
-      preview.replaceChildren(makeBookFace(draft,true));
-      if(typeof tg!=="undefined"&&tg){
-        Array.prototype.forEach.call(tg.children,function(x,j){
-          var base=draft.customBg||cover(draft.color).bg;
-          x.style.setProperty("--tex-bg",base);
-          x.style.setProperty("--tex-img",textureCss(j));
-          x.style.backgroundColor=base;
-          x.style.backgroundImage=textureCss(j)
-        })
-      }
+      preview.replaceChildren(makeBookFace(draft,true))
     }
-    title.input.addEventListener("input",paint);sub.input.addEventListener("input",paint);
 
-    function label(text){var l=h("label","fld");l.append(h("span","lb",text));c.append(l)}
-    label("デザインテーマ");
-    var pg=h("div","preset-grid");
-    BOOK_PRESETS.forEach(function(p,i){
-      var bt=h("button","preset-card"+(i===0?" active":""));bt.type="button";
-      var thumb=document.createElement("img");thumb.className="preset-thumb";thumb.src=p.image;thumb.alt="";
-      bt.append(thumb,h("span","preset-name",p.name),h("span","preset-note",p.note));
+    BOOK_PRESETS.forEach(function(theme,i){
+      var bt=h("button","preset-card"+(i===0?" active":""));
+      bt.type="button";
+      bt.setAttribute("aria-label",theme.name);
+
+      var thumb=document.createElement("img");
+      thumb.className="preset-thumb";
+      thumb.src=theme.image;
+      thumb.alt="";
+
+      bt.append(
+        thumb,
+        h("span","preset-name",theme.name),
+        h("span","preset-note",theme.note)
+      );
+
       bt.addEventListener("click",function(){
-        applyPreset(draft,p);
-        Array.prototype.forEach.call(pg.children,function(x,j){x.classList.toggle("active",j===i)});
-        if(typeof cg!=="undefined")Array.prototype.forEach.call(cg.children,function(x,j){x.classList.toggle("active",j===draft.color)});
-        if(typeof fg!=="undefined")Array.prototype.forEach.call(fg.children,function(x,j){x.classList.toggle("active",j===draft.font)});
-        if(typeof tg!=="undefined")Array.prototype.forEach.call(tg.children,function(x,j){x.classList.toggle("active",j===draft.theme)});if(typeof rg!=="undefined")Array.prototype.forEach.call(rg.children,function(x,j){x.classList.toggle("active",j===draft.frame)});
-        if(typeof ig!=="undefined")Array.prototype.forEach.call(ig.children,function(x,j){x.classList.toggle("active",j===draft.icon)});if(typeof bg!=="undefined")Array.prototype.forEach.call(bg.children,function(x){x.classList.toggle("active",x.textContent===buttonTheme(draft.buttonTheme).name)});if(typeof szg!=="undefined")Array.prototype.forEach.call(szg.children,function(x,j){x.classList.toggle("active",["small","medium","large"][j]===draft.titleSize)});if(typeof alg!=="undefined")Array.prototype.forEach.call(alg.children,function(x,j){x.classList.toggle("active",["left","center","right"][j]===draft.titleAlign)});
-        if(typeof freeCg!=="undefined"){var ins=freeCg.querySelectorAll('input[type="color"]');if(ins[0])ins[0].value=cover(draft.color).bg;if(ins[1])ins[1].value="#e6c579";if(ins[2])ins[2].value=cover(draft.color).ink}
+        nativeHaptic("light");
+        applyPreset(draft,theme);
+        Array.prototype.forEach.call(pg.children,function(node,j){
+          node.classList.toggle("active",j===i)
+        });
         paint()
       });
+
       pg.append(bt)
     });
+
     c.append(pg);
 
-    label("タイトルの大きさ");
-    var szg=h("div","design-grid");
-    [["small","小さめ"],["medium","標準"],["large","大きめ"]].forEach(function(x){
-      var bt=h("button","design-choice density-choice"+(x[0]===draft.titleSize?" active":""),x[1]);bt.type="button";
-      bt.addEventListener("click",function(){draft.titleSize=x[0];Array.prototype.forEach.call(szg.children,function(n){n.classList.toggle("active",n.textContent===x[1])});paint()});szg.append(bt)
-    });c.append(szg);
+    var help=h("p","new-book-help","色・素材・装丁・アイコン・ボタンテーマは、作成後にいつでも変更できます。");
+    c.append(help);
 
-    label("タイトルの位置");
-    var alg=h("div","design-grid");
-    [["left","左"],["center","中央"],["right","右"]].forEach(function(x){
-      var bt=h("button","design-choice density-choice"+(x[0]===draft.titleAlign?" active":""),x[1]);bt.type="button";
-      bt.addEventListener("click",function(){draft.titleAlign=x[0];Array.prototype.forEach.call(alg.children,function(n){n.classList.toggle("active",n.textContent===x[1])});paint()});alg.append(bt)
-    });c.append(alg);
+    var acts=h("div","acts new-book-actions");
+    var make=h("button","go","この図鑑をつくる");
+    var cancel=h("button",null,"やめる");
+    make.type=cancel.type="button";
+    cancel.addEventListener("click",closeSheet);
+    acts.append(make,cancel);
+    c.append(acts);
 
-    label("フォント");
-    var fg=h("div","design-grid");BOOK_FONTS.forEach(function(f,i){
-      var bt=h("button","design-choice font-choice"+(i===0?" active":""),"あ　"+f.name);bt.type="button";bt.style.fontFamily=f.css;
-      bt.addEventListener("click",function(){draft.font=i;Array.prototype.forEach.call(fg.children,function(x,j){x.classList.toggle("active",j===i)});paint()});fg.append(bt)
-    });c.append(fg);
+    title.input.addEventListener("input",paint);
+    sub.input.addEventListener("input",paint);
 
-    label("カラー");
-    var cg=h("div","design-grid");COVERS.forEach(function(co,i){
-      var bt=h("button","design-choice color-choice"+(i===draft.color?" active":""),null);bt.type="button";bt.style.setProperty("--swatch",co.bg);bt.setAttribute("aria-label",co.name);
-      bt.addEventListener("click",function(){draft.color=i;draft.customBg="";draft.customAccent="";draft.customInk="";Array.prototype.forEach.call(cg.children,function(x,j){x.classList.toggle("active",j===i)});if(typeof freeCg!=="undefined"){var ins=freeCg.querySelectorAll('input[type="color"]');if(ins[0])ins[0].value=co.bg;if(ins[1])ins[1].value="#e6c579";if(ins[2])ins[2].value=co.ink}paint()});cg.append(bt)
-    });c.append(cg);
-
-    var freeCg=h("div","custom-color-row");freeCg.style.marginTop="10px";
-    function colorField(labelText,prop,fallback){
-      var lab=h("label","color-field");lab.append(h("span",null,labelText));var inp=document.createElement("input");inp.type="color";inp.value=fallback;
-      inp.addEventListener("input",function(){draft[prop]=inp.value;paint()});lab.append(inp);return lab
-    }
-    freeCg.append(colorField("表紙","customBg",cover(draft.color).bg),colorField("文字・飾り","customAccent","#e6c579"),colorField("背表紙文字","customInk",cover(draft.color).ink));
-    c.append(freeCg);
-
-    label("表紙の質感");
-    var tg=h("div","design-grid");PATTERNS.forEach(function(pt,i){
-      var bt=h("button","design-choice texture-choice"+(i===draft.theme?" active":""),null);bt.type="button";bt.style.setProperty("--tex-bg",cover(draft.color).bg);bt.style.setProperty("--tex-img",textureCss(i));bt.setAttribute("aria-label",pt.name);bt.append(h("span","texture-label",pt.name));
-      bt.addEventListener("click",function(){draft.theme=i;Array.prototype.forEach.call(tg.children,function(x,j){x.classList.toggle("active",j===i)});paint()});tg.append(bt)
-    });c.append(tg);
-
-    label("装丁");
-    var rg=h("div","design-grid");FRAMES.forEach(function(fr,i){
-      var bt=h("button","design-choice"+(i===draft.frame?" active":""),fr.name);bt.type="button";
-      bt.addEventListener("click",function(){draft.frame=i;Array.prototype.forEach.call(rg.children,function(x,j){x.classList.toggle("active",j===i)});paint()});rg.append(bt)
-    });c.append(rg);
-
-    label("ボタンテーマ");
-    var bg=h("div","button-theme-grid");BUTTON_THEMES.forEach(function(t){
-      var bt=h("button","button-theme-choice"+(t.key===draft.buttonTheme?" active":""),t.name);bt.type="button";bt.style.setProperty("--sample-bg",t.primary);bt.style.setProperty("--sample-ink",t.primaryInk);bt.style.setProperty("--sample-border",t.border);
-      bt.addEventListener("click",function(){draft.buttonTheme=t.key;Array.prototype.forEach.call(bg.children,function(x){x.classList.toggle("active",x.textContent===t.name)});paint()});bg.append(bt)
-    });c.append(bg);
-
-    label("アイコン");
-    var ig=h("div","design-grid");BOOK_ICONS.forEach(function(ic,i){
-      var bt=h("button","design-choice icon-choice"+(i===draft.icon?" active":""));bt.type="button";bt.setAttribute("aria-label",ic.name);if(ic.src)bt.append(maskIcon(ic.src,"choice-icon"));else bt.textContent="—";
-      bt.addEventListener("click",function(){draft.icon=i;Array.prototype.forEach.call(ig.children,function(x,j){x.classList.toggle("active",j===i)});paint()});ig.append(bt)
-    });c.append(ig);
-
-    var acts=h("div","acts"),make=h("button","go","この図鑑をつくる"),cancel=h("button",null,"やめる");
-    make.type=cancel.type="button";cancel.addEventListener("click",closeSheet);acts.append(make,cancel);c.append(acts);
     make.addEventListener("click",function(){
-      var name=title.input.value.trim();if(!name){title.input.focus();return}
-      make.disabled=true;make.textContent="つくっています…";
-      store.createBook(name,draft.color,draft.theme,draft.frame).then(function(b){
-        return store.updateBook(b.id,{
-          subtitle:sub.input.value.trim(),font:draft.font,icon:draft.icon,layout:draft.layout,nameMode:draft.nameMode||"both",titleSize:draft.titleSize||"medium",titleAlign:draft.titleAlign||"center",buttonTheme:draft.buttonTheme||"pink",
-          customBg:draft.customBg||"",customAccent:draft.customAccent||"",customInk:draft.customInk||""
-        })
-      }).then(function(b){closeSheet(true);go("#/b/"+b.id)},function(){make.disabled=false;make.textContent="もう一度ためす"})
-    });
-    paint();openSheet(c)
-  }
+      var name=title.input.value.trim();
+      if(!name){
+        title.input.focus();
+        return
+      }
 
+      make.disabled=true;
+      cancel.disabled=true;
+      make.textContent="つくっています…";
+
+      store.createBook(name,draft.color,draft.theme,draft.frame).then(function(book){
+        return store.updateBook(book.id,{
+          subtitle:sub.input.value.trim(),
+          font:draft.font,
+          icon:draft.icon,
+          layout:draft.layout,
+          nameMode:draft.nameMode||"both",
+          titleSize:draft.titleSize||"medium",
+          titleAlign:draft.titleAlign||"center",
+          buttonTheme:draft.buttonTheme||"pink",
+          customBg:"",
+          customAccent:"",
+          customInk:""
+        })
+      }).then(function(book){
+        nativeHaptic("success");
+        closeSheet(true);
+        go("#/b/"+book.id)
+      },function(){
+        make.disabled=false;
+        cancel.disabled=false;
+        make.textContent="もう一度ためす"
+      })
+    });
+
+    paint();
+    openSheet(c);
+
+    setTimeout(function(){
+      title.input.focus()
+    },80)
+  }
 
   function openEntryForm(bookId,photo){
     var url=URL.createObjectURL(photo);
@@ -3311,6 +3660,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
           photoBuf:buf,photoType:photo.type||"image/jpeg",createdAt:Date.now()
         })
       }).then(function(){
+        nativeHaptic("success");
         URL.revokeObjectURL(url);closeSheet();render()
       })["catch"](function(err){
         save.disabled=false;cancel.disabled=false;save.textContent="コレクションに追加";
@@ -3370,6 +3720,46 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
     })
   }
 
+  function openPrivacySheet(){
+    var c=h("div","card");
+    c.setAttribute("role","dialog");c.setAttribute("aria-modal","true");
+    c.append(h("h2","display","プライバシー"));
+
+    var body=h("div","privacy-copy");
+    [
+      ["保存場所","図鑑・写真・記録は、現行版では原則としてこの端末内に保存されます。"],
+      ["写真","写真登録のために、利用者の操作時だけカメラまたは写真ライブラリを使用します。"],
+      ["位置情報","GPS位置情報は自動取得しません。場所欄へ入力した文字だけを記録します。"],
+      ["広告・追跡","現行版では広告SDKや広告目的のトラッキング機能を使用しません。"],
+      ["バックアップ","バックアップを共有した後のファイルは、利用者が選んだ保存先・共有先で管理されます。"],
+      ["削除","記録や図鑑はアプリ内から削除できます。アプリ削除前には必要に応じてバックアップしてください。"]
+    ].forEach(function(x){
+      var sec=h("section","detail-note");
+      sec.append(h("h3",null,x[0]),h("p",null,x[1]));
+      body.append(sec)
+    });
+    c.append(body);
+
+    var acts=h("div","acts"),close=h("button","go","閉じる");
+    close.type="button";close.addEventListener("click",closeSheet);acts.append(close);c.append(acts);
+    openSheet(c)
+  }
+
+  function openSupportSheet(){
+    var c=h("div","card");
+    c.setAttribute("role","dialog");c.setAttribute("aria-modal","true");
+    c.append(h("h2","display","サポート"));
+    c.append(h("p","note","不具合のご連絡では、iPhoneの機種、iOSのバージョン、起きた画面、操作内容があると確認しやすくなります。"));
+    var mail=document.createElement("a");
+    mail.className="primary-pill support-mail";
+    mail.href="mailto:suganotatsuki@gmail.com?subject="+encodeURIComponent("わたしの図鑑 サポート");
+    mail.textContent="メールで問い合わせる";
+    c.append(mail);
+    var acts=h("div","acts"),close=h("button",null,"閉じる");
+    close.type="button";close.addEventListener("click",closeSheet);acts.append(close);c.append(acts);
+    openSheet(c)
+  }
+
   function renderSettings(){
     renderAppNav("settings");app.replaceChildren();
     var head=h("div","screen-head"),copy=h("div");copy.append(h("h1",null,"マイページ"),h("p",null,"データとアプリの管理"));head.append(copy);app.append(head);
@@ -3380,6 +3770,8 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
     row("バックアップ","図鑑・記録・写真をJSONに保存","保存",function(){exportBackup()});
     row("復元","バックアップを追加として読み込む","選ぶ",chooseRestoreFile);
     row("保存状態","この端末の保存状況を確認","確認",function(){go("#/storage")});
+    row("プライバシー","保存する情報と端末内データについて","見る",openPrivacySheet);
+    row("サポート","使い方や不具合について問い合わせ","開く",openSupportSheet);
     app.append(list,h("div","app-nav-spacer"))
   }
 
@@ -3391,7 +3783,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
   document.documentElement.setAttribute("data-view", "shelf");
   app.append(h("p", "lead", "ライブラリをひらいています…"));
 
-  if("serviceWorker" in navigator){
+  if("serviceWorker" in navigator&&!(window.NativeZukan&&window.NativeZukan.isNative)){
     window.addEventListener("load",function(){navigator.serviceWorker.register("./service-worker.js").catch(function(){})})
   }
 

@@ -40,7 +40,12 @@ const page = await browser.newPage({ viewport: { width: 375, height: 812 } });
 try {
   await page.goto(BASE, { waitUntil: "networkidle" });
 
-  await page.locator(".new-spine").click();
+  const createFirst = page.locator(".library-start");
+  if (await createFirst.count()) {
+    await createFirst.click();
+  } else {
+    await page.locator(".library-add").click();
+  }
   await page.locator("#new-title").fill("草花図鑑");
   await page.getByRole("button", { name: "この図鑑をつくる" }).click();
 
@@ -69,9 +74,11 @@ try {
 
   await page.screenshot({ path: "/tmp/zukan-detail-375.png", fullPage: true });
 
-  await page.goto(BASE + "#/", { waitUntil: "networkidle" });
+  await page.goto(BASE + "#/settings", { waitUntil: "networkidle" });
+  await page.waitForURL(/#\/settings$/);
+  const backupRow = page.locator(".settings-row").filter({ hasText: "バックアップ" }).first();
   const downloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: "バックアップ" }).click();
+  await backupRow.getByRole("button", { name: "保存" }).click();
   const download = await downloadPromise;
   const suggested = download.suggestedFilename();
   if (!suggested.endsWith(".json")) throw new Error("Backup download is not JSON");
@@ -111,6 +118,73 @@ try {
   await page.locator(".cover-screen").waitFor();
   await page.getByRole("button", { name: "デザインを編集" }).click();
   await page.locator(".button-theme-choice.active", { hasText: "ネイビー" }).waitFor();
+
+  // Regression: leather/linen texture must never lock the selected cover color.
+  await page.locator(".advanced-toggle").click();
+  const previewFace = page.locator(".design-preview .book-face");
+
+  const colorChoices = page.locator("[data-color]");
+  if (await colorChoices.count() < 3) {
+    throw new Error("Expected at least three cover colors");
+  }
+
+  await colorChoices.nth(1).click();
+  const firstColor = await previewFace.evaluate(
+    el => getComputedStyle(el).backgroundColor
+  );
+
+  await page.locator('[data-theme="5"]').click();
+  const linenColor = await previewFace.evaluate(
+    el => getComputedStyle(el).backgroundColor
+  );
+  const linenTexture = await previewFace.evaluate(
+    el => getComputedStyle(el).backgroundImage
+  );
+
+  if (linenColor !== firstColor) {
+    throw new Error("Linen texture changed the selected cover color");
+  }
+  if (!linenTexture || linenTexture === "none") {
+    throw new Error("Linen texture is not visible");
+  }
+
+  await colorChoices.nth(2).click();
+  const secondColor = await previewFace.evaluate(
+    el => getComputedStyle(el).backgroundColor
+  );
+  if (secondColor === firstColor) {
+    throw new Error("Changing cover color had no visual effect with linen texture");
+  }
+
+  await page.locator('[data-theme="0"]').click();
+  const leatherColor = await previewFace.evaluate(
+    el => getComputedStyle(el).backgroundColor
+  );
+  const leatherTexture = await previewFace.evaluate(
+    el => getComputedStyle(el).backgroundImage
+  );
+
+  if (leatherColor !== secondColor) {
+    throw new Error("Leather texture changed the selected cover color");
+  }
+  if (!leatherTexture || leatherTexture === "none" || leatherTexture === linenTexture) {
+    throw new Error("Leather texture is missing or indistinguishable from linen");
+  }
+
+  // Save and reopen to verify the independent color/texture choices persist.
+  await page.getByRole("button", { name: "保存" }).click();
+  await page.locator(".cover-screen").waitFor();
+  await page.getByRole("button", { name: "デザインを編集" }).click();
+  await page.locator(".advanced-toggle").click();
+  await page.locator('[data-theme="0"].active').waitFor();
+  await page.locator('[data-color].active').nth(0).waitFor();
+
+  const persistedColor = await page.locator(".design-preview .book-face").evaluate(
+    el => getComputedStyle(el).backgroundColor
+  );
+  if (persistedColor !== secondColor) {
+    throw new Error("Cover color did not persist after saving");
+  }
 
   console.log("OK: UI smoke test passed");
 } catch (error) {
