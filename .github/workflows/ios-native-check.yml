@@ -1,5 +1,9 @@
 name: iOS native build check
 
+concurrency:
+  group: ios-native-app-v1
+  cancel-in-progress: true
+
 on:
   push:
     branches:
