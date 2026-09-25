@@ -1,0 +1,36 @@
+name: Native package check
+
+on:
+  pull_request:
+    branches:
+      - main
+      - system-update-v2
+  push:
+    branches:
+      - native-app-v1
+
+jobs:
+  native-package:
+    name: Capacitor web bundle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get source
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build native web bundle
+        run: npm run build:native
+
+      - name: Check required output
+        run: |
+          test -f www/index.html
+          test -f www/app-icon.svg
+          test -d www/assets
+          grep -q "system-update-v2\|flat-luxury-v5\|わたしの図鑑" www/index.html
