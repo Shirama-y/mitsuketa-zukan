@@ -2428,12 +2428,12 @@ body{
         draft.title=ti.value;draft.subtitle=si.value;preview.replaceChildren(makeBookFace(draft,true));
         [["font",draft.font],["color",draft.color],["theme",draft.theme],["icon",draft.icon],["frame",draft.frame]].forEach(function(p){Array.prototype.forEach.call(screen.querySelectorAll("[data-"+p[0]+"]"),function(n){n.classList.toggle("active",Number(n.dataset[p[0]])===Number(p[1]||0))})});
         Array.prototype.forEach.call(screen.querySelectorAll("[data-layout]"),function(n){n.classList.toggle("active",n.dataset.layout===draft.layout)});
-        Array.prototype.forEach.call(screen.querySelectorAll("[data-theme]"),function(n){n.style.setProperty("--tex-bg",cover(draft.color).bg);n.style.setProperty("--tex-img",textureCss(Number(n.dataset.theme)))})
+        Array.prototype.forEach.call(screen.querySelectorAll("[data-theme]"),function(n){n.style.setProperty("--tex-bg",draft.customBg||cover(draft.color).bg);n.style.setProperty("--tex-img",textureCss(Number(n.dataset.theme)))})
       }
       ti.addEventListener("input",repaint);si.addEventListener("input",repaint);
 
       var fs=sec("フォント"),fg=h("div","design-grid");BOOK_FONTS.forEach(function(f,i){var bt=h("button","design-choice font-choice","あ　"+f.name);bt.type="button";bt.dataset.font=i;bt.style.fontFamily=f.css;bt.addEventListener("click",function(){draft.font=i;repaint()});fg.append(bt)});fs.append(fg);screen.append(fs);
-      var cs=sec("カラー"),cg=h("div","design-grid");COVERS.forEach(function(co,i){var bt=h("button","design-choice color-choice");bt.type="button";bt.dataset.color=i;bt.style.setProperty("--swatch",co.bg);bt.setAttribute("aria-label",co.name);bt.addEventListener("click",function(){draft.color=i;draft.customBg="";draft.customInk="";repaint()});cg.append(bt)});cs.append(cg);screen.append(cs);
+      var cs=sec("カラー"),cg=h("div","design-grid");COVERS.forEach(function(co,i){var bt=h("button","design-choice color-choice");bt.type="button";bt.dataset.color=i;bt.style.setProperty("--swatch",co.bg);bt.setAttribute("aria-label",co.name);bt.addEventListener("click",function(){draft.color=i;draft.customBg="";draft.customAccent="";draft.customInk="";if(typeof freeCg!=="undefined"){var ins=freeCg.querySelectorAll('input[type="color"]');if(ins[0])ins[0].value=co.bg;if(ins[1])ins[1].value="#e6c579";if(ins[2])ins[2].value=co.ink}repaint()});cg.append(bt)});cs.append(cg);screen.append(cs);
       var freeCs=sec("好きな色を使う"),freeCg=h("div","custom-color-row");
       function colorField(label,prop,fallback){
         var lab=h("label","color-field");lab.append(h("span",null,label));
@@ -2476,7 +2476,13 @@ body{
     function paint(){
       draft.title=title.input.value.trim()||"わたしの図鑑";
       draft.subtitle=sub.input.value.trim();
-      preview.replaceChildren(makeBookFace(draft,true))
+      preview.replaceChildren(makeBookFace(draft,true));
+      if(typeof tg!=="undefined"&&tg){
+        Array.prototype.forEach.call(tg.children,function(x,j){
+          x.style.setProperty("--tex-bg",draft.customBg||cover(draft.color).bg);
+          x.style.setProperty("--tex-img",textureCss(j))
+        })
+      }
     }
     title.input.addEventListener("input",paint);sub.input.addEventListener("input",paint);
 
@@ -2490,7 +2496,7 @@ body{
     label("カラー");
     var cg=h("div","design-grid");COVERS.forEach(function(co,i){
       var bt=h("button","design-choice color-choice"+(i===0?" active":""),null);bt.type="button";bt.style.setProperty("--swatch",co.bg);bt.setAttribute("aria-label",co.name);
-      bt.addEventListener("click",function(){draft.color=i;draft.customBg="";draft.customInk="";Array.prototype.forEach.call(cg.children,function(x,j){x.classList.toggle("active",j===i)});Array.prototype.forEach.call(tg.children,function(x,j){x.style.setProperty("--tex-bg",co.bg);x.style.setProperty("--tex-img",textureCss(j))});paint()});cg.append(bt)
+      bt.addEventListener("click",function(){draft.color=i;draft.customBg="";draft.customAccent="";draft.customInk="";Array.prototype.forEach.call(cg.children,function(x,j){x.classList.toggle("active",j===i)});if(typeof freeCg!=="undefined"){var ins=freeCg.querySelectorAll('input[type="color"]');if(ins[0])ins[0].value=co.bg;if(ins[1])ins[1].value="#e6c579";if(ins[2])ins[2].value=co.ink}paint()});cg.append(bt)
     });c.append(cg);
 
     var freeCg=h("div","custom-color-row");freeCg.style.marginTop="10px";
