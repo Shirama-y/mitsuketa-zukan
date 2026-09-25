@@ -3179,6 +3179,11 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
   }
   function render(){
     if(!db)return Promise.resolve();var r=route();document.documentElement.setAttribute("data-view",r.view);bar.hidden=true;
+    var nativeChrome=window.NativeZukan;
+    if(nativeChrome&&nativeChrome.isNative&&nativeChrome.setChromeTheme){
+      var lightNativeViews={book:1,entry:1,design:1,search:1,collections:1,settings:1};
+      nativeChrome.setChromeTheme(lightNativeViews[r.view]?"light":"dark")["catch"](function(){})
+    }
     if(r.view==="cover")return renderBookCover(r.bookId);
     if(r.view==="book")return renderBook(r.bookId);
     if(r.view==="entry")return renderEntry(r.bookId,r.no);
