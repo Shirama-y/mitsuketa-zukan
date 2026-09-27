@@ -1463,12 +1463,16 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
      PWA版だけでWeb決済を案内する。App Store版では外部決済CTAを出さない。
      Stripe接続とPRO機能が完成するまでは enabled:false のまま公開する。 */
   var MONETIZATION = {
-    enabled: false,
-    supporterEnabled: false,
+    enabled: true,
+    testMode: true,
+    supporterEnabled: true,
     proName: "PRO ライフタイム",
     proPriceLabel: "¥1,480 / 買い切り",
-    proCheckoutUrl: "",
-    supporterUrl: "",
+    proCheckoutUrl: "https://buy.stripe.com/test_5kQ7sKerQfDf8Sg9kUeZ200",
+    supporterOptions: [
+      { label: "¥500で応援", url: "https://donate.stripe.com/test_8x2bJ083s4YB5G4cx6eZ201" },
+      { label: "¥1,000で応援", url: "https://donate.stripe.com/test_4gM4gy83s0Il5G468IeZ202" }
+    ],
     features: [
       "図鑑をPDF・画像で高画質書き出し",
       "PRO限定の表紙・テーマパック",
@@ -3835,6 +3839,10 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
     c.setAttribute("role","dialog");
     c.setAttribute("aria-modal","true");
     c.append(h("p","pro-kicker","WATASHI NO ZUKAN PRO"),h("h2","display",MONETIZATION.proName));
+    if(MONETIZATION.testMode){
+      var test=h("p","note","現在はStripeのテスト決済です。実際のお金は動きません。");
+      test.style.color="#C77B7B";test.style.fontWeight="700";c.append(test)
+    }
 
     var box=h("section","pro-card");
     box.append(
@@ -3857,15 +3865,52 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
     box.append(buy,h("p","pro-note","購入画面はStripeの安全な決済ページで開きます。App Store版では別の購入方式を使用します。"));
     c.append(box);
 
-    if(MONETIZATION.supporterEnabled&&MONETIZATION.supporterUrl){
-      var acts2=h("div","acts"),support=h("button",null,"開発を応援する");
-      support.type="button";support.addEventListener("click",function(){openExternalPurchase(MONETIZATION.supporterUrl)});
-      acts2.append(support);c.append(acts2)
+    if(MONETIZATION.supporterEnabled&&Array.isArray(MONETIZATION.supporterOptions)){
+      var supportTitle=h("p","note","機能購入とは別に、開発を応援できます。");
+      c.append(supportTitle);
+      var acts2=h("div","acts");
+      MONETIZATION.supporterOptions.forEach(function(opt){
+        var support=h("button",null,opt.label);
+        support.type="button";
+        support.addEventListener("click",function(){openExternalPurchase(opt.url)});
+        acts2.append(support)
+      });
+      c.append(acts2)
     }
 
     var acts=h("div","acts"),close=h("button",null,"閉じる");
     close.type="button";close.addEventListener("click",closeSheet);acts.append(close);c.append(acts);
     openSheet(c)
+  }
+
+  function handlePaymentReturn(){
+    var params=new URLSearchParams(location.search||"");
+    var purchase=params.get("purchase");
+    var support=params.get("support");
+    if(purchase==="success"){
+      var sid=params.get("session_id")||"";
+      try{if(sid)localStorage.setItem("wz_pending_checkout_session",sid)}catch(e){}
+      history.replaceState(null,"",location.pathname+location.hash);
+      setTimeout(function(){
+        var c=h("div","card");
+        c.setAttribute("role","dialog");c.setAttribute("aria-modal","true");
+        c.append(
+          h("h2","display","テスト決済を確認しました"),
+          h("p","note","Stripeの決済画面からアプリへ戻りました。次の工程で、この決済をサーバー側で検証してPROを安全に有効化します。")
+        );
+        var close=h("button","go","閉じる");close.type="button";close.addEventListener("click",closeSheet);
+        c.append(close);openSheet(c)
+      },350)
+    }else if(support==="thanks"){
+      history.replaceState(null,"",location.pathname+location.hash);
+      setTimeout(function(){
+        var c=h("div","card");
+        c.setAttribute("role","dialog");c.setAttribute("aria-modal","true");
+        c.append(h("h2","display","ありがとうございます"),h("p","note","開発サポートのテスト決済が完了しました。"));
+        var close=h("button","go","閉じる");close.type="button";close.addEventListener("click",closeSheet);
+        c.append(close);openSheet(c)
+      },350)
+    }
   }
 
   function openSupportSheet(){
@@ -3922,7 +3967,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
         if (!on) return navigator.storage.persist();
       })["catch"](function () {});
     }
-    return render();
+    return render().then(function(){handlePaymentReturn()});
   })["catch"](function (e) {
     app.replaceChildren();
     app.append(h("h1", "display", "きろくを ひらけませんでした"));
