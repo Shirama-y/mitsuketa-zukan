@@ -3445,7 +3445,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
         var empty=h("section","library-empty");
         var hero=document.createElement("img");
         hero.className="library-empty-art";
-        hero.src="./assets/welcome-discovery.webp";
+        hero.src="./assets/ui-welcome-hero.svg";
         hero.alt="写真や好きなものを集めて自分だけの図鑑をつくるイラスト";
         empty.append(
           hero,
@@ -3530,7 +3530,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
         if(mode==="fav"){
           emptyState.textContent="お気に入りは、まだありません。"
         }else{
-          var art=document.createElement("img");art.className="empty-art";art.src="./assets/empty-album.webp";art.alt="これから写真が並ぶ図鑑のイラスト";
+          var art=document.createElement("img");art.className="empty-art";art.src="./assets/ui-empty-album.svg";art.alt="これから写真が並ぶ図鑑のイラスト";
           emptyState.append(art,h("div",null,"写真を一枚追加すると、ここから図鑑が始まります。"))
         }
         screen.append(emptyState)
@@ -3730,7 +3730,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
     );
     var introArt=document.createElement("img");
     introArt.className="new-book-art";
-    introArt.src="./assets/collection-collage.webp";
+    introArt.src="./assets/ui-discovery-cluster.svg";
     introArt.alt="写真や好きなものを集めるイラスト";
     c.append(head,introArt);
 
@@ -3935,7 +3935,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
     var results=h("div","search-results"),empty=h("div","empty-collection search-empty-visual");
     var searchArt=document.createElement("img");
     searchArt.className="search-hero-art";
-    searchArt.src="./assets/collection-collage.webp";
+    searchArt.src="./assets/ui-discovery-cluster.svg";
     searchArt.alt="写真や自然のコレクションを集めるイラスト";
     empty.append(searchArt,h("p",null,"検索したい言葉を入力してください。"));
     app.append(results,empty,h("div","app-nav-spacer"));
@@ -3949,7 +3949,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
         var q=(input.value||"").trim().toLowerCase();results.replaceChildren();
         if(!q){
           empty.hidden=false;empty.replaceChildren();
-          var art0=document.createElement("img");art0.className="search-hero-art";art0.src="./assets/collection-collage.webp";art0.alt="写真や自然のコレクションを集めるイラスト";
+          var art0=document.createElement("img");art0.className="search-hero-art";art0.src="./assets/ui-discovery-cluster.svg";art0.alt="写真や自然のコレクションを集めるイラスト";
           empty.append(art0,h("p",null,"検索したい言葉を入力してください。"));return
         }
         var hits=all.filter(function(x){
@@ -4007,7 +4007,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
 
     var proArt=document.createElement("img");
     proArt.className="pro-hero-art";
-    proArt.src="./assets/pro-premium.webp";
+    proArt.src="./assets/ui-pro-hero.svg";
     proArt.alt="PROの書き出しとプレミアム機能のイラスト";
     c.append(proArt);
 
