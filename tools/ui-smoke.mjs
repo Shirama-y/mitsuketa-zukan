@@ -201,8 +201,8 @@ try {
   if (linenColor !== firstColor) {
     throw new Error("Linen texture changed the selected cover color");
   }
-  if (!linenTexture || linenTexture === "none") {
-    throw new Error("Linen texture is not visible");
+  if (!linenTexture || linenTexture === "none" || !linenTexture.includes("texture-linen.webp")) {
+    throw new Error("Linen WebP texture is not visible");
   }
 
   await colorChoices.nth(2).click();
@@ -224,8 +224,8 @@ try {
   if (leatherColor !== secondColor) {
     throw new Error("Leather texture changed the selected cover color");
   }
-  if (!leatherTexture || leatherTexture === "none" || leatherTexture === linenTexture) {
-    throw new Error("Leather texture is missing or indistinguishable from linen");
+  if (!leatherTexture || leatherTexture === "none" || leatherTexture === linenTexture || !leatherTexture.includes("texture-leather.webp")) {
+    throw new Error("Leather WebP texture is missing or indistinguishable from linen");
   }
 
   // Save and reopen to verify the independent color/texture choices persist.

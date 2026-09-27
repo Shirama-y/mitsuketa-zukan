@@ -696,7 +696,7 @@ body{
 .shelf-lower::after{content:"";position:absolute;left:18px;right:18px;bottom:24px;height:8px;background:#432a1e;border-radius:2px}
 .spine-card{
   flex:0 0 92px;height:332px;scroll-snap-align:center;border:1px solid rgba(217,184,109,.55);border-radius:5px 8px 8px 5px;
-  padding:13px 8px;color:var(--spine-ink,#f4e7bd);background-color:var(--spine-bg,#315b47);background-image:var(--spine-texture,none);background-repeat:no-repeat;background-size:cover;background-position:center;background-blend-mode:soft-light;
+  padding:13px 8px;color:var(--spine-ink,#f4e7bd);background-color:var(--spine-bg,#315b47);background-image:var(--spine-texture,none);background-repeat:repeat;background-size:96px 96px;background-position:center;background-blend-mode:soft-light;background-repeat:no-repeat;background-size:cover;background-position:center;background-blend-mode:soft-light;
   box-shadow:inset 5px 0 10px rgba(0,0,0,.18),inset -2px 0 rgba(255,255,255,.05),0 8px 18px rgba(0,0,0,.26);
   cursor:pointer;font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:space-between;position:relative;overflow:hidden
 }
@@ -763,7 +763,7 @@ body{
   box-shadow:inset 8px 0 16px rgba(0,0,0,.28),inset -2px 0 rgba(255,255,255,.05),0 24px 55px rgba(0,0,0,.4);
   display:flex;align-items:center;justify-content:center;text-align:center;padding:34px 24px;overflow:hidden
 }
-.book-face{background-repeat:no-repeat;background-size:cover;background-position:center}
+.book-face{background-repeat:repeat;background-size:96px 96px;background-position:center;background-blend-mode:soft-light}
 .book-face::before{content:"";position:absolute;inset:16px;border:1px solid var(--book-accent,#e6c579);opacity:.72}
 .book-face::after{content:"";position:absolute;left:8px;top:0;bottom:0;width:5px;background:rgba(0,0,0,.16)}
 .book-face.frame-kazari::before{border:3px double var(--book-accent,#e6c579);opacity:.72}
@@ -3347,9 +3347,9 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
   function textureCss(themeIdx){
     var files=[
       "./assets/texture-leather.webp",
-      "./assets/texture-classic.webp",
-      "./assets/texture-cross.webp",
-      "./assets/texture-matte.webp",
+      "./assets/texture-crosshatch.webp",
+      "./assets/texture-woven.webp",
+      "./assets/texture-paper.webp",
       "./assets/texture-grain.webp",
       "./assets/texture-linen.webp",
       "./assets/texture-emboss.webp",
