@@ -150,13 +150,14 @@ try {
     await proRow.getByRole("button").click();
     const proArt = page.locator(".pro-hero-art");
     await proArt.waitFor();
-    const proArtOk = await proArt.evaluate(img =>
-      img instanceof HTMLImageElement &&
-      img.complete &&
-      img.naturalWidth > 0 &&
-      img.getAttribute("src")?.includes("ui-pro-hero.svg")
-    );
-    if (!proArtOk) throw new Error("PRO artwork failed to load");
+    await page.waitForFunction(() => {
+      const img = document.querySelector(".pro-hero-art");
+      return img instanceof HTMLImageElement && img.complete && img.naturalWidth > 0;
+    });
+    const proArtSrc = await proArt.getAttribute("src");
+    if (!proArtSrc?.includes("ui-pro-hero.svg")) {
+      throw new Error("PRO artwork source is incorrect");
+    }
     await page.getByRole("button", { name: "閉じる" }).last().click();
   }
 
