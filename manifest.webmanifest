@@ -1,4 +1,5 @@
 {
+  "id": "./",
   "name": "わたしの図鑑",
   "short_name": "わたしの図鑑",
   "description": "写真を撮って、自分だけの図鑑やコレクションをつくるアプリ",
@@ -9,6 +10,11 @@
   "orientation": "portrait",
   "background_color": "#0F172A",
   "theme_color": "#0F172A",
+  "categories": [
+    "lifestyle",
+    "education"
+  ],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "./icon-192.png",
