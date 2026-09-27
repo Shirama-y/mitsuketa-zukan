@@ -1275,6 +1275,14 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
   text-align:center;
   color:#FAF7F2
 }
+.library-empty-art{
+  display:block;
+  width:min(100%,360px);
+  aspect-ratio:520/300;
+  object-fit:contain;
+  margin:0 auto 24px;
+  border-radius:18px
+}
 .library-empty-mark{
   width:78px;height:78px;
   margin:0 auto 22px;
@@ -3214,10 +3222,12 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
 
       if(!books.length){
         var empty=h("section","library-empty");
-        var mark=h("div","library-empty-mark");
-        mark.append(maskIcon("./assets/nav-books.svg","library-empty-icon"));
+        var hero=document.createElement("img");
+        hero.className="library-empty-art";
+        hero.src="./assets/welcome-library.svg";
+        hero.alt="図鑑が並ぶイラスト";
         empty.append(
-          mark,
+          hero,
           h("h2",null,"最初の一冊をつくりましょう"),
           h("p",null,"草花、シール、ぬいぐるみ、旅先のもの。\n好きなものから、自分だけの図鑑を始められます。")
         );
