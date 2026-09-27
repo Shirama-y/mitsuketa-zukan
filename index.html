@@ -760,8 +760,12 @@ body{
 .settings-row strong{display:block;font-size:14px;font-weight:500}
 .settings-row small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
 .settings-row button{border:1px solid #425b70;border-radius:999px;background:transparent;color:#d7c59a;padding:8px 12px;font:inherit;font-size:11px;cursor:pointer}
-.empty-art{display:block;width:min(88%,360px);margin:6px auto 16px;border-radius:16px}
-.empty-collection.rich{padding-top:22px}
+.empty-art{display:block;width:min(84%,300px);aspect-ratio:1;object-fit:contain;margin:0 auto 12px;border-radius:0;filter:drop-shadow(0 14px 26px rgba(15,23,42,.12))}
+.empty-collection.rich{padding-top:14px}
+.search-hero-art{display:block;width:min(72%,250px);aspect-ratio:1;object-fit:contain;margin:6px auto 2px;filter:drop-shadow(0 14px 24px rgba(15,23,42,.14))}
+.search-empty-visual{padding:2px 0 10px;text-align:center}
+.search-empty-visual p{margin:0;color:var(--muted);font-size:12px}
+.pro-hero-art{display:block;width:min(76%,280px);aspect-ratio:1;object-fit:contain;margin:-4px auto 6px;filter:drop-shadow(0 16px 28px rgba(15,23,42,.13))}
 
 /* cover */
 .cover-screen{min-height:calc(100svh - 48px);display:flex;flex-direction:column}
@@ -1279,11 +1283,12 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
 }
 .library-empty-art{
   display:block;
-  width:min(100%,360px);
-  aspect-ratio:520/300;
+  width:min(86vw,320px);
+  aspect-ratio:1;
   object-fit:contain;
-  margin:0 auto 24px;
-  border-radius:18px
+  margin:-10px auto 18px;
+  border-radius:0;
+  filter:drop-shadow(0 18px 30px rgba(0,0,0,.18))
 }
 .library-empty-mark{
   width:78px;height:78px;
@@ -3446,8 +3451,8 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
         var empty=h("section","library-empty");
         var hero=document.createElement("img");
         hero.className="library-empty-art";
-        hero.src="./assets/welcome-library.svg";
-        hero.alt="図鑑が並ぶイラスト";
+        hero.src="./assets/welcome-discovery.webp";
+        hero.alt="写真や好きなものを集めて自分だけの図鑑をつくるイラスト";
         empty.append(
           hero,
           h("h2",null,"最初の一冊をつくりましょう"),
@@ -3531,7 +3536,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
         if(mode==="fav"){
           emptyState.textContent="お気に入りは、まだありません。"
         }else{
-          var art=document.createElement("img");art.className="empty-art";art.src="./assets/empty-collection.svg";art.alt="";
+          var art=document.createElement("img");art.className="empty-art";art.src="./assets/empty-album.webp";art.alt="これから写真が並ぶ図鑑のイラスト";
           emptyState.append(art,h("div",null,"写真を一枚追加すると、ここから図鑑が始まります。"))
         }
         screen.append(emptyState)
@@ -3929,7 +3934,13 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
     var head=h("div","screen-head"),copy=h("div");copy.append(h("h1",null,"さがす"),h("p",null,"すべての図鑑から検索"));head.append(copy);app.append(head);
     var box=h("label","global-search"),ico=maskIcon("./assets/nav-search.svg","search-mask"),input=document.createElement("input");
     input.type="search";input.placeholder="名前・漢字・タグ・場所";input.setAttribute("aria-label","すべての図鑑を検索");box.append(ico,input);app.append(box);
-    var results=h("div","search-results"),empty=h("div","empty-collection","検索したい言葉を入力してください。");app.append(results,empty,h("div","app-nav-spacer"));
+    var results=h("div","search-results"),empty=h("div","empty-collection search-empty-visual");
+    var searchArt=document.createElement("img");
+    searchArt.className="search-hero-art";
+    searchArt.src="./assets/collection-collage.webp";
+    searchArt.alt="写真や自然のコレクションを集めるイラスト";
+    empty.append(searchArt,h("p",null,"検索したい言葉を入力してください。"));
+    app.append(results,empty,h("div","app-nav-spacer"));
 
     return store.books().then(function(books){
       return Promise.all(books.map(function(b){return store.entries(b.id).then(function(es){return{book:b,entries:es}})}))
@@ -3938,12 +3949,16 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
       groups.forEach(function(g){g.entries.forEach(function(e){all.push({book:g.book,entry:e})})});
       function draw(){
         var q=(input.value||"").trim().toLowerCase();results.replaceChildren();
-        if(!q){empty.hidden=false;empty.textContent="検索したい言葉を入力してください。";return}
+        if(!q){
+          empty.hidden=false;empty.replaceChildren();
+          var art0=document.createElement("img");art0.className="search-hero-art";art0.src="./assets/collection-collage.webp";art0.alt="写真や自然のコレクションを集めるイラスト";
+          empty.append(art0,h("p",null,"検索したい言葉を入力してください。"));return
+        }
         var hits=all.filter(function(x){
           var e=x.entry,hay=[e.name||"",e.kanji||"",e.place||"",Array.isArray(e.tags)?e.tags.join(" "):"",x.book.title||""].join(" ").toLowerCase();
           return hay.indexOf(q)>=0
         }).slice(0,60);
-        if(!hits.length){empty.hidden=false;empty.textContent="条件に合う記録が見つかりません。";return}
+        if(!hits.length){empty.hidden=false;empty.replaceChildren(h("p",null,"条件に合う記録が見つかりません。"));return}
         empty.hidden=true;
         hits.forEach(function(x){
           var e=x.entry,b=x.book,row=h("div","entry-row"),img=document.createElement("img");img.className="entry-photo";img.src=urlFor(e);img.alt="";
@@ -3991,6 +4006,12 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
       var test=h("p","note","現在はStripeのテスト決済です。実際のお金は動きません。");
       test.style.color="#C77B7B";test.style.fontWeight="700";c.append(test)
     }
+
+    var proArt=document.createElement("img");
+    proArt.className="pro-hero-art";
+    proArt.src="./assets/pro-premium.webp";
+    proArt.alt="PROの書き出しとプレミアム機能のイラスト";
+    c.append(proArt);
 
     var box=h("section","pro-card");
     var entitlement=getProEntitlement();
