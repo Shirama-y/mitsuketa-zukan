@@ -1437,6 +1437,10 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
   font-size:10px;
   line-height:1.6
 }
+.pro-export-btn{
+  margin-top:18px;
+  min-height:46px
+}
 </style>
 <style id="native-legal-polish">
 .privacy-copy{display:grid;gap:9px;margin-top:14px}
@@ -1527,6 +1531,108 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
         saveProEntitlement(sessionId);
         return body
       })
+    })
+  }
+
+  function storedProSessionId(){
+    var entitlement=getProEntitlement();
+    if(entitlement&&entitlement.sessionId)return entitlement.sessionId;
+    try{return localStorage.getItem("wz_pending_checkout_session")||""}catch(e){return""}
+  }
+
+  function ensureProEntitlement(){
+    var sid=storedProSessionId();
+    if(!sid)return Promise.resolve(false);
+    return verifyProPurchase(sid).then(function(){return true},function(){
+      try{localStorage.removeItem("wz_pro_entitlement")}catch(e){}
+      return false
+    })
+  }
+
+  function entryDataUrl(e){
+    return new Promise(function(resolve){
+      var blob=null;
+      try{
+        if(e.photoBuf)blob=new Blob([e.photoBuf],{type:e.photoType||"image/jpeg"});
+        else if(e.photo)blob=e.photo
+      }catch(err){blob=null}
+      if(!blob){resolve("");return}
+      var fr=new FileReader();
+      fr.onload=function(){resolve(String(fr.result||""))};
+      fr.onerror=function(){resolve("")};
+      fr.readAsDataURL(blob)
+    })
+  }
+
+  function escapePrintText(value){
+    return String(value==null?"":value)
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#39;")
+  }
+
+  function exportBookPrintable(bookId){
+    var sid=storedProSessionId();
+    if(!sid){openProSheet();return}
+
+    var popup=window.open("","_blank");
+    if(!popup){
+      var blocked=h("div","card");
+      blocked.append(h("h2","display","書き出しを開けませんでした"),h("p","note","Safariのポップアップを許可して、もう一度お試しください。"));
+      var close=h("button","go","閉じる");close.type="button";close.addEventListener("click",closeSheet);blocked.append(close);openSheet(blocked);
+      return
+    }
+    popup.document.write("<!doctype html><meta charset='utf-8'><title>確認中…</title><body style='font-family:system-ui;padding:32px'>PRO購入を確認しています…</body>");
+    popup.document.close();
+
+    ensureProEntitlement().then(function(ok){
+      if(!ok){
+        popup.close();
+        openProSheet();
+        return
+      }
+      return Promise.all([store.book(bookId),store.entries(bookId)]).then(function(out){
+        var book=out[0],entries=out[1]||[];
+        if(!book){popup.close();return}
+        return Promise.all(entries.map(function(e){
+          return entryDataUrl(e).then(function(src){return{entry:e,src:src}})
+        })).then(function(items){
+          var co=cover(book.color);
+          var cards=items.map(function(item){
+            var e=item.entry;
+            var tags=Array.isArray(e.tags)&&e.tags.length?'<div class="tags">'+e.tags.map(function(t){return"<span>"+escapePrintText(t)+"</span>"}).join("")+"</div>":"";
+            var photo=item.src?'<img src="'+item.src+'" alt="">':'<div class="no-photo">NO PHOTO</div>';
+            return '<article class="entry">'+photo+
+              '<div class="number">No.'+escapePrintText(pad(e.no))+'</div>'+
+              '<h2>'+escapePrintText(e.name||"")+'</h2>'+
+              (e.kanji?'<div class="alias">'+escapePrintText(e.kanji)+'</div>':"")+
+              '<dl><div><dt>日付</dt><dd>'+escapePrintText(showDate(e.date))+'</dd></div>'+
+              '<div><dt>場所</dt><dd>'+escapePrintText(e.place||"——")+'</dd></div></dl>'+
+              tags+
+              (e.observed?'<p class="note"><strong>気づいたこと</strong><br>'+escapePrintText(e.observed)+'</p>':"")+
+              (e.imagined?'<p class="note"><strong>ストーリー</strong><br>'+escapePrintText(e.imagined)+'</p>':"")+
+              '</article>'
+          }).join("");
+
+          var html='<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escapePrintText(book.title)+' - わたしの図鑑</title>'+
+            '<style>@page{size:A4;margin:12mm}*{box-sizing:border-box}body{margin:0;background:#f4f1eb;color:#0F172A;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}.toolbar{position:sticky;top:0;display:flex;gap:10px;justify-content:center;padding:12px;background:#0F172A}.toolbar button{border:0;border-radius:999px;padding:11px 18px;background:#C77B7B;color:#FAF7F2;font-weight:700}.page{width:min(100%,210mm);margin:0 auto;background:#fff;padding:15mm}.cover{padding:18mm 10mm;margin-bottom:12mm;background:'+co.bg+';color:'+co.ink+';border:3px solid '+co.ink+';text-align:center}.cover .eyebrow{font-size:10px;letter-spacing:.18em}.cover h1{margin:12px 0 4px;font-size:30px}.cover p{margin:0;font-size:12px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7mm}.entry{break-inside:avoid;border:1px solid #d8d3ca;padding:4mm;background:#fff}.entry img,.no-photo{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#e7e2d9}.no-photo{display:grid;place-items:center;font-size:9px;color:#827b70}.number{margin-top:3mm;font-size:9px;color:#7d756b}.entry h2{margin:1mm 0 0;font-size:15px;line-height:1.35}.alias{font-size:10px;color:#756d63}.entry dl{margin:3mm 0 0;border-top:1px solid #e4dfd6}.entry dl div{display:grid;grid-template-columns:34px 1fr;gap:4px;padding:1.5mm 0;border-bottom:1px solid #eee9e0;font-size:9px}.entry dt{color:#81796f}.entry dd{margin:0}.tags{display:flex;gap:3px;flex-wrap:wrap;margin-top:2mm}.tags span{font-size:8px;border:1px solid #d6d0c7;border-radius:999px;padding:1px 5px}.note{font-size:9px;line-height:1.55}.footer{margin-top:12mm;text-align:center;font-size:8px;color:#8b8378}@media print{body{background:#fff}.toolbar{display:none}.page{padding:0;width:auto}.grid{gap:5mm}}</style></head><body>'+
+            '<div class="toolbar"><button onclick="window.print()">PDFとして保存 / 印刷</button><button onclick="window.close()">閉じる</button></div>'+
+            '<main class="page"><section class="cover"><div class="eyebrow">WATASHI NO ZUKAN · PRO EXPORT</div><h1>'+escapePrintText(book.title)+'</h1><p>'+escapePrintText(book.subtitle||((book.count||entries.length)+"件のコレクション"))+'</p></section>'+
+            '<section class="grid">'+cards+'</section><div class="footer">わたしの図鑑 · PRO</div></main></body></html>';
+
+          popup.document.open();
+          popup.document.write(html);
+          popup.document.close();
+          nativeHaptic("success")
+        })
+      })
+    })["catch"](function(){
+      try{popup.close()}catch(e){}
+      var failCard=h("div","card");
+      failCard.append(h("h2","display","書き出しできませんでした"),h("p","note","通信状態を確認して、もう一度お試しください。"));
+      var close=h("button","go","閉じる");close.type="button";close.addEventListener("click",closeSheet);failCard.append(close);openSheet(failCard)
     })
   }
 
@@ -3453,6 +3559,10 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
         searchInput.addEventListener("input",applySearch);
         applySearch()
       }
+      var exportBtn=h("button","secondary-pill pro-export-btn","PRO　PDF / 印刷用に書き出す");
+      exportBtn.type="button";
+      exportBtn.addEventListener("click",function(){nativeHaptic("light");exportBookPrintable(b.id)});
+      screen.append(exportBtn);
       var add=h("button","add-entry-btn","＋　新しく登録する");add.type="button";add.addEventListener("click",function(){startCapture(b.id)});screen.append(add);app.append(screen)
     })
   }
