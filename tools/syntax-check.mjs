@@ -72,14 +72,14 @@ const requiredArtwork = [
   "assets/ui-empty-album.svg",
   "assets/ui-pro-hero.svg",
   "assets/ui-discovery-cluster.svg",
-  "assets/texture-leather.svg",
-  "assets/texture-classic.svg",
-  "assets/texture-cross.svg",
-  "assets/texture-matte.svg",
-  "assets/texture-grain.svg",
-  "assets/texture-linen.svg",
-  "assets/texture-emboss.svg",
-  "assets/texture-smooth.svg"
+  "assets/texture-leather.webp",
+  "assets/texture-classic.webp",
+  "assets/texture-cross.webp",
+  "assets/texture-matte.webp",
+  "assets/texture-grain.webp",
+  "assets/texture-linen.webp",
+  "assets/texture-emboss.webp",
+  "assets/texture-smooth.webp"
 ];
 for (const file of requiredArtwork) {
   if (!fs.existsSync(new URL("../" + file, import.meta.url))) {
