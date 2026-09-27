@@ -1394,6 +1394,49 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
   .new-book-presets .preset-note{display:none}
 }
 
+.pro-card{
+  margin:14px 0 0;
+  padding:18px;
+  border:1px solid rgba(15,23,42,.16);
+  border-radius:18px;
+  background:#FAF7F2;
+  color:#0F172A
+}
+.pro-kicker{
+  margin:0 0 4px;
+  color:#C77B7B;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.14em
+}
+.pro-price{
+  margin:4px 0 14px;
+  font-size:20px;
+  font-weight:700
+}
+.pro-features{
+  margin:0 0 16px;
+  padding-left:1.25em;
+  color:rgba(15,23,42,.72);
+  font-size:12px;
+  line-height:1.8
+}
+.pro-buy{
+  width:100%;
+  min-height:48px;
+  border:0;
+  border-radius:999px;
+  background:#C77B7B!important;
+  color:#FAF7F2!important;
+  font:inherit;
+  font-weight:700
+}
+.pro-note{
+  margin:10px 0 0;
+  color:rgba(15,23,42,.52);
+  font-size:10px;
+  line-height:1.6
+}
 </style>
 <style id="native-legal-polish">
 .privacy-copy{display:grid;gap:9px;margin-top:14px}
@@ -1415,6 +1458,77 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
   var DB_VER = 4;
   var MAX_PX = 900;
   var QUALITY = 0.75;
+
+  /* ================= 収益化 =================
+     PWA版だけでWeb決済を案内する。App Store版では外部決済CTAを出さない。
+     Stripe接続とPRO機能が完成するまでは enabled:false のまま公開する。 */
+  var MONETIZATION = {
+    enabled: true,
+    testMode: true,
+    supporterEnabled: true,
+    proName: "PRO ライフタイム",
+    proPriceLabel: "¥1,480 / 買い切り",
+    proCheckoutUrl: "https://buy.stripe.com/test_5kQ7sKerQfDf8Sg9kUeZ200",
+    verifyEndpoint: "https://watashi-no-zukan-verifier-7fp4p1.v2.appdeploy.ai/api/verify",
+    supporterOptions: [
+      { label: "¥500で応援", url: "https://donate.stripe.com/test_8x2bJ083s4YB5G4cx6eZ201" },
+      { label: "¥1,000で応援", url: "https://donate.stripe.com/test_4gM4gy83s0Il5G468IeZ202" }
+    ],
+    features: [
+      "図鑑をPDF・画像で高画質書き出し",
+      "PRO限定の表紙・テーマパック",
+      "共有用のコレクションカード",
+      "今後追加するPRO機能を同じライセンスで利用"
+    ]
+  };
+
+  function canShowWebMonetization(){
+    var nativeApp=window.NativeZukan&&window.NativeZukan.isNative;
+    return !!MONETIZATION.enabled&&!nativeApp
+  }
+
+  function openExternalPurchase(url){
+    if(!url)return false;
+    window.open(url,"_blank","noopener,noreferrer");
+    return true
+  }
+
+  function getProEntitlement(){
+    try{
+      var raw=localStorage.getItem("wz_pro_entitlement");
+      if(!raw)return null;
+      var data=JSON.parse(raw);
+      return data&&data.entitled&&data.plan==="pro_lifetime"?data:null
+    }catch(e){return null}
+  }
+
+  function saveProEntitlement(sessionId){
+    var data={
+      entitled:true,
+      plan:"pro_lifetime",
+      mode:MONETIZATION.testMode?"test":"live",
+      sessionId:sessionId,
+      verifiedAt:new Date().toISOString()
+    };
+    localStorage.setItem("wz_pro_entitlement",JSON.stringify(data));
+    return data
+  }
+
+  function verifyProPurchase(sessionId){
+    if(!sessionId||!MONETIZATION.verifyEndpoint){
+      return Promise.reject(new Error("verification_unavailable"))
+    }
+    var url=MONETIZATION.verifyEndpoint+"?session_id="+encodeURIComponent(sessionId);
+    return fetch(url,{method:"GET",cache:"no-store",credentials:"omit"}).then(function(res){
+      return res.json().then(function(body){
+        if(!res.ok||!body||body.entitled!==true){
+          throw new Error((body&&body.error)||"verification_failed")
+        }
+        saveProEntitlement(sessionId);
+        return body
+      })
+    })
+  }
 
   /* 表紙の色の組み合わせ（9つ）。3つずつ3段に並ぶ。
      似て見えないよう、組ごとに主役の色相を変え、差し色も組ごとに変える。
@@ -3757,6 +3871,97 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
     openSheet(c)
   }
 
+  function openProSheet(){
+    if(!canShowWebMonetization())return;
+    var c=h("div","card");
+    c.setAttribute("role","dialog");
+    c.setAttribute("aria-modal","true");
+    c.append(h("p","pro-kicker","WATASHI NO ZUKAN PRO"),h("h2","display",MONETIZATION.proName));
+    if(MONETIZATION.testMode){
+      var test=h("p","note","現在はStripeのテスト決済です。実際のお金は動きません。");
+      test.style.color="#C77B7B";test.style.fontWeight="700";c.append(test)
+    }
+
+    var box=h("section","pro-card");
+    var entitlement=getProEntitlement();
+    box.append(
+      h("p","note","無料版の基本機能はそのまま。もっと残す・見せるための追加機能です。"),
+      h("div","pro-price",entitlement?"PRO 有効":MONETIZATION.proPriceLabel)
+    );
+
+    var ul=h("ul","pro-features");
+    MONETIZATION.features.forEach(function(x){ul.append(h("li",null,x))});
+    box.append(ul);
+
+    if(!entitlement){
+      var buy=h("button","pro-buy","PROを購入する");
+      buy.type="button";
+      buy.addEventListener("click",function(){
+        if(!openExternalPurchase(MONETIZATION.proCheckoutUrl)){
+          buy.textContent="決済準備中";
+          buy.disabled=true
+        }
+      });
+      box.append(buy,h("p","pro-note","購入画面はStripeの安全な決済ページで開きます。App Store版では別の購入方式を使用します。"))
+    }else{
+      box.append(h("p","pro-note","この端末ではPRO購入が確認済みです。"))
+    }
+    c.append(box);
+
+    if(MONETIZATION.supporterEnabled&&Array.isArray(MONETIZATION.supporterOptions)){
+      var supportTitle=h("p","note","機能購入とは別に、開発を応援できます。");
+      c.append(supportTitle);
+      var acts2=h("div","acts");
+      MONETIZATION.supporterOptions.forEach(function(opt){
+        var support=h("button",null,opt.label);
+        support.type="button";
+        support.addEventListener("click",function(){openExternalPurchase(opt.url)});
+        acts2.append(support)
+      });
+      c.append(acts2)
+    }
+
+    var acts=h("div","acts"),close=h("button",null,"閉じる");
+    close.type="button";close.addEventListener("click",closeSheet);acts.append(close);c.append(acts);
+    openSheet(c)
+  }
+
+  function handlePaymentReturn(){
+    var params=new URLSearchParams(location.search||"");
+    var purchase=params.get("purchase");
+    var support=params.get("support");
+    if(purchase==="success"){
+      var sid=params.get("session_id")||"";
+      try{if(sid)localStorage.setItem("wz_pending_checkout_session",sid)}catch(e){}
+      history.replaceState(null,"",location.pathname+location.hash);
+      setTimeout(function(){
+        var c=h("div","card");
+        c.setAttribute("role","dialog");c.setAttribute("aria-modal","true");
+        c.append(h("h2","display","購入を確認しています"),h("p","note","Stripeの支払い情報を安全に確認しています。"));
+        var status=h("p","note","確認中…");c.append(status);
+        var close=h("button","go","閉じる");close.type="button";close.disabled=true;close.addEventListener("click",closeSheet);c.append(close);
+        openSheet(c);
+        verifyProPurchase(sid).then(function(){
+          status.textContent="支払いを確認しました。PROが有効になりました。";
+          close.disabled=false;
+          nativeHaptic("success")
+        })["catch"](function(){
+          status.textContent="購入確認を完了できませんでした。少し時間をおいてもう一度開いてください。";
+          close.disabled=false
+        })
+      },350)
+    }else if(support==="thanks"){
+      history.replaceState(null,"",location.pathname+location.hash);
+      setTimeout(function(){
+        var c=h("div","card");
+        c.setAttribute("role","dialog");c.setAttribute("aria-modal","true");
+        c.append(h("h2","display","ありがとうございます"),h("p","note","開発サポートのテスト決済が完了しました。"));
+        var close=h("button","go","閉じる");close.type="button";close.addEventListener("click",closeSheet);
+        c.append(close);openSheet(c)
+      },350)
+    }
+  }
+
   function openSupportSheet(){
     var c=h("div","card");
     c.setAttribute("role","dialog");c.setAttribute("aria-modal","true");
@@ -3782,6 +3987,10 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
     row("バックアップ","図鑑・記録・写真をJSONに保存","保存",function(){exportBackup()});
     row("復元","バックアップを追加として読み込む","選ぶ",chooseRestoreFile);
     row("保存状態","この端末の保存状況を確認","確認",function(){go("#/storage")});
+    if(canShowWebMonetization()){
+      var proEntitlement=getProEntitlement();
+      row("PRO","PDF書き出し・限定テーマなどの追加機能",proEntitlement?"有効":MONETIZATION.proPriceLabel,openProSheet)
+    }
     row("プライバシー","保存する情報と端末内データについて","見る",openPrivacySheet);
     row("サポート","使い方や不具合について問い合わせ","開く",openSupportSheet);
     app.append(list,h("div","app-nav-spacer"))
@@ -3808,7 +4017,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
         if (!on) return navigator.storage.persist();
       })["catch"](function () {});
     }
-    return render();
+    return render().then(function(){handlePaymentReturn()});
   })["catch"](function (e) {
     app.replaceChildren();
     app.append(h("h1", "display", "きろくを ひらけませんでした"));

@@ -1,4 +1,4 @@
-const CACHE_NAME = "mitsuketa-zukan-theme-art-v11";
+const CACHE_NAME = "mitsuketa-zukan-theme-art-v12";
 const APP_SHELL = [
   "./",
   "./index.html",
