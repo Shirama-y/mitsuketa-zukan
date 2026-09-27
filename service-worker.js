@@ -1,9 +1,12 @@
-const CACHE_NAME = "mitsuketa-zukan-theme-art-v9";
+const CACHE_NAME = "mitsuketa-zukan-theme-art-v10";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./app-icon.svg",
+  "./icon-512.png",
+  "./icon-192.png",
+  "./apple-touch-icon.png",
   "./assets/library-backdrop.svg",
   "./assets/shelf-wood.svg",
   "./assets/cover-leather.svg",
