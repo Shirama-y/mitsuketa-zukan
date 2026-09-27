@@ -1,4 +1,4 @@
-const CACHE_NAME = "mitsuketa-zukan-theme-art-v17";
+const CACHE_NAME = "mitsuketa-zukan-theme-art-v18";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -13,6 +13,7 @@ const APP_SHELL = [
   "./assets/cover-linen.svg",
   "./assets/cover-grain.svg",
   "./assets/empty-collection.svg",
+  "./assets/checker.svg",
   "./assets/texture-smooth.svg",
   "./assets/texture-emboss.svg",
   "./assets/texture-grain.svg",

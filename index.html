@@ -74,12 +74,7 @@
     margin: 0;
     padding-top: env(safe-area-inset-top, 0px);
     background-color: var(--ground);
-    /* 紙のごく薄いムラ。背景は脇役なので、ここで主張させない。 */
-    background-image:
-      radial-gradient(ellipse 75% 45% at 14% 6%, rgba(255, 255, 255, .8), transparent 72%),
-      radial-gradient(ellipse 55% 35% at 86% 38%, rgba(198, 183, 149, .13), transparent 72%),
-      radial-gradient(ellipse 85% 35% at 42% 94%, rgba(198, 183, 149, .09), transparent 72%),
-      repeating-linear-gradient(98deg, rgba(150, 130, 95, .02) 0 1px, transparent 1px 11px);
+    background-image: none;
     color: var(--ink);
     font-family: var(--kaku);
     font-size: 16px;
@@ -126,7 +121,7 @@
   .bk .cv > svg { display: block; width: 100%; height: 100%; }
   .bk .cv::after {
     content: ""; position: absolute; inset-block: 0; inset-inline-start: 0; width: 6px;
-    background: linear-gradient(to right, rgba(0, 0, 0, .24), rgba(0, 0, 0, .04));
+    background: rgba(0,0,0,.14);
     pointer-events: none;
   }
   .cvplate {
@@ -163,10 +158,7 @@
   /* ================= 図鑑の中（いつでも明るいクラフト紙） ================= */
   .tome {
     position: relative; background-color: var(--tome);
-    background-image:
-      radial-gradient(ellipse 55% 40% at 22% 10%, rgba(255, 255, 255, .6), transparent 72%),
-      radial-gradient(ellipse 45% 30% at 78% 44%, rgba(170, 150, 110, .09), transparent 72%),
-      radial-gradient(ellipse 60% 26% at 42% 88%, rgba(255, 255, 255, .38), transparent 72%);
+    background-image: none;
     border: 1px solid var(--tome-rule); border-radius: 3px;
     box-shadow: var(--lift); padding: 12px;
     max-width: 560px; margin-inline: auto;
@@ -363,11 +355,9 @@
   }
   .col .dot.clear {
     background-color: #ffffff;
-    background-image:
-      linear-gradient(45deg, #c2c7cb 25%, transparent 25% 75%, #c2c7cb 75%),
-      linear-gradient(45deg, #c2c7cb 25%, transparent 25% 75%, #c2c7cb 75%);
+    background-image: url("./assets/checker.svg");
     background-size: 14px 14px;
-    background-position: 0 0, 7px 7px;
+    background-position: 0 0;
   }
   .col .tick {
     width: 25px; height: 25px; border-radius: 50%;
@@ -505,7 +495,7 @@
   .ritual .cv > svg { display: block; width: 100%; height: 100%; }
   .ritual .cv::after {
     content: ""; position: absolute; inset-block: 0; inset-inline-start: 0; width: 6px;
-    background: linear-gradient(to right, rgba(0, 0, 0, .22), rgba(0, 0, 0, .03));
+    background: rgba(0,0,0,.13);
     pointer-events: none;
   }
   /* まだ何も決めていない、まっさらな表紙 */
@@ -667,7 +657,7 @@
 html,body{min-height:100%}
 body{
   background-color:#061521;
-  background-image:linear-gradient(180deg,rgba(7,23,39,.50),rgba(6,21,33,.78)),url("./assets/library-backdrop.svg");
+  background-image:url("./assets/library-backdrop.svg");
   background-size:cover;
   background-position:center top;
   color:var(--ink);font-family:var(--kaku);letter-spacing:.01em
@@ -684,9 +674,7 @@ body{
 .ghost-btn{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:8px 13px;font:inherit;font-size:12px;cursor:pointer}
 .shelf-stage{
     overflow:hidden;
-    background:
-      linear-gradient(180deg,rgba(255,255,255,.015),transparent 32%),
-      linear-gradient(180deg,#081827 0%,#071522 100%);
+    background:#071522;
     border-top:1px solid rgba(255,255,255,.025);
     border-bottom:1px solid rgba(255,255,255,.025)
   }
@@ -703,10 +691,9 @@ body{
 .shelf-lower{
     height:124px;
     position:relative;
-    background:
-      linear-gradient(90deg,transparent 0 8%,rgba(255,255,255,.018) 8% 8.5%,transparent 8.5% 100%)
+    background:transparent
   }
-.shelf-lower::after{content:"";position:absolute;left:18px;right:18px;bottom:24px;height:8px;background:linear-gradient(180deg,#5a3928,#382218);border-radius:2px}
+.shelf-lower::after{content:"";position:absolute;left:18px;right:18px;bottom:24px;height:8px;background:#432a1e;border-radius:2px}
 .spine-card{
   flex:0 0 92px;height:332px;scroll-snap-align:center;border:1px solid rgba(217,184,109,.55);border-radius:5px 8px 8px 5px;
   padding:13px 8px;color:var(--spine-ink,#f4e7bd);background-color:var(--spine-bg,#315b47);background-image:var(--spine-texture,none);
@@ -778,7 +765,7 @@ body{
 }
 .book-face{background-repeat:no-repeat;background-size:cover;background-position:center}
 .book-face::before{content:"";position:absolute;inset:16px;border:1px solid var(--book-accent,#e6c579);opacity:.72}
-.book-face::after{content:"";position:absolute;left:8px;top:0;bottom:0;width:5px;background:linear-gradient(90deg,rgba(0,0,0,.35),rgba(255,255,255,.04))}
+.book-face::after{content:"";position:absolute;left:8px;top:0;bottom:0;width:5px;background:rgba(0,0,0,.16)}
 .book-face.frame-kazari::before{border:3px double var(--book-accent,#e6c579);opacity:.72}
 .book-face.frame-simple::before{inset:21px;border-color:var(--book-accent,#e6c579);opacity:.30}
 .book-face.frame-line::before{inset:12px 18px}
@@ -2881,8 +2868,7 @@ html[data-view="settings"] .app-nav button.active{color:#C77B7B!important}
       b.setAttribute("aria-label", co.name);
       b.setAttribute("aria-pressed", String(i === chosen));
       var wheel = h("span", "wheel");
-      wheel.style.background = "conic-gradient(" + co.set[0] + " 0 33.4%, " +
-        co.set[1] + " 0 66.7%, " + co.set[2] + " 0)";
+      wheel.style.background = co.bg;
       b.append(wheel, h("span", "sn", co.name), h("span", "badge", "\u2713"));
       b.addEventListener("click", function () {
         chosen = i;
