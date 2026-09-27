@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0F172A"><meta name="robots" content="noindex"><title>画像の更新 | わたしの図鑑</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0F172A;color:#FAF7F2;font-family:system-ui,-apple-system,"Hiragino Sans",sans-serif;line-height:1.75}main{max-width:560px;margin:auto;padding:calc(28px + env(safe-area-inset-top)) 24px calc(32px + env(safe-area-inset-bottom))}h1{font-size:25px;line-height:1.5;margin:8px 0 20px}.eyebrow{font-size:11px;letter-spacing:.12em;color:#C77B7B}p{font-size:14px}.muted{color:#FAF7F2b3}#status{padding:16px;border:1px solid #FAF7F24d;border-radius:12px;min-height:84px}#materials{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 8px;margin:24px 0}figure{margin:0;min-width:0}img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:9px;display:block;background:#FAF7F2}figcaption{font-size:10px;margin-top:6px;text-align:center;overflow-wrap:anywhere}a,button{display:block;width:100%;min-height:48px;padding:12px;border:0;border-radius:999px;text-align:center;font:700 15px/1.6 system-ui,-apple-system,"Hiragino Sans",sans-serif;text-decoration:none;background:#C77B7B;color:#0F172A}button{margin-top:12px;cursor:pointer}a[aria-disabled="true"]{pointer-events:none;opacity:.4}[hidden]{display:none!important}.guide{border-top:1px solid #FAF7F233;padding-top:16px;margin-top:24px}small{font-size:11px}
+</style></head><body><main><p class="eyebrow">WATASHI NO ZUKAN · TEXTURES V21</p><h1>新しい素材を反映します</h1><p class="muted">生成した8種類の画像を読み込み、アプリの表示用キャッシュを更新します。図鑑・写真・購入情報は削除しません。</p><p id="status" role="status" aria-live="polite">画像を確認しています…</p><div id="materials"></div><a id="open" href="./?v=textures-v21#/" aria-disabled="true" tabindex="-1">アプリを開く</a><button id="retry" hidden>もう一度確認する</button><div class="guide"><p>素材の確認は<br><strong>図鑑 → デザインを編集 → こだわり設定を開く</strong><br>から行えます。</p><small class="muted">ホーム画面に追加済みの場合は、更新後にそのアプリを閉じて開き直してください。再インストールは不要です。</small></div></main>
+<script>
+(() => {
+  const VERSION = "textures-v21";
+  const textures = [["leather","レザー"],["crosshatch","クロスハッチ"],["woven","織物"],["paper","ペーパー"],["grain","グレイン"],["linen","リネン"],["emboss","エンボス"],["smooth","スムース"]];
+  const status = document.getElementById("status"), open = document.getElementById("open"), retry = document.getElementById("retry"), materials = document.getElementById("materials");
+  const objectUrls = [];
+  function withTimeout(promise, ms) { return new Promise((resolve,reject) => { const timer=setTimeout(() => reject(new Error("接続がタイムアウトしました。")),ms); Promise.resolve(promise).then(value => {clearTimeout(timer);resolve(value);}, error => {clearTimeout(timer);reject(error);}); }); }
+  async function read(url) { const controller = new AbortController(); const timer=setTimeout(() => controller.abort(),15000); try { const response = await fetch(url,{cache:"no-store",signal:controller.signal}); if(!response.ok) throw new Error("公開ファイルの読み込みに失敗しました。"); return response; } finally {clearTimeout(timer);} }
+  async function versionOf(worker) { if(!worker) return null; const channel = new MessageChannel(); return new Promise(resolve => { const finish = value => {clearTimeout(timer);channel.port1.close();resolve(value);}; const timer=setTimeout(() => finish(null),750); channel.port1.onmessage = event => finish(event.data && event.data.version); worker.postMessage({type:"GET_VERSION"},[channel.port2]); }); }
+  async function run() {
+    retry.hidden=true;open.setAttribute("aria-disabled","true");open.tabIndex=-1;materials.replaceChildren();objectUrls.splice(0).forEach(URL.revokeObjectURL);
+    status.textContent="画像を確認しています…";
+    try {
+      const html = await (await read("./index.html?v="+VERSION)).text();
+      for (const [id] of textures) if(!html.includes("./assets/texture-"+id+".webp")) throw new Error("新しい表示設定の公開を待っています。");
+      let count=0;
+      await Promise.all(textures.map(async ([id,label]) => {
+        const figure=document.createElement("figure"),img=document.createElement("img"),caption=document.createElement("figcaption");img.alt=label+"の生成素材";caption.textContent=label;figure.append(img,caption);materials.append(figure);
+        const response=await read("./assets/texture-"+id+".webp?v="+VERSION);
+        const blob=await response.blob(), url=URL.createObjectURL(blob);objectUrls.push(url);img.src=url;
+        await withTimeout(img.decode(),10000);if(!img.naturalWidth) throw new Error("素材画像を表示できませんでした。");
+        count++;status.textContent="画像を確認しました（"+count+" / 8）";
+      }));
+      if(!("serviceWorker" in navigator)) throw new Error("このブラウザではアプリ更新を利用できません。Safariで開いてください。");
+      status.textContent="8種類の画像を確認しました。アプリの表示を更新しています…";
+      const registration=await withTimeout(navigator.serviceWorker.register("./service-worker.js",{updateViaCache:"none"}),20000);
+      await withTimeout(registration.update(),20000);
+      let applied=false;
+      for(let i=0;i<40;i++) { if(await versionOf(registration.active)===VERSION){applied=true;break;} await new Promise(resolve=>setTimeout(resolve,500)); }
+      if(!applied) throw new Error("更新の完了を確認できませんでした。少し待って再試行してください。");
+      await read("./index.html?v="+VERSION);
+      status.textContent="画像8種類の読み込みと、表示用キャッシュの更新が完了しました。";
+      open.removeAttribute("aria-disabled");open.removeAttribute("tabindex");
+    } catch(error) {status.textContent=(error && error.name==="AbortError" ? "通信がタイムアウトしました。" : error.message || "更新できませんでした。")+" 保存済みの図鑑・写真は変更していません。";retry.hidden=false;}
+  }
+  retry.addEventListener("click",run);run();
+})();
+</script></body></html>
