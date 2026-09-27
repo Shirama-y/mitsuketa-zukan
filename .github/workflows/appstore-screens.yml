@@ -1,0 +1,66 @@
+name: App Store screenshots
+
+concurrency:
+  group: appstore-screens-native-v1
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - native-app-v1
+    paths:
+      - "index.html"
+      - "assets/**"
+      - "tools/appstore-screens.mjs"
+      - ".github/workflows/appstore-screens.yml"
+
+jobs:
+  screenshots:
+    name: Generate 6.9-inch screenshots
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get source
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright
+        run: |
+          npm install playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Start app
+        run: |
+          python3 -m http.server 8777 > /tmp/zukan-appstore-server.log 2>&1 &
+          sleep 2
+
+      - name: Generate screenshots
+        run: node tools/appstore-screens.mjs
+
+      - name: Verify exact App Store size
+        run: |
+          python3 - <<'PY'
+          import glob, struct
+          paths=sorted(glob.glob('/tmp/appstore-*.png'))
+          assert len(paths)==5, f'Expected 5 screenshots, got {len(paths)}'
+          for p in paths:
+              with open(p,'rb') as f:
+                  sig=f.read(8)
+                  assert sig==b'\x89PNG\r\n\x1a\n', f'{p}: not PNG'
+                  length=struct.unpack('>I',f.read(4))[0]
+                  kind=f.read(4)
+                  assert kind==b'IHDR', f'{p}: missing IHDR'
+                  width,height=struct.unpack('>II',f.read(8))
+              assert (width,height)==(1290,2796), f'{p}: {(width,height)}'
+              print(p,(width,height))
+          PY
+
+      - name: Upload App Store screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-store-screenshots-ja-JP-1290x2796
+          path: /tmp/appstore-*.png
+          retention-days: 30

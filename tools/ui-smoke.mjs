@@ -40,7 +40,32 @@ const page = await browser.newPage({ viewport: { width: 375, height: 812 } });
 try {
   await page.goto(BASE, { waitUntil: "networkidle" });
 
-  await page.locator(".new-spine").click();
+  const createFirst = page.locator(".library-start");
+  if (await createFirst.count()) {
+    const welcomeArt = page.locator(".library-empty-art");
+    await welcomeArt.waitFor();
+    const welcomeOk = await welcomeArt.evaluate(img =>
+      img instanceof HTMLImageElement &&
+      img.complete &&
+      img.naturalWidth > 0 &&
+      img.getAttribute("src")?.includes("ui-welcome-hero.svg")
+    );
+    if (!welcomeOk) throw new Error("Welcome artwork failed to load");
+    await createFirst.click();
+  } else {
+    await page.locator(".library-add").click();
+  }
+
+  const newBookArt = page.locator(".new-book-art");
+  await newBookArt.waitFor();
+  const newBookArtOk = await newBookArt.evaluate(img =>
+    img instanceof HTMLImageElement &&
+    img.complete &&
+    img.naturalWidth > 0 &&
+    img.getAttribute("src")?.includes("ui-discovery-cluster.svg")
+  );
+  if (!newBookArtOk) throw new Error("New-book artwork failed to load");
+
   await page.locator("#new-title").fill("草花図鑑");
   await page.getByRole("button", { name: "この図鑑をつくる" }).click();
 
@@ -49,6 +74,16 @@ try {
   await page.screenshot({ path: "/tmp/zukan-cover-375.png", fullPage: true });
   await page.getByRole("button", { name: /この図鑑をひらく/ }).click();
   await page.waitForURL(/\/list$/);
+
+  const emptyAlbumArt = page.locator(".empty-art");
+  await emptyAlbumArt.waitFor();
+  const emptyAlbumOk = await emptyAlbumArt.evaluate(img =>
+    img instanceof HTMLImageElement &&
+    img.complete &&
+    img.naturalWidth > 0 &&
+    img.getAttribute("src")?.includes("ui-empty-album.svg")
+  );
+  if (!emptyAlbumOk) throw new Error("Empty-album artwork failed to load");
 
   const [chooser] = await Promise.all([
     page.waitForEvent("filechooser"),
@@ -69,9 +104,11 @@ try {
 
   await page.screenshot({ path: "/tmp/zukan-detail-375.png", fullPage: true });
 
-  await page.goto(BASE + "#/", { waitUntil: "networkidle" });
+  await page.goto(BASE + "#/settings", { waitUntil: "networkidle" });
+  await page.waitForURL(/#\/settings$/);
+  const backupRow = page.locator(".settings-row").filter({ hasText: "バックアップ" }).first();
   const downloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: "バックアップ" }).click();
+  await backupRow.getByRole("button", { name: "保存" }).click();
   const download = await downloadPromise;
   const suggested = download.suggestedFilename();
   if (!suggested.endsWith(".json")) throw new Error("Backup download is not JSON");
@@ -83,6 +120,17 @@ try {
   // Search screen opens from bottom nav.
   await page.locator("#app-nav button").nth(1).click();
   await page.waitForURL(/#\/search$/);
+
+  const searchArt = page.locator(".search-hero-art");
+  await searchArt.waitFor();
+  const searchArtOk = await searchArt.evaluate(img =>
+    img instanceof HTMLImageElement &&
+    img.complete &&
+    img.naturalWidth > 0 &&
+    img.getAttribute("src")?.includes("ui-discovery-cluster.svg")
+  );
+  if (!searchArtOk) throw new Error("Search artwork failed to load");
+
   await page.locator(".global-search input").fill("たんぽぽ");
   await page.getByText("たんぽぽ", { exact: true }).waitFor();
 
@@ -91,11 +139,27 @@ try {
   await page.waitForURL(/#\/collections$/);
   await page.locator(".book-grid-title", { hasText: "草花図鑑" }).first().waitFor();
 
-  // Settings screen exposes backup and restore.
+  // Settings screen exposes backup, restore, and a real-image PRO sheet.
   await page.locator("#app-nav button").nth(3).click();
   await page.waitForURL(/#\/settings$/);
   await page.getByText("バックアップ", { exact: true }).waitFor();
   await page.getByText("復元", { exact: true }).waitFor();
+
+  const proRow = page.locator(".settings-row").filter({ hasText: "PRO" }).first();
+  if (await proRow.count()) {
+    await proRow.getByRole("button").click();
+    const proArt = page.locator(".pro-hero-art");
+    await proArt.waitFor();
+    await page.waitForFunction(() => {
+      const img = document.querySelector(".pro-hero-art");
+      return img instanceof HTMLImageElement && img.complete && img.naturalWidth > 0;
+    });
+    const proArtSrc = await proArt.getAttribute("src");
+    if (!proArtSrc?.includes("ui-pro-hero.svg")) {
+      throw new Error("PRO artwork source is incorrect");
+    }
+    await page.getByRole("button", { name: "閉じる" }).last().click();
+  }
 
   await page.goto(BASE + "#/", { waitUntil: "networkidle" });
   await page.locator(".spine-card:not(.new-spine)").first().click();
@@ -111,6 +175,73 @@ try {
   await page.locator(".cover-screen").waitFor();
   await page.getByRole("button", { name: "デザインを編集" }).click();
   await page.locator(".button-theme-choice.active", { hasText: "ネイビー" }).waitFor();
+
+  // Regression: leather/linen texture must never lock the selected cover color.
+  await page.locator(".advanced-toggle").click();
+  const previewFace = page.locator(".design-preview .book-face");
+
+  const colorChoices = page.locator("[data-color]");
+  if (await colorChoices.count() < 3) {
+    throw new Error("Expected at least three cover colors");
+  }
+
+  await colorChoices.nth(1).click();
+  const firstColor = await previewFace.evaluate(
+    el => getComputedStyle(el).backgroundColor
+  );
+
+  await page.locator('[data-theme="5"]').click();
+  const linenColor = await previewFace.evaluate(
+    el => getComputedStyle(el).backgroundColor
+  );
+  const linenTexture = await previewFace.evaluate(
+    el => getComputedStyle(el).backgroundImage
+  );
+
+  if (linenColor !== firstColor) {
+    throw new Error("Linen texture changed the selected cover color");
+  }
+  if (!linenTexture || linenTexture === "none" || !linenTexture.includes("texture-linen.webp")) {
+    throw new Error("Linen WebP texture is not visible");
+  }
+
+  await colorChoices.nth(2).click();
+  const secondColor = await previewFace.evaluate(
+    el => getComputedStyle(el).backgroundColor
+  );
+  if (secondColor === firstColor) {
+    throw new Error("Changing cover color had no visual effect with linen texture");
+  }
+
+  await page.locator('[data-theme="0"]').click();
+  const leatherColor = await previewFace.evaluate(
+    el => getComputedStyle(el).backgroundColor
+  );
+  const leatherTexture = await previewFace.evaluate(
+    el => getComputedStyle(el).backgroundImage
+  );
+
+  if (leatherColor !== secondColor) {
+    throw new Error("Leather texture changed the selected cover color");
+  }
+  if (!leatherTexture || leatherTexture === "none" || leatherTexture === linenTexture || !leatherTexture.includes("texture-leather.webp")) {
+    throw new Error("Leather WebP texture is missing or indistinguishable from linen");
+  }
+
+  // Save and reopen to verify the independent color/texture choices persist.
+  await page.getByRole("button", { name: "保存" }).click();
+  await page.locator(".cover-screen").waitFor();
+  await page.getByRole("button", { name: "デザインを編集" }).click();
+  await page.locator(".advanced-toggle").click();
+  await page.locator('[data-theme="0"].active').waitFor();
+  await page.locator('[data-color].active').nth(0).waitFor();
+
+  const persistedColor = await page.locator(".design-preview .book-face").evaluate(
+    el => getComputedStyle(el).backgroundColor
+  );
+  if (persistedColor !== secondColor) {
+    throw new Error("Cover color did not persist after saving");
+  }
 
   console.log("OK: UI smoke test passed");
 } catch (error) {

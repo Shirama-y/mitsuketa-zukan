@@ -21,3 +21,9 @@ chrome-profile/
 prof-*/
 
 .DS_Store
+node_modules/
+www/
+ios/Pods/
+ios/App/DerivedData/
+android/.gradle/
+android/app/build/

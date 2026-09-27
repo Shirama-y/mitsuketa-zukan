@@ -1,19 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 280">
-<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop stop-color="#0d2135"/>
-    <stop offset="1" stop-color="#071727"/>
-  </linearGradient>
-</defs>
-<rect width="520" height="280" rx="28" fill="url(#bg)"/>
-<g transform="translate(260 138)">
-  <rect x="-105" y="-80" width="86" height="126" rx="7" fill="#315b47"/>
-  <rect x="18" y="-92" width="92" height="138" rx="7" fill="#7b4149"/>
-  <path d="M-91-62h58M32-73h62" stroke="#d9b86d" stroke-width="3" opacity=".8"/>
-  <path d="M-62-22c24 16 26 45 1 63-25-18-22-47-1-63Z" fill="none" stroke="#e9d8a6" stroke-width="3"/>
-  <path d="M64-20c18 0 31 14 31 31S82 42 64 42 33 28 33 11 46-20 64-20Z" fill="none" stroke="#efc2c8" stroke-width="3"/>
-  <path d="M64-10v43M43 11h42" stroke="#efc2c8" stroke-width="3" stroke-linecap="round"/>
+<rect width="520" height="280" rx="28" fill="#0F172A"/>
+<path d="M64 221H456" stroke="#FAF7F2" stroke-width="3" opacity=".35"/>
+<g transform="translate(145 58)">
+  <path d="M0 8h78v132H0c-8 0-14-6-14-14V22C-14 14-8 8 0 8Z" fill="#C77B7B" stroke="#FAF7F2" stroke-width="3"/>
+  <path d="M-3 8v132" stroke="#FAF7F2" stroke-width="2"/>
+  <rect x="10" y="24" width="54" height="92" fill="none" stroke="#FAF7F2" stroke-width="2"/>
+  <path d="M37 47c-14 3-22 15-20 28 2 13 14 21 27 19-8-5-12-13-10-22 1-8 6-15 14-19-3-4-7-6-11-6Z" fill="#FAF7F2"/>
 </g>
-<path d="M80 222H440" stroke="#6a4430" stroke-width="12" stroke-linecap="round"/>
-<path d="M80 217H440" stroke="#9a6746" stroke-width="2" opacity=".65"/>
+<g transform="translate(288 45)">
+  <path d="M0 8h86v145H0c-8 0-14-6-14-14V22C-14 14-8 8 0 8Z" fill="#FAF7F2" stroke="#C77B7B" stroke-width="3"/>
+  <path d="M-3 8v145" stroke="#C77B7B" stroke-width="2"/>
+  <rect x="12" y="26" width="60" height="101" fill="none" stroke="#0F172A" stroke-width="2"/>
+  <circle cx="42" cy="67" r="22" fill="#C77B7B"/>
+  <circle cx="34" cy="63" r="2.8" fill="#0F172A"/><circle cx="50" cy="63" r="2.8" fill="#0F172A"/>
+  <ellipse cx="42" cy="74" rx="10" ry="7" fill="#FAF7F2"/>
+  <path d="M37 74h10M42 74v5" stroke="#0F172A" stroke-width="2" stroke-linecap="round"/>
+</g>
+<path d="M79 223h362" stroke="#C77B7B" stroke-width="10" stroke-linecap="round"/>
+<path d="M79 218h362" stroke="#FAF7F2" stroke-width="2" opacity=".55"/>
+<path d="M76 57h18M85 48v18M423 67h18M432 58v18" stroke="#C77B7B" stroke-width="2.5" stroke-linecap="round"/>
 </svg>

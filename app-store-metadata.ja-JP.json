@@ -1,0 +1,15 @@
+{
+  "locale": "ja-JP",
+  "name": "わたしの図鑑",
+  "subtitle": "好きなものを、自分だけの図鑑に。",
+  "primaryCategory": "LIFESTYLE",
+  "secondaryCategory": "EDUCATION",
+  "version": "1.0.0",
+  "bundleId": "com.dodolabo.mitsuketazukan",
+  "supportUrl": "https://shirama-y.github.io/mitsuketa-zukan/support.html",
+  "privacyPolicyUrl": "https://shirama-y.github.io/mitsuketa-zukan/privacy.html",
+  "promotionalText": "写真と言葉で、好きなものを一冊ずつ集めていく自分だけの図鑑アプリ。",
+  "description": "「わたしの図鑑」は、身近なものや大切なコレクションを、写真と言葉で一冊ずつ残していく、自分だけの図鑑アプリです。\n\n草花や生きものはもちろん、レゴ、シール、ぬいぐるみ、雑貨、旅先で見つけたものなど、集めたいものを自由なテーマで記録できます。\n\n図鑑ごとに表紙や色、アイコン、ボタンテーマを変更でき、お気に入りや検索を使って自分らしいコレクションを育てていけます。\n\n主な機能\n・写真からコレクションを登録\n・複数の図鑑を作成\n・名前、漢字・別名、日付、場所、タグを記録\n・観察メモとストーリーを分けて保存\n・お気に入り\n・全図鑑横断検索\n・表紙、カラー、素材、装丁、アイコンを変更\n・ネイビー / ピンク / アイボリーのボタンテーマ\n・バックアップ / 復元\n・端末内保存\n・オフライン利用",
+  "keywords": "図鑑,コレクション,写真,記録,観察,整理,アルバム,趣味,植物,ぬいぐるみ",
+  "copyright": "DODOLABO / KASC"
+}

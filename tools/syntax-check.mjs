@@ -53,4 +53,39 @@ for (const file of ["service-worker.js", "app-icon.svg"]) {
   }
 }
 
+/* UIの画像はCSSで描かず、独立した画像ファイルとして管理する。 */
+const forbiddenCssImageFunctions = [
+  "linear-gradient(",
+  "radial-gradient(",
+  "conic-gradient(",
+  "repeating-linear-gradient("
+];
+for (const marker of forbiddenCssImageFunctions) {
+  if (html.includes(marker)) {
+    console.error("NG: CSSで画像・柄を生成しています: " + marker);
+    process.exit(1);
+  }
+}
+
+const requiredArtwork = [
+  "assets/ui-welcome-hero.svg",
+  "assets/ui-empty-album.svg",
+  "assets/ui-pro-hero.svg",
+  "assets/ui-discovery-cluster.svg",
+  "assets/texture-leather.webp",
+  "assets/texture-classic.webp",
+  "assets/texture-cross.webp",
+  "assets/texture-matte.webp",
+  "assets/texture-grain.webp",
+  "assets/texture-linen.webp",
+  "assets/texture-emboss.webp",
+  "assets/texture-smooth.webp"
+];
+for (const file of requiredArtwork) {
+  if (!fs.existsSync(new URL("../" + file, import.meta.url))) {
+    console.error("NG: UI画像が見つかりません: " + file);
+    process.exit(1);
+  }
+}
+
 console.log("OK: 基本チェックを通過しました");
