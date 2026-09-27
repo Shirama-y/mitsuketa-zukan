@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1800" preserveAspectRatio="xMidYMid slice">
+<defs>
+<radialGradient id="g1" cx="50%" cy="10%" r="90%"><stop offset="0" stop-color="#173653"/><stop offset=".45" stop-color="#0b2237"/><stop offset="1" stop-color="#06131f"/></radialGradient>
+<filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" seed="7"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 .035 0"/></filter>
+</defs>
+<rect width="1200" height="1800" fill="url(#g1)"/>
+<rect width="1200" height="1800" filter="url(#grain)" opacity=".38"/>
+<ellipse cx="600" cy="120" rx="480" ry="280" fill="#fff" opacity=".018"/>
+</svg>
