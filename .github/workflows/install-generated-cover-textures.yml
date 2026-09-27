@@ -1,0 +1,96 @@
+name: Install generated cover textures
+
+on:
+  push:
+    branches:
+      - native-app-v1
+    paths:
+      - "_texture_chunks/READY"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: install-generated-cover-textures
+  cancel-in-progress: false
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get source
+        uses: actions/checkout@v4
+        with:
+          ref: native-app-v1
+          fetch-depth: 0
+
+      - name: Decode generated textures
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat _texture_chunks/part-* | base64 --decode > /tmp/generated-textures.tar.gz
+          tar -xzf /tmp/generated-textures.tar.gz -C assets
+          for f in assets/texture-{leather,classic,cross,matte,grain,linen,emboss,smooth}.webp; do
+            test -s "$f"
+            test "$(head -c 4 "$f")" = "RIFF"
+            test "$(dd if="$f" bs=1 skip=8 count=4 status=none)" = "WEBP"
+          done
+
+      - name: Wire image textures into app
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          names = ["leather","classic","cross","matte","grain","linen","emboss","smooth"]
+
+          index = Path("index.html")
+          s = index.read_text(encoding="utf-8")
+          for name in names:
+              s = s.replace(f'./assets/texture-{name}.svg', f'./assets/texture-{name}.webp')
+
+          s = s.replace(
+              'background-color:var(--spine-bg,#315b47);background-image:var(--spine-texture,none);',
+              'background-color:var(--spine-bg,#315b47);background-image:var(--spine-texture,none);background-repeat:no-repeat;background-size:cover;background-position:center;background-blend-mode:soft-light;'
+          )
+          s = s.replace(
+              'background-color:var(--book-bg);background-image:var(--book-texture,none);color:var(--book-accent,#e6c579);',
+              'background-color:var(--book-bg);background-image:var(--book-texture,none);background-blend-mode:soft-light;color:var(--book-accent,#e6c579);'
+          )
+          s = s.replace(
+              'background-repeat:repeat!important;background-size:auto!important;',
+              'background-repeat:no-repeat!important;background-size:cover!important;background-position:center!important;background-blend-mode:soft-light!important;'
+          )
+          index.write_text(s, encoding="utf-8")
+
+          sw = Path("service-worker.js")
+          w = sw.read_text(encoding="utf-8")
+          w = re.sub(r'const CACHE_NAME = "mitsuketa-zukan-theme-art-v\d+";', 'const CACHE_NAME = "mitsuketa-zukan-theme-art-v20";', w)
+          for name in names:
+              w = w.replace(f'./assets/texture-{name}.svg', f'./assets/texture-{name}.webp')
+          sw.write_text(w, encoding="utf-8")
+
+          check = Path("tools/syntax-check.mjs")
+          c = check.read_text(encoding="utf-8")
+          for name in names:
+              c = c.replace(f'assets/texture-{name}.svg', f'assets/texture-{name}.webp')
+          check.write_text(c, encoding="utf-8")
+          PY
+
+      - name: Remove temporary and old texture sources
+        shell: bash
+        run: |
+          rm -f assets/texture-{leather,classic,cross,matte,grain,linen,emboss,smooth}.svg
+          rm -rf _texture_chunks
+          rm -f .github/workflows/install-generated-cover-textures.yml
+
+      - name: Commit generated textures
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Install generated cover texture images"
+          git push origin HEAD:native-app-v1
