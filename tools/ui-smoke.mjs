@@ -48,9 +48,9 @@ try {
       img instanceof HTMLImageElement &&
       img.complete &&
       img.naturalWidth > 0 &&
-      img.getAttribute("src")?.includes("welcome-discovery.webp")
+      img.getAttribute("src")?.includes("ui-welcome-hero.svg")
     );
-    if (!welcomeOk) throw new Error("Generated welcome WebP failed to load");
+    if (!welcomeOk) throw new Error("Welcome artwork failed to load");
     await createFirst.click();
   } else {
     await page.locator(".library-add").click();
@@ -62,9 +62,9 @@ try {
     img instanceof HTMLImageElement &&
     img.complete &&
     img.naturalWidth > 0 &&
-    img.getAttribute("src")?.includes("collection-collage.webp")
+    img.getAttribute("src")?.includes("ui-discovery-cluster.svg")
   );
-  if (!newBookArtOk) throw new Error("Generated new-book WebP failed to load");
+  if (!newBookArtOk) throw new Error("New-book artwork failed to load");
 
   await page.locator("#new-title").fill("草花図鑑");
   await page.getByRole("button", { name: "この図鑑をつくる" }).click();
@@ -81,9 +81,9 @@ try {
     img instanceof HTMLImageElement &&
     img.complete &&
     img.naturalWidth > 0 &&
-    img.getAttribute("src")?.includes("empty-album.webp")
+    img.getAttribute("src")?.includes("ui-empty-album.svg")
   );
-  if (!emptyAlbumOk) throw new Error("Generated empty-album WebP failed to load");
+  if (!emptyAlbumOk) throw new Error("Empty-album artwork failed to load");
 
   const [chooser] = await Promise.all([
     page.waitForEvent("filechooser"),
@@ -127,9 +127,9 @@ try {
     img instanceof HTMLImageElement &&
     img.complete &&
     img.naturalWidth > 0 &&
-    img.getAttribute("src")?.includes("collection-collage.webp")
+    img.getAttribute("src")?.includes("ui-discovery-cluster.svg")
   );
-  if (!searchArtOk) throw new Error("Generated search WebP failed to load");
+  if (!searchArtOk) throw new Error("Search artwork failed to load");
 
   await page.locator(".global-search input").fill("たんぽぽ");
   await page.getByText("たんぽぽ", { exact: true }).waitFor();
@@ -154,9 +154,9 @@ try {
       img instanceof HTMLImageElement &&
       img.complete &&
       img.naturalWidth > 0 &&
-      img.getAttribute("src")?.includes("pro-premium.webp")
+      img.getAttribute("src")?.includes("ui-pro-hero.svg")
     );
-    if (!proArtOk) throw new Error("Generated PRO WebP failed to load");
+    if (!proArtOk) throw new Error("PRO artwork failed to load");
     await page.getByRole("button", { name: "閉じる" }).last().click();
   }
 
