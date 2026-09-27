@@ -42,10 +42,30 @@ try {
 
   const createFirst = page.locator(".library-start");
   if (await createFirst.count()) {
+    const welcomeArt = page.locator(".library-empty-art");
+    await welcomeArt.waitFor();
+    const welcomeOk = await welcomeArt.evaluate(img =>
+      img instanceof HTMLImageElement &&
+      img.complete &&
+      img.naturalWidth > 0 &&
+      img.getAttribute("src")?.includes("welcome-discovery.webp")
+    );
+    if (!welcomeOk) throw new Error("Generated welcome WebP failed to load");
     await createFirst.click();
   } else {
     await page.locator(".library-add").click();
   }
+
+  const newBookArt = page.locator(".new-book-art");
+  await newBookArt.waitFor();
+  const newBookArtOk = await newBookArt.evaluate(img =>
+    img instanceof HTMLImageElement &&
+    img.complete &&
+    img.naturalWidth > 0 &&
+    img.getAttribute("src")?.includes("collection-collage.webp")
+  );
+  if (!newBookArtOk) throw new Error("Generated new-book WebP failed to load");
+
   await page.locator("#new-title").fill("草花図鑑");
   await page.getByRole("button", { name: "この図鑑をつくる" }).click();
 
@@ -54,6 +74,16 @@ try {
   await page.screenshot({ path: "/tmp/zukan-cover-375.png", fullPage: true });
   await page.getByRole("button", { name: /この図鑑をひらく/ }).click();
   await page.waitForURL(/\/list$/);
+
+  const emptyAlbumArt = page.locator(".empty-art");
+  await emptyAlbumArt.waitFor();
+  const emptyAlbumOk = await emptyAlbumArt.evaluate(img =>
+    img instanceof HTMLImageElement &&
+    img.complete &&
+    img.naturalWidth > 0 &&
+    img.getAttribute("src")?.includes("empty-album.webp")
+  );
+  if (!emptyAlbumOk) throw new Error("Generated empty-album WebP failed to load");
 
   const [chooser] = await Promise.all([
     page.waitForEvent("filechooser"),
@@ -90,6 +120,17 @@ try {
   // Search screen opens from bottom nav.
   await page.locator("#app-nav button").nth(1).click();
   await page.waitForURL(/#\/search$/);
+
+  const searchArt = page.locator(".search-hero-art");
+  await searchArt.waitFor();
+  const searchArtOk = await searchArt.evaluate(img =>
+    img instanceof HTMLImageElement &&
+    img.complete &&
+    img.naturalWidth > 0 &&
+    img.getAttribute("src")?.includes("collection-collage.webp")
+  );
+  if (!searchArtOk) throw new Error("Generated search WebP failed to load");
+
   await page.locator(".global-search input").fill("たんぽぽ");
   await page.getByText("たんぽぽ", { exact: true }).waitFor();
 
@@ -98,11 +139,26 @@ try {
   await page.waitForURL(/#\/collections$/);
   await page.locator(".book-grid-title", { hasText: "草花図鑑" }).first().waitFor();
 
-  // Settings screen exposes backup and restore.
+  // Settings screen exposes backup, restore, and a real-image PRO sheet.
   await page.locator("#app-nav button").nth(3).click();
   await page.waitForURL(/#\/settings$/);
   await page.getByText("バックアップ", { exact: true }).waitFor();
   await page.getByText("復元", { exact: true }).waitFor();
+
+  const proRow = page.locator(".settings-row").filter({ hasText: "PRO" }).first();
+  if (await proRow.count()) {
+    await proRow.getByRole("button").click();
+    const proArt = page.locator(".pro-hero-art");
+    await proArt.waitFor();
+    const proArtOk = await proArt.evaluate(img =>
+      img instanceof HTMLImageElement &&
+      img.complete &&
+      img.naturalWidth > 0 &&
+      img.getAttribute("src")?.includes("pro-premium.webp")
+    );
+    if (!proArtOk) throw new Error("Generated PRO WebP failed to load");
+    await page.getByRole("button", { name: "閉じる" }).last().click();
+  }
 
   await page.goto(BASE + "#/", { waitUntil: "networkidle" });
   await page.locator(".spine-card:not(.new-spine)").first().click();
