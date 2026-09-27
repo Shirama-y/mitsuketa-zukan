@@ -68,10 +68,10 @@ for (const marker of forbiddenCssImageFunctions) {
 }
 
 const requiredArtwork = [
-  "assets/welcome-discovery.webp",
-  "assets/empty-album.webp",
-  "assets/pro-premium.webp",
-  "assets/collection-collage.webp",
+  "assets/ui-welcome-hero.svg",
+  "assets/ui-empty-album.svg",
+  "assets/ui-pro-hero.svg",
+  "assets/ui-discovery-cluster.svg",
   "assets/texture-leather.svg",
   "assets/texture-classic.svg",
   "assets/texture-cross.svg",
