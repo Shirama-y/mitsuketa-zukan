@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
+<g transform="translate(350 233)">
+  <path d="M0 44c0-25 20-45 45-45h227c25 0 45 20 45 45v177c0 25-20 45-45 45H45c-25 0-45-20-45-45Z" fill="#C77B7B"/>
+  <rect x="36" y="28" width="96" height="28" rx="14" fill="#FAF7F2"/>
+  <circle cx="167" cy="139" r="83" fill="#FAF7F2"/>
+  <circle cx="167" cy="139" r="60" fill="#0F172A"/>
+  <circle cx="146" cy="116" r="15" fill="#FAF7F2" opacity=".55"/>
+  <circle cx="263" cy="70" r="17" fill="#FAF7F2"/>
+</g>
+<g transform="translate(105 63) rotate(-8 97 112)">
+  <rect width="194" height="224" rx="22" fill="#FAF7F2"/>
+  <rect x="24" y="24" width="146" height="153" rx="12" fill="#C77B7B" opacity=".22"/>
+  <circle cx="97" cy="97" r="45" fill="#C77B7B"/>
+  <path d="M97 49v95M49 97h95M63 63l68 68M131 63l-68 68" stroke="#FAF7F2" stroke-width="9" stroke-linecap="round"/>
+</g>
+<g transform="translate(281 44) rotate(6 92 106)">
+  <rect width="184" height="212" rx="22" fill="#FAF7F2"/>
+  <rect x="22" y="22" width="140" height="148" rx="12" fill="#0F172A" opacity=".13"/>
+  <path d="M23 143 70 91l30 25 28-44 34 71Z" fill="#0F172A"/>
+  <circle cx="132" cy="56" r="17" fill="#C77B7B"/>
+</g>
+<g transform="translate(520 54) rotate(11 85 100)">
+  <rect width="170" height="200" rx="20" fill="#FAF7F2"/>
+  <circle cx="83" cy="92" r="50" fill="#0F172A"/>
+  <path d="M48 83c21-25 53-23 73-3-15 31-55 37-73 3Z" fill="#FAF7F2"/>
+  <path d="M75 76c12 1 23 7 31 15-15 10-29 10-44 4 3-9 7-15 13-19Z" fill="#C77B7B"/>
+</g>
+<g fill="#C77B7B">
+  <path d="M96 358c55-16 95-3 119 38-54 16-94 4-119-38Z"/>
+  <path d="M676 321c-47-16-80-7-102 27 46 18 81 10 102-27Z"/>
+  <circle cx="218" cy="405" r="18"/><circle cx="248" cy="386" r="13"/><circle cx="254" cy="421" r="12"/>
+</g>
+<g fill="#0F172A"><path d="M115 362c42 38 68 67 84 101-45-24-77-53-84-101Z"/><path d="M618 335c-31 29-50 55-61 83 35-20 59-46 61-83Z"/></g>
+<g fill="#FAF7F2"><path d="M81 100h12v19h19v12H93v19H81v-19H62v-12h19ZM703 152h10v16h16v10h-16v16h-10v-16h-16v-10h16Z"/><path d="M314 354h9v14h14v9h-14v14h-9v-14h-14v-9h14Z"/></g>
+</svg>
