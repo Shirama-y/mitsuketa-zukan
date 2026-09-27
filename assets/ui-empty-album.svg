@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
+<path d="M110 410c111 41 474 42 578 0" stroke="#C77B7B" stroke-width="18" stroke-linecap="round" opacity=".7"/>
+<g transform="translate(95 64)">
+  <path d="M0 55c93-35 197-25 305 25v313c-111-42-210-48-305-17Z" fill="#0F172A"/>
+  <path d="M610 55c-93-35-197-25-305 25v313c111-42 210-48 305-17Z" fill="#0F172A"/>
+  <path d="M25 65c85-26 174-12 266 31v262c-95-35-184-40-266-14Z" fill="#FAF7F2"/>
+  <path d="M585 65c-85-26-174-12-266 31v262c95-35 184-40 266-14Z" fill="#FAF7F2"/>
+  <path d="M305 80v313" stroke="#C77B7B" stroke-width="9"/>
+  <g fill="#C77B7B" opacity=".28">
+    <rect x="65" y="115" width="185" height="84" rx="12"/>
+    <rect x="65" y="226" width="185" height="84" rx="12"/>
+    <rect x="360" y="115" width="185" height="84" rx="12"/>
+    <rect x="360" y="226" width="185" height="84" rx="12"/>
+  </g>
+  <g fill="#C77B7B">
+    <path d="M66 115h30v12H78v18H66ZM250 115v30h-12v-18h-18v-12ZM66 310v-30h12v18h18v12ZM250 310h-30v-12h18v-18h12Z"/>
+    <path d="M360 115h30v12h-18v18h-12ZM545 115v30h-12v-18h-18v-12ZM360 310v-30h12v18h18v12ZM545 310h-30v-12h18v-18h12Z"/>
+  </g>
+</g>
+<g transform="translate(74 336)">
+  <circle cx="74" cy="74" r="61" fill="#0F172A"/>
+  <circle cx="74" cy="74" r="40" fill="#FAF7F2"/>
+  <path d="m118 118 72 72" stroke="#0F172A" stroke-width="26" stroke-linecap="round"/>
+  <circle cx="61" cy="61" r="13" fill="#C77B7B" opacity=".35"/>
+</g>
+<g transform="translate(486 354)">
+  <g transform="rotate(-8 75 65)"><rect width="150" height="130" rx="14" fill="#FAF7F2"/><path d="M22 102 62 66l25 20 20-31 23 47Z" fill="#0F172A"/><circle cx="112" cy="36" r="13" fill="#C77B7B"/></g>
+  <g transform="translate(-108 25) rotate(7 65 60)"><rect width="130" height="120" rx="14" fill="#FAF7F2"/><circle cx="64" cy="58" r="33" fill="#C77B7B"/><path d="M62 27v62M33 58h60M42 37l44 43M86 37 42 80" stroke="#FAF7F2" stroke-width="7" stroke-linecap="round"/></g>
+</g>
+<g fill="#C77B7B"><path d="M78 138c45 7 63 29 67 66-40-6-61-28-67-66ZM690 136c-44 8-63 30-67 66 41-5 62-28 67-66Z"/></g>
+<g fill="#FAF7F2"><path d="M132 74h12v19h19v12h-19v19h-12v-19h-19V93h19ZM680 85h10v15h15v10h-15v15h-10v-15h-15v-10h15Z"/></g>
+</svg>
