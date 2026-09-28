@@ -1,0 +1,21 @@
+:root {
+  color-scheme: light;
+  --color-ivory:#faf8f3; --color-white:#ffffff; --color-navy:#263345;
+  --color-gold:#af8e4c; --color-gold-dark:#80632e; --color-gold-pale:#f2ead7;
+  --color-pink:#f3e2df; --color-sage:#e5ece2; --color-muted:#747982; --color-line:#e8e3da;
+  --radius-sm:10px; --radius-card:18px; --radius-panel:28px; --radius-pill:999px;
+  --shadow-card:0 3px 14px #392c1710; --shadow-float:0 12px 40px #392c1720;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+  --space-5:20px; --space-6:24px; --space-8:32px; --space-10:40px;
+  --font-body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",Meiryo,system-ui,sans-serif;
+  --font-display:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho","Noto Serif CJK JP",serif;
+  --text-xs:.75rem; --text-sm:.875rem; --text-base:1rem; --text-title:1.75rem;
+  --page-gutter:clamp(16px,4.5vw,32px); --section-gap:32px;
+  --leading-body:1.8; --leading-title:1.5;
+  --ground:var(--color-ivory); --card:var(--color-white); --field:#f5f2ed;
+  --ink:var(--color-navy); --muted:var(--color-muted); --line:var(--color-line);
+  --rule:#c8bcaa; --alert:#a44b43; --shade:#eee9e0; --lift:var(--shadow-card);
+  --tome:var(--color-white); --tome-ink:var(--ink); --tome-muted:var(--muted);
+  --tome-line:var(--line); --tome-rule:var(--rule);
+  --kaku:var(--font-body); --maru:var(--font-body); --klee:var(--font-display);
+}

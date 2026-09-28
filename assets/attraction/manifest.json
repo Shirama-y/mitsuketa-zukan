@@ -1,0 +1,436 @@
+{
+  "art_version": "attraction-v22",
+  "assets": [
+    {
+      "file": "assets/attraction/poster-welcome.webp",
+      "source": "小さな発見_大きな世界.png",
+      "crop_box": null,
+      "width": 1080,
+      "height": 810,
+      "bytes": 259724,
+      "sha256": "3fb9c949f3527fab20b8f9f1d32f075765f8f5b1db18fb8ae93923d9c2b0e323"
+    },
+    {
+      "file": "assets/attraction/poster-empty.webp",
+      "source": "自然探検ジャーナルの旅.png",
+      "crop_box": null,
+      "width": 1080,
+      "height": 810,
+      "bytes": 241898,
+      "sha256": "c97670b39a29ee174121aabc00fce17064f80dcd57e1501023ca414072661c7e"
+    },
+    {
+      "file": "assets/attraction/poster-memory.webp",
+      "source": "思い出を綴る旅のスクラップブック.png",
+      "crop_box": null,
+      "width": 1080,
+      "height": 810,
+      "bytes": 294928,
+      "sha256": "430923247c9ae61a9bccbd04360cf9c9d4c0aa2d3ddf2b5b8d18cc656a05ac94"
+    },
+    {
+      "file": "assets/attraction/poster-discover.webp",
+      "source": "自然探求のヴィンテージポスター.png",
+      "crop_box": null,
+      "width": 1080,
+      "height": 810,
+      "bytes": 292296,
+      "sha256": "1831cfc9c95ebffb02312d3f8d6094e3b69527469913089d1739a0ab382252c2"
+    },
+    {
+      "file": "assets/attraction/nav-home.png",
+      "source": "ヴィンテージ航海アイコンセット.png",
+      "crop_box": [
+        0,
+        470,
+        250,
+        790
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 35074,
+      "sha256": "579d95ac2ce912dc5ba1301f098de139d7d076b259075d73498ec63da861e7a3"
+    },
+    {
+      "file": "assets/attraction/nav-search.png",
+      "source": "ヴィンテージ航海アイコンセット.png",
+      "crop_box": [
+        250,
+        470,
+        495,
+        790
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 35189,
+      "sha256": "aa8fb560f0ec9cb1a4a18a89dfa2da56bff59ad327aa8e0a175b2814446924dc"
+    },
+    {
+      "file": "assets/attraction/nav-books.png",
+      "source": "ヴィンテージ航海アイコンセット.png",
+      "crop_box": [
+        495,
+        470,
+        758,
+        790
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 35468,
+      "sha256": "d356e358a305cdcf1b979fcd1979e6e74d7d3b33c9c37e61c7191335b33ff3ac"
+    },
+    {
+      "file": "assets/attraction/nav-settings.png",
+      "source": "ヴィンテージ航海アイコンセット.png",
+      "crop_box": [
+        758,
+        470,
+        994,
+        790
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 40289,
+      "sha256": "1c75a7ccdc35b73988260240f09359a88a849440b7e220f433176ed2783847d7"
+    },
+    {
+      "file": "assets/attraction/nav-user.png",
+      "source": "ヴィンテージ航海アイコンセット.png",
+      "crop_box": [
+        994,
+        470,
+        1254,
+        790
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 38271,
+      "sha256": "b40ee183ee28a9ee1b0aebee9c4673b90c64db737f5f10532a9c490324cc2759"
+    },
+    {
+      "file": "assets/attraction/category-leaf.png",
+      "source": "レトロ旅モチーフのステッカーコレクション.png",
+      "crop_box": [
+        0,
+        100,
+        304,
+        500
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 33861,
+      "sha256": "24bf629fece4829f1fa098afd4f201cf9000db60d0a4ced75710c06edbb09b0e"
+    },
+    {
+      "file": "assets/attraction/category-flower.png",
+      "source": "レトロ旅モチーフのステッカーコレクション.png",
+      "crop_box": [
+        304,
+        100,
+        592,
+        500
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 34906,
+      "sha256": "3c3f157f3c1f6801d555b5b0057aa1ca7313d4f7b17d0466a2ae2f95d2aa859f"
+    },
+    {
+      "file": "assets/attraction/category-bird.png",
+      "source": "レトロ旅モチーフのステッカーコレクション.png",
+      "crop_box": [
+        592,
+        100,
+        922,
+        500
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 30361,
+      "sha256": "e4d9cfcf083b29470ecd64b670f5fd602190ba8c2ce311204c2749e0817e3371"
+    },
+    {
+      "file": "assets/attraction/category-butterfly.png",
+      "source": "レトロ旅モチーフのステッカーコレクション.png",
+      "crop_box": [
+        922,
+        100,
+        1254,
+        500
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 37982,
+      "sha256": "140ee9b07de26df0446865443538ec3a45b06932077334cf94e021869ab9ae7f"
+    },
+    {
+      "file": "assets/attraction/category-blocks.png",
+      "source": "レトロ旅モチーフのステッカーコレクション.png",
+      "crop_box": [
+        0,
+        505,
+        337,
+        863
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 32801,
+      "sha256": "f863d8feb7f946ea1a65be96ab02c0895daf4429e92e45d7b5980413ead06602"
+    },
+    {
+      "file": "assets/attraction/category-sticker.png",
+      "source": "レトロ旅モチーフのステッカーコレクション.png",
+      "crop_box": [
+        337,
+        505,
+        642,
+        847
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 36456,
+      "sha256": "7fb58d8ad08da2287e83e5886459ad96dc33bd7bfdd9a60cd1bfff59d381bf56"
+    },
+    {
+      "file": "assets/attraction/category-plush.png",
+      "source": "レトロ旅モチーフのステッカーコレクション.png",
+      "crop_box": [
+        642,
+        505,
+        946,
+        878
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 36485,
+      "sha256": "c7a0275c3a6817da3ece6a1aa634eed9b6e1f22de6c2f561818d33b6c079e95c"
+    },
+    {
+      "file": "assets/attraction/category-object.png",
+      "source": "レトロ旅モチーフのステッカーコレクション.png",
+      "crop_box": [
+        946,
+        505,
+        1254,
+        873
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 35917,
+      "sha256": "0c72956db5e72eb88d6d4c0f544820b8125469a88c953e0f561ead45f9a33ce7"
+    },
+    {
+      "file": "assets/attraction/category-cafe.png",
+      "source": "レトロ旅モチーフのステッカーコレクション.png",
+      "crop_box": [
+        193,
+        855,
+        644,
+        1240
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 28798,
+      "sha256": "57b6737953cec1c4585110b0b5a6d49dda6402106ebeec1c7e0c1db2658f4a3a"
+    },
+    {
+      "file": "assets/attraction/category-camera.png",
+      "source": "レトロ旅モチーフのステッカーコレクション.png",
+      "crop_box": [
+        644,
+        882,
+        1070,
+        1240
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 26702,
+      "sha256": "81559ddee5081877993056dcafe4edf3df87d41c02dec1fe47ebf68d333da9fc"
+    },
+    {
+      "file": "assets/attraction/icon-plus.png",
+      "source": "自然探検テーマのヴィンテージuiアイコンセット.png",
+      "crop_box": [
+        0,
+        375,
+        256,
+        635
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 39517,
+      "sha256": "54900eb333f5eb3f54976ee62c793e6c399147e35cd5895ff3f9c284f896052f"
+    },
+    {
+      "file": "assets/attraction/icon-back.png",
+      "source": "自然探検テーマのヴィンテージuiアイコンセット.png",
+      "crop_box": [
+        256,
+        375,
+        510,
+        635
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 41306,
+      "sha256": "1dd745b0b1a5acaa44fff071ca827ebd1d6a063dca55b61aae21bc4027374b5b"
+    },
+    {
+      "file": "assets/attraction/icon-more.png",
+      "source": "自然探検テーマのヴィンテージuiアイコンセット.png",
+      "crop_box": [
+        510,
+        375,
+        757,
+        635
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 40032,
+      "sha256": "1f45fd0bb71e5341d6e9870cfd836d525f7452a5cee060ca11271f39668fca98"
+    },
+    {
+      "file": "assets/attraction/icon-heart.png",
+      "source": "自然探検テーマのヴィンテージuiアイコンセット.png",
+      "crop_box": [
+        757,
+        375,
+        1014,
+        635
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 34243,
+      "sha256": "1ae6c48cc3e1a879986154555a9c85fd19afad37db70805c6a993c4de8688040"
+    },
+    {
+      "file": "assets/attraction/icon-bookmark.png",
+      "source": "自然探検テーマのヴィンテージuiアイコンセット.png",
+      "crop_box": [
+        1014,
+        375,
+        1254,
+        635
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 37615,
+      "sha256": "76bf406ee919b6cc07ba9fb05e7975cbc22fddb465d5eaaab1008c6623bb75cd"
+    },
+    {
+      "file": "assets/attraction/icon-sliders.png",
+      "source": "自然探検テーマのヴィンテージuiアイコンセット.png",
+      "crop_box": [
+        0,
+        690,
+        264,
+        956
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 33101,
+      "sha256": "8d565d0b6624df6e915d99fdb7a3a7c2612d8c6acf5fd46a3ee2b63df5665b90"
+    },
+    {
+      "file": "assets/attraction/icon-camera.png",
+      "source": "自然探検テーマのヴィンテージuiアイコンセット.png",
+      "crop_box": [
+        264,
+        690,
+        535,
+        956
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 35470,
+      "sha256": "6df518b443a18f5409e32d3fd17ad2c518603c03665e459649ef0438ab9aa8ce"
+    },
+    {
+      "file": "assets/attraction/icon-edit.png",
+      "source": "自然探検テーマのヴィンテージuiアイコンセット.png",
+      "crop_box": [
+        535,
+        690,
+        756,
+        956
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 25439,
+      "sha256": "ad1b6bf186250014a26f0c1b13dad2780d63dae2ea55c1766230ca6404c7cea1"
+    },
+    {
+      "file": "assets/attraction/icon-share.png",
+      "source": "自然探検テーマのヴィンテージuiアイコンセット.png",
+      "crop_box": [
+        756,
+        690,
+        1009,
+        960
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 33391,
+      "sha256": "80cbf2eed2da1f83dc50e2905e3a36bb53adb0e9366989625b0290b83fe69286"
+    },
+    {
+      "file": "assets/attraction/icon-trash.png",
+      "source": "自然探検テーマのヴィンテージuiアイコンセット.png",
+      "crop_box": [
+        1009,
+        690,
+        1254,
+        960
+      ],
+      "width": 160,
+      "height": 160,
+      "bytes": 31900,
+      "sha256": "c7bddf4c359e4041044401ed6db5188e73fbdfcf1831e0c586cfa1a11b30f92a"
+    },
+    {
+      "file": "icon-192.png",
+      "source": "自然探訪ブックバッジアイコン.png",
+      "crop_box": null,
+      "width": 192,
+      "height": 192,
+      "bytes": 70979,
+      "sha256": "69d8494d2bba4e5c4f7373eb47ab6d126e0547c45c3a9ee2435b4fe45c2a6d0c"
+    },
+    {
+      "file": "icon-512.png",
+      "source": "自然探訪ブックバッジアイコン.png",
+      "crop_box": null,
+      "width": 512,
+      "height": 512,
+      "bytes": 431389,
+      "sha256": "40e4898ba2ba8b63e4087baa9e425d3d5a301911d86a185cbbd073b3d0222414"
+    },
+    {
+      "file": "apple-touch-icon.png",
+      "source": "自然探訪ブックバッジアイコン.png",
+      "crop_box": null,
+      "width": 180,
+      "height": 180,
+      "bytes": 63201,
+      "sha256": "d758f49cb8b4622e91bd45b8a6dabc1c9ac3c06a8480120bef26c4219994ee2b"
+    },
+    {
+      "file": "favicon-32.png",
+      "source": "自然探訪ブックバッジアイコン.png",
+      "crop_box": null,
+      "width": 32,
+      "height": 32,
+      "bytes": 2803,
+      "sha256": "1ed285ee9046f9de3b131abee6a490c1427aee9f2271c469746c48f9112b2d51"
+    },
+    {
+      "file": "assets/attraction/app-badge.webp",
+      "source": "自然探訪ブックバッジアイコン.png",
+      "crop_box": null,
+      "width": 512,
+      "height": 512,
+      "bytes": 68200,
+      "sha256": "7bc4d23ecc4a1e565179e2d024634918c387622ff78d63f5153b5e2677a25596"
+    }
+  ]
+}
