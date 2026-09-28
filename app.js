@@ -1243,7 +1243,7 @@
       var acts=h("div","cover-actions"),open=h("button","primary-pill","この図鑑をひらく　→"),design=h("button","secondary-pill","デザインを編集");
       open.type=design.type="button";open.addEventListener("click",function(){go("#/b/"+b.id+"/list")});design.addEventListener("click",function(){go("#/b/"+b.id+"/design")});
       var del=h("button","danger-link","この図鑑を削除");del.type="button";del.addEventListener("click",function(){confirmDelete("図鑑を削除しますか？","「"+b.title+"」と中の記録"+(b.count||0)+"件を削除します。この操作は取り消せません。",function(){return store.dropBook(b.id).then(function(){go("#/")})})});
-      var favorite=lButton(b.favorite?"お気に入りを外す":"お気に入りに追加",function(){favorite.disabled=true;store.updateBook(b.id,{favorite:!b.favorite}).then(render,function(){favorite.disabled=false})},"secondary-pill");favorite.setAttribute("aria-pressed",String(!!b.favorite));acts.append(open,design,favorite,del);screen.append(acts);app.append(screen)
+      var favorite=lButton(b.favorite?"お気に入りを外す":"お気に入りに追加",function(){favorite.disabled=true;store.updateBook(b.id,{favorite:!b.favorite}).then(render,function(){favorite.disabled=false})},"secondary-pill");favorite.setAttribute("aria-pressed",String(!!b.favorite));acts.append(open,design,lButton("中のページを編集",function(){openPageLayout(b.id)},"secondary-pill"),favorite,del);screen.append(acts);app.append(screen)
     })
   }
 
@@ -1256,7 +1256,7 @@
       var screen=h("section","collection-screen");applyButtonTheme(screen,b);screen.style.setProperty("--book-font",bookFont(b.font).css);
       var head=h("div","collection-head"),back=h("button","round-btn");back.type="button";back.setAttribute("aria-label","表紙へ戻る");back.append(maskIcon("./assets/attraction/icon-back.png","round-mask"));back.addEventListener("click",function(){go("#/b/"+b.id)});
       var title=h("div","collection-title");title.append(h("h1",null,b.title),h("p",null,(b.count||0)+"件のコレクション"));
-      var edit=h("button","round-btn");edit.type="button";edit.setAttribute("aria-label","デザインを編集");edit.append(maskIcon("./assets/attraction/icon-more.png","round-mask"));edit.addEventListener("click",function(){go("#/b/"+b.id+"/design")});head.append(back,title,edit);screen.append(head);
+      var edit=h("button","round-btn");edit.type="button";edit.setAttribute("aria-label","デザインを編集");edit.append(maskIcon("./assets/attraction/icon-more.png","round-mask"));edit.addEventListener("click",function(){go("#/b/"+b.id+"/design")});head.append(back,title,edit);screen.append(head,lButton("中のページを編集 · "+pageLayoutName(b.pageLayout),function(){openPageLayout(b.id)},"page-edit-entry secondary-pill"));
       var search=h("label","collection-search"),mag=maskIcon("./assets/attraction/nav-search.png","search-mask"),searchInput=document.createElement("input");
       searchInput.type="search";searchInput.placeholder="名前・タグ・メモから探す";searchInput.value=bookSearchText[bookId]||"";
       searchInput.setAttribute("aria-label","コレクションを検索");
@@ -1273,14 +1273,7 @@
         }
         screen.append(emptyState)
       }else{
-        var ln=h("div","entry-list");shown.forEach(function(e){
-          var row=h("div","entry-row "+(b.layout==="compact"?"compact":b.layout==="relaxed"?"relaxed":"")),img=document.createElement("img");
-          row.dataset.search=[e.name||"",e.kanji||"",e.place||"",Array.isArray(e.tags)?e.tags.join(" "):"",e.observed||"",e.imagined||""].join(" ").toLowerCase();
-          img.className="entry-photo";img.alt="";img.src=urlFor(e);img.loading="lazy";
-          var names=displayNames(b,e),op=h("button","entry-open");op.type="button";op.append(h("div","entry-name",names.main));if(names.sub)op.append(h("div","entry-alias",names.sub));op.append(h("div","entry-meta",showDate(e.date)+(e.place?"　•　"+e.place:"")));op.addEventListener("click",function(){go("#/b/"+b.id+"/e/"+e.no)});
-          var fav=h("button","heart-btn"+(e.favorite?" on":""));fav.type="button";fav.setAttribute("aria-label",e.favorite?"お気に入りを外す":"お気に入りに追加");fav.append(maskIcon("./assets/attraction/icon-heart.png","heart-mask"));fav.addEventListener("click",function(){nativeHaptic("light");e.favorite=!e.favorite;store.updateEntry(e).then(render)});
-          var photoOpen=lButton("",function(){go("#/b/"+b.id+"/e/"+e.no)},"entry-photo-open");photoOpen.setAttribute("aria-label",e.name+"の写真と記録を開く");photoOpen.append(img);row.append(photoOpen,op,fav);ln.append(row)
-        });screen.append(ln);
+        var ln=makeEntryCollection(b,shown,false);screen.append(ln);
         emptyState.textContent="条件に合う記録が見つかりません。";
         emptyState.hidden=true;screen.append(emptyState);
 
@@ -1459,7 +1452,7 @@
       [xs,cs,fs].forEach(function(n){n.classList.add("cover-tab")});
       [ps,ts,titleSizeSec,titleAlignSec,freeCs,rs,bs,isec,ds,ns,advancedToggle].forEach(function(n){n.classList.add("settings-tab")});
       preview.after(tabs);tabs.after(xs);xs.after(cs);cs.after(fs);
-      app.append(screen);repaint()
+      screen.insertBefore(lButton("中のページを編集",function(){if(designDirty){toast("表紙を保存してから、中のページを編集してください。");return}openPageLayout(bookId)},"page-edit-entry secondary-pill"),bottomSave);app.append(screen);repaint()
     })
   }
 
@@ -1554,7 +1547,7 @@
       pg.append(bt)
     });
 
-    c.append(pg);
+    c.append(pg,h("h3","new-book-section-title","中のページを選ぶ"),makeLayoutChoices(draft,function(){sheetDirty=true}));
 
     var help=h("p","new-book-help","色・素材・装丁・アイコン・ボタンテーマは、作成後にいつでも変更できます。");
     c.append(help);
@@ -1587,6 +1580,7 @@
           font:draft.font,
           icon:draft.icon,
           layout:draft.layout,
+          pageLayout:draft.pageLayout||"list",
           nameMode:draft.nameMode||"both",
           titleSize:draft.titleSize||"medium",
           titleAlign:draft.titleAlign||"center",
@@ -1817,7 +1811,7 @@
     }
     row("プライバシー","保存する情報と端末内データについて","見る",openPrivacySheet);
     row("サポート","使い方や不具合について問い合わせ","開く",openSupportSheet);
-    app.append(list,h("p","l-note","v28 · 記録はこの端末内に保存されます。"),h("div","app-nav-spacer"))
+    app.append(list,h("p","l-note","v29 · 記録はこの端末内に保存されます。"),h("div","app-nav-spacer"))
   }
 
   /* Library UI v23. Storage APIs and all existing native integrations remain unchanged. */
@@ -1839,27 +1833,22 @@
 
 
   function makeMyLibrary(books){
-    var shelf=h('div','my-bookshelf');
-    if(!books.length){shelf.append(lEmpty('最初の一冊を、本棚に。','好きな色や素材で表紙をつくり、発見を集めましょう。',openNewBook,'表紙をつくる'));return shelf}
-    for(var i=0;i<books.length;i+=2){
-      var row=h('section','my-shelf-row'),display=h('div','my-shelf-display'),labels=h('div','my-shelf-labels');
-      books.slice(i,i+2).forEach(function(b){
-        var open=lButton('',function(){go('#/b/'+b.id)},'my-book-open');open.setAttribute('aria-label',b.title+'の表紙を開く');open.dataset.bookId=b.id;
-        open.append(makeBookFace(b,true));display.append(open);
-        var info=h('div','my-book-info'),title=h('h3',null,b.title),meta=h('span','my-book-count',(b.count||0)+'件の記録');
-        var edit=lButton('表紙を編集',function(){go('#/b/'+b.id+'/design')},'my-cover-edit');edit.setAttribute('aria-label',b.title+'の表紙を編集');
-        info.append(title,meta,edit);labels.append(info)
-      });
-      if(i+1>=books.length){var add=lButton('',openNewBook,'my-shelf-add');add.append(lIcon('plus'),h('span',null,'新しい図鑑'),h('small',null,'表紙をつくる'));display.append(add)}
-      row.append(display,labels);shelf.append(row)
-    }
-    return shelf
-  }
+  var root=h('section','my-bookshelf focus-bookshelf');root.setAttribute('aria-label','背表紙の本棚');
+  if(!books.length){root.append(lEmpty('あなたの一冊を、本棚に。','タイトル、表紙、中のページ。好きな組み合わせで図鑑をつくりましょう。',openNewBook,'図鑑をつくる'));return root}
+  var selectedId='';try{selectedId=localStorage.getItem('zukan-selected-book')||''}catch(_){}var selected=Math.max(0,books.findIndex(function(b){return b.id===selectedId}));
+  var stage=h('div','focus-shelf-stage'),rail=h('div','focus-shelf-rail'),info=h('div','focus-shelf-info'),controls=h('div','focus-shelf-controls'),prev=lButton('‹',function(){choose((selected-1+books.length)%books.length)},'round-btn'),next=lButton('›',function(){choose((selected+1)%books.length)},'round-btn'),position=h('span','l-note');prev.setAttribute('aria-label','前の図鑑を選ぶ');next.setAttribute('aria-label','次の図鑑を選ぶ');prev.disabled=next.disabled=books.length<2;position.setAttribute('role','status');controls.append(prev,position,next);stage.append(rail);root.append(h('p','shelf-instruction','背表紙で選ぶ · 表紙をタップしてひらく'),stage,controls,info);
+  function center(){if(!root.isConnected)return;var active=rail.querySelector('.shelf-cover-open');if(active)rail.scrollLeft=active.offsetLeft-(rail.clientWidth-active.offsetWidth)/2}
+  function choose(index){selected=index;try{localStorage.setItem('zukan-selected-book',books[selected].id)}catch(_){}draw();requestAnimationFrame(function(){var n=rail.querySelector('.shelf-cover-open');if(n)n.focus({preventScroll:true})})}
+  function draw(){rail.replaceChildren();var b=books[selected],left=Math.floor((books.length-1)/2);for(var offset=-left;offset<books.length-left;offset++){(function(index){var book=books[index];if(index===selected){var open=lButton('',function(){go('#/b/'+book.id+'/list')},'shelf-cover-open');open.dataset.bookId=book.id;open.setAttribute('aria-label',book.title+'をひらく');open.append(makeBookFace(book,false));rail.append(open)}else{var spine=lButton('',function(){choose(index)},'book-spine');styleBookNode(spine,book);spine.dataset.bookId=book.id;spine.tabIndex=-1;spine.setAttribute('aria-label',book.title+'の背表紙を選ぶ');spine.setAttribute('aria-pressed','false');spine.append(h('span','spine-title',book.title),h('span','spine-count',String(book.count||0)));rail.append(spine)}})((selected+offset+books.length)%books.length)}
+    position.textContent=(selected+1)+' / '+books.length+'冊';info.replaceChildren();info.append(h('h3',null,b.title),h('p','l-note',(b.count||0)+'件の記録'+(b.subtitle?' · '+b.subtitle:'')));var actions=h('div','shelf-book-actions');actions.append(lButton('この本をひらく',function(){go('#/b/'+b.id+'/list')},'primary-pill'),lButton('表紙を編集',function(){go('#/b/'+b.id+'/design')},'secondary-pill'),lButton('中のページを編集',function(){openPageLayout(b.id)},'secondary-pill'));info.append(actions);requestAnimationFrame(center)}
+  var touchStart=null,blockClickUntil=0;rail.addEventListener('pointerdown',function(e){touchStart={x:e.clientX,y:e.clientY}});rail.addEventListener('pointercancel',function(){touchStart=null});rail.addEventListener('pointerup',function(e){if(!touchStart)return;var dx=e.clientX-touchStart.x,dy=e.clientY-touchStart.y;touchStart=null;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)){blockClickUntil=Date.now()+400;choose((selected+(dx<0?1:-1)+books.length)%books.length)}});rail.addEventListener('click',function(e){if(Date.now()<blockClickUntil){e.preventDefault();e.stopPropagation()}},true);
+  rail.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();choose((selected+(e.key==='ArrowRight'?1:-1)+books.length)%books.length)}});draw();return root
+}
   function renderShelf(){return lGroups().then(function(groups){
     app.replaceChildren();renderAppNav('home');app.append(lHeader('わたしの図鑑','好きが、わたしをつくっていく。'));
     var panel=h('main','l-panel my-library-home'),library=lSection('Myライブラリ','#/collections','すべて見る');
     var toolbar=h('div','my-library-toolbar');toolbar.append(h('p','l-note',groups.length+'冊の、わたしだけの世界。'),lButton('＋ 表紙をつくる',openNewBook,'secondary-pill'));
-    library.append(toolbar,makeMyLibrary(groups.slice(0,4).map(function(g){return g.book})));panel.append(library);
+    library.append(toolbar,makeMyLibrary(groups.map(function(g){return g.book})));panel.append(library);
     var recent=lSection('最近の記録','#/search'),records=[];groups.forEach(function(g){g.entries.forEach(function(e){records.push({book:g.book,entry:e})})});records.sort(function(a,b){return(b.entry.createdAt||0)-(a.entry.createdAt||0)});
     if(records.length){var row=h('div','l-scroll');records.slice(0,8).forEach(function(x){row.append(lRecordCard(x.book,x.entry))});recent.append(row)}else recent.append(lEmpty('小さな発見を記録しよう','写真一枚から、図鑑のページが増えていきます。',openRecordPicker,'記録する'));
     appendMemoryHome(panel,groups);panel.append(recent,lFeature('身近な好きに、\n出会おう。',function(){go('#/search')}));app.append(panel)
@@ -1908,7 +1897,7 @@ function validateBackup(data){
     function invalid(){throw new Error('バックアップの内容を確認できませんでした。元のファイルを選び直してください。')}
     if(!data||data.type!=='mitsuketa-zukan-backup'||data.version!==1||!Array.isArray(data.books)||!Array.isArray(data.entries)||data.books.length>2000||data.entries.length>20000)invalid();
     var ids=new Set(),entryIds=new Set(),numbers=Object.create(null);
-    var bookKeys=['title','subtitle','color','theme','frame','font','icon','layout','nameMode','titleSize','titleAlign','buttonTheme','customBg','customAccent','customInk','favorite','createdAt'];
+    var bookKeys=['title','subtitle','color','theme','frame','font','icon','layout','pageLayout','pageDate','pagePlace','pageNotes','nameMode','titleSize','titleAlign','buttonTheme','customBg','customAccent','customInk','favorite','createdAt'];
     var books=data.books.map(function(b){if(!b||typeof b.id!=='string'||!b.id||ids.has(b.id)||typeof b.title!=='string'||!b.title.trim())invalid();ids.add(b.id);numbers[b.id]=new Set();var out={id:b.id};bookKeys.forEach(function(k){if(b[k]!==undefined){if(typeof b[k]==='object')invalid();out[k]=b[k]}});['color','theme','frame','font','icon'].forEach(function(k){if(out[k]!==undefined&&(!Number.isInteger(out[k])||out[k]<0))invalid()});['customBg','customAccent','customInk'].forEach(function(k){if(out[k]&&!/^#[0-9a-f]{6}$/i.test(out[k]))invalid()});out.count=0;out.nextNo=1;return out});
     var map=new Map(books.map(function(b){return[b.id,b]}));
     var entries=data.entries.map(function(e){if(!e||typeof e.id!=='string'||entryIds.has(e.id)||!ids.has(e.bookId)||!Number.isInteger(e.no)||e.no<1||numbers[e.bookId].has(e.no)||typeof e.name!=='string'||!e.name.trim())invalid();entryIds.add(e.id);numbers[e.bookId].add(e.no);
@@ -1932,7 +1921,7 @@ function showInstallHelp(){var c=h('div','card');c.append(h('h2',null,'ホーム
     var records=allRecords(groups),month=todayISO().slice(0,7),now=records.filter(function(x){return recordMonth(x.entry)===month}),card=h('section','memory-home');
     var copy=h('div');copy.append(h('p','memory-eyebrow',monthLabel(month)),h('h2',null,now.length?now.length+'個の発見が、集まりました。':'今日は、何を見つけよう。'),h('p','l-note',records.length?'これまでに '+records.length+'件の記録。お気に入りを一枚のカードに。':'身近な「好き」を一枚。あなたの図鑑が育ちはじめます。'));
     var actions=h('div','memory-actions');actions.append(lButton('記録する',openRecordPicker,'primary-pill'));if(records.length)actions.append(lButton('ふりかえり',function(){go('#/memories')},'secondary-pill'));
-    card.append(copy,actions);panel.prepend(card)
+    card.append(copy,actions);panel.append(card)
   }
   function renderMemories(){return lGroups().then(function(groups){
     var all=allRecords(groups),months=Array.from(new Set(all.map(function(x){return recordMonth(x.entry)}))).sort().reverse();
@@ -1979,6 +1968,24 @@ function showInstallHelp(){var c=h('div','card');c.append(h('h2',null,'ホーム
     titleField.input.addEventListener('input',schedule);c._cleanup=function(){closed=true;revision++;clearTimeout(timer);if(currentUrl)URL.revokeObjectURL(currentUrl)};openSheet(c);schedule()
   }
 
+
+function pageLayoutName(key){return key==='gallery'?'写真アルバム':key==='journal'?'観察日記':'図鑑リスト'}
+function makeLayoutChoices(draft,onChange){var group=h('div','page-layout-choices');group.setAttribute('role','group');group.setAttribute('aria-label','中のページのレイアウト');[['list','図鑑リスト','写真と名前を、すっきり一覧に。'],['gallery','写真アルバム','お気に入りの写真を並べて。'],['journal','観察日記','写真と気づきを、ゆっくり読む。']].forEach(function(x){var b=lButton('',function(){draft.pageLayout=x[0];Array.from(group.children).forEach(function(n){n.setAttribute('aria-pressed',String(n===b))});if(onChange)onChange()},'page-layout-choice');b.dataset.pageLayout=x[0];b.setAttribute('aria-pressed',String((draft.pageLayout||'list')===x[0]));b.append(h('strong',null,x[1]),h('span',null,x[2]));group.append(b)});return group}
+function makeEntryCollection(b,entries,preview){
+  var kind=['list','gallery','journal'].includes(b.pageLayout)?b.pageLayout:'list',list=h('div','entry-list page-layout-'+kind);if(preview)list.classList.add('page-layout-preview');
+  entries.forEach(function(e){var row=h('article','entry-row '+(b.layout==='compact'?'compact':b.layout==='relaxed'?'relaxed':''));row.dataset.search=[e.name,e.kanji,e.place,(e.tags||[]).join(' '),e.observed,e.imagined].join(' ');var img=document.createElement('img');img.className='entry-photo';img.src=e.previewSrc||urlFor(e);img.alt='';img.loading='lazy';var photo=preview?h('div','entry-photo-open'):lButton('',function(){go('#/b/'+b.id+'/e/'+e.no)},'entry-photo-open');if(!preview)photo.setAttribute('aria-label',e.name+'の写真と記録を開く');photo.append(img);
+    var names=displayNames(b,e),copy=preview?h('div','entry-open'):lButton('',function(){go('#/b/'+b.id+'/e/'+e.no)},'entry-open');copy.append(h('span','entry-page-number','No.'+pad(e.no)),h('div','entry-name',names.main));if(names.sub)copy.append(h('div','entry-alias',names.sub));var meta=[];if(b.pageDate!==false&&e.date)meta.push(showDate(e.date));if(b.pagePlace!==false&&e.place)meta.push(e.place);if(meta.length)copy.append(h('div','entry-meta',meta.join(' · ')));row.append(photo,copy);
+    if(!preview){var fav=lButton('',function(){fav.disabled=true;store.updateEntry(Object.assign({},e,{favorite:!e.favorite})).then(render,function(){fav.disabled=false;toast('保存できませんでした。もう一度お試しください。')})},'heart-btn'+(e.favorite?' on':''));fav.setAttribute('aria-label',e.favorite?'お気に入りを外す':'お気に入りに追加');fav.setAttribute('aria-pressed',String(!!e.favorite));fav.append(maskIcon('./assets/attraction/icon-heart.png','heart-mask'));row.append(fav)}
+    if(kind==='journal'&&b.pageNotes!==false){var notes=h('div','entry-page-notes');[['見て気づいたこと',e.observed],['思ったこと・ストーリー',e.imagined]].forEach(function(x){if(x[1]){var n=h('section');n.append(h('h3',null,x[0]),h('p',null,x[1]));notes.append(n)}});if(notes.children.length)row.append(notes)}list.append(row)
+  });return list
+}
+function openPageLayout(bookId){return Promise.all([store.book(bookId),store.entries(bookId)]).then(function(out){var book=out[0],entries=out[1];if(!book)return;var draft=Object.assign({},book),c=h('div','card page-editor');c.append(h('h2',null,'中のページをつくる'),h('p','l-note','「'+book.title+'」の読み心地を、あなた好みに。'));
+  var choices=makeLayoutChoices(draft,function(){sheetDirty=true;paint()}),settings=h('div','page-layout-settings');c.append(choices,settings);var notesToggle;
+  [['pageDate','見つけた日を表示'],['pagePlace','場所を表示'],['pageNotes','観察とストーリーを表示（日記）']].forEach(function(x){var lab=h('label'),inp=document.createElement('input');inp.type='checkbox';inp.checked=draft[x[0]]!==false;if(x[0]==='pageNotes')notesToggle=inp;inp.addEventListener('change',function(){draft[x[0]]=inp.checked;paint()});lab.append(inp,document.createTextNode(x[1]));settings.append(lab)});
+  var preview=h('div','page-live-preview'),caption=h('p','l-note',entries.length?'あなたの記録でプレビュー（先頭2件）':'レイアウトの見本です。記録は追加されません。');c.append(caption,preview);var error=h('p','l-error');error.setAttribute('role','status');var acts=h('div','acts'),cancel=lButton('やめる',closeSheet),save=lButton('このページで保存',function(){sheetBusy=true;save.disabled=cancel.disabled=true;store.updateBook(bookId,{pageLayout:draft.pageLayout||'list',pageDate:draft.pageDate!==false,pagePlace:draft.pagePlace!==false,pageNotes:draft.pageNotes!==false}).then(function(){closeSheet(true);toast('中のページを保存しました');render()},function(){sheetBusy=false;save.disabled=cancel.disabled=false;error.textContent='保存できませんでした。もう一度お試しください。'})},'primary-pill');acts.append(save,cancel);c.append(error,acts);
+  function paint(){notesToggle.disabled=draft.pageLayout!=='journal';var samples=entries.length?entries.slice(0,2):[{id:'preview',no:1,name:'小さな季節の発見',date:todayISO(),place:'いつもの散歩道',observed:'光に透ける葉っぱの色がきれい。',imagined:'季節の変化を、少しずつ集めたい。',previewSrc:'./assets/library/blossom.png'}];preview.replaceChildren(makeEntryCollection(draft,samples,true))}openSheet(c);paint()
+})}
+window.addEventListener("resize",function(){document.querySelectorAll(".focus-shelf-rail").forEach(function(rail){var active=rail.querySelector(".shelf-cover-open");if(active)rail.scrollLeft=active.offsetLeft-(rail.clientWidth-active.offsetWidth)/2})});
   /* ================= 起動 ================= */
 
   window.addEventListener("hashchange",function(){

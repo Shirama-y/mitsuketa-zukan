@@ -19,3 +19,4 @@
   --tome-line:var(--line); --tome-rule:var(--rule);
   --kaku:var(--font-body); --maru:var(--font-body); --klee:var(--font-display);
 }
+:root{--shelf-cover-width:160px;--shelf-book-height:222px;--shelf-spine-width:44px}
