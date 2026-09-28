@@ -24,3 +24,5 @@
 :root{--book-radius:3px 8px 8px 3px;--book-shadow:2px 2px 0 #e9dfcd,4px 3px 0 #c9bda8,6px 4px 0 #f7f0df,9px 12px 20px #30261955;--klee:"Klee One",var(--font-display);--maru:"Zen Maru Gothic",var(--font-body)}
 /* v31: shelf geometry and navigation spacing */
 :root{--shelf-gap:9px;--nav-clearance:calc(112px + env(safe-area-inset-bottom,0px))}
+/* v32: book reader and workspace */
+:root{--header-height:112px;--paper-ivory:#fffdf4;--paper-white:#fff;--paper-sage:#f0f4ec;--turn-duration:260ms;--motion-ease:cubic-bezier(.2,.7,.2,1)}

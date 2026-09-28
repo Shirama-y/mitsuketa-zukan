@@ -1,0 +1,9 @@
+{
+  "checks": [
+    "anonymous denied; nonmembers denied; invited editor allowed; owner-only membership/publication",
+    "editor adds record; stale save rejected without overwriting",
+    "public snapshot readable anonymously; subsequent draft changes remain private",
+    "membership revocation and unpublish revoke record/media access",
+    "cross-origin mutation blocked"
+  ]
+}
