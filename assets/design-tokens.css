@@ -26,3 +26,5 @@
 :root{--shelf-gap:9px;--nav-clearance:calc(112px + env(safe-area-inset-bottom,0px))}
 /* v32: book reader and workspace */
 :root{--header-height:112px;--paper-ivory:#fffdf4;--paper-white:#fff;--paper-sage:#f0f4ec;--turn-duration:260ms;--motion-ease:cubic-bezier(.2,.7,.2,1)}
+/* v34: focused editing workspace and physical book geometry */
+:root{--editor-preview-height:252px;--editor-toolbar-height:62px;--book-depth:9px;--page-flip-duration:650ms}
