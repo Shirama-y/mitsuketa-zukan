@@ -20,3 +20,5 @@
   --kaku:var(--font-body); --maru:var(--font-body); --klee:var(--font-display);
 }
 :root{--shelf-cover-width:160px;--shelf-book-height:222px;--shelf-spine-width:44px}
+/* v30: binding, paper and reading controls */
+:root{--book-radius:3px 8px 8px 3px;--book-shadow:2px 2px 0 #e9dfcd,4px 3px 0 #c9bda8,6px 4px 0 #f7f0df,9px 12px 20px #30261955;--klee:"Klee One",var(--font-display);--maru:"Zen Maru Gothic",var(--font-body)}
