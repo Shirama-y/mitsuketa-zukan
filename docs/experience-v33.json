@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "book texture URL resolves to a real image",
+    "header stays fixed during scrolling",
+    "page turning and paper/layout customization persist",
+    "photo filters/zoom and title outline saved",
+    "shared book create, photo add, edit and explicit public snapshot UI",
+    "legacy Blob photo copied; interrupted copy retries to the same group without duplicate records",
+    "responsive library and reduced-motion reader"
+  ],
+  "errors": []
+}
