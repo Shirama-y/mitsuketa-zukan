@@ -1217,7 +1217,7 @@
     m=/^\/b\/([^/]+)\/design$/.exec(hash);if(m)return{view:"design",bookId:m[1]};
     m=/^\/b\/([^/]+)\/list$/.exec(hash);if(m)return{view:"book",bookId:m[1]};
     m=/^\/b\/([^/]+)$/.exec(hash);if(m)return{view:"cover",bookId:m[1]};
-    if(hash==="/search")return{view:"search"};if(hash==="/collections")return{view:"collections"};if(hash==="/settings")return{view:"settings"};if(hash==="/storage")return{view:"storage"};return{view:"shelf"}
+    if(hash==="/memories")return{view:"memories"};if(hash==="/search")return{view:"search"};if(hash==="/collections")return{view:"collections"};if(hash==="/settings")return{view:"settings"};if(hash==="/storage")return{view:"storage"};return{view:"shelf"}
   }
   function render(){
     if(!db)return Promise.resolve();var r=route();document.documentElement.setAttribute("data-view",r.view);bar.hidden=true;
@@ -1226,7 +1226,7 @@
       var lightNativeViews={book:1,entry:1,design:1,search:1,collections:1,settings:1};
       nativeChrome.setChromeTheme("light")["catch"](function(){})
     }
-    if(r.view==="cover")return renderBookCover(r.bookId);
+    if(r.view==="memories")return renderMemories();if(r.view==="cover")return renderBookCover(r.bookId);
     if(r.view==="book")return renderBook(r.bookId);
     if(r.view==="entry")return renderEntry(r.bookId,r.no);
     if(r.view==="design")return renderDesign(r.bookId);
@@ -1326,7 +1326,7 @@
       share.addEventListener("click",function(){shareEntry(b,e)});
       ed.addEventListener("click",function(){openEditForm(bookId,e)});
       del.addEventListener("click",function(){confirmDelete("記録を削除しますか？","「"+e.name+"」の写真と記録を削除します。この操作は取り消せません。",function(){return store.dropEntry(bookId,e.id).then(function(){if(urls[e.id])URL.revokeObjectURL(urls[e.id]);delete urls[e.id];go("#/b/"+bookId+"/list")})})});
-      acts.append(share,ed,del);screen.append(acts);appendRelated(screen,b,e,list);appendComments(screen,e);app.append(screen)
+      acts.append(share,ed,del);screen.append(lButton("フォトカードをつくる",function(){openPhotoCard([{book:b,entry:e}],e.name)},"photo-card-entry secondary-pill"),acts);appendRelated(screen,b,e,list);appendComments(screen,e);app.append(screen)
     })
   }
 
@@ -1806,6 +1806,7 @@
     function row(title,desc,label,fn){
       var r=h("div","settings-row"),c=h("div");c.append(h("strong",null,title),h("small",null,desc));var b=h("button",null,label);b.type="button";b.addEventListener("click",fn);r.append(c,b);list.append(r)
     }
+    row("ふりかえり","月ごとの発見からフォトカードをつくる","開く",function(){go("#/memories")});
     row("バックアップ","図鑑・記録・写真をJSONに保存","保存",function(){exportBackup()});
     row("ホーム画面に追加","アプリのようにすぐ開けます","手順",showInstallHelp);
     row("復元","バックアップを追加として読み込む","選ぶ",chooseRestoreFile);
@@ -1816,7 +1817,7 @@
     }
     row("プライバシー","保存する情報と端末内データについて","見る",openPrivacySheet);
     row("サポート","使い方や不具合について問い合わせ","開く",openSupportSheet);
-    app.append(list,h("p","l-note","v27 · 記録はこの端末内に保存されます。"),h("div","app-nav-spacer"))
+    app.append(list,h("p","l-note","v28 · 記録はこの端末内に保存されます。"),h("div","app-nav-spacer"))
   }
 
   /* Library UI v23. Storage APIs and all existing native integrations remain unchanged. */
@@ -1861,7 +1862,7 @@
     library.append(toolbar,makeMyLibrary(groups.slice(0,4).map(function(g){return g.book})));panel.append(library);
     var recent=lSection('最近の記録','#/search'),records=[];groups.forEach(function(g){g.entries.forEach(function(e){records.push({book:g.book,entry:e})})});records.sort(function(a,b){return(b.entry.createdAt||0)-(a.entry.createdAt||0)});
     if(records.length){var row=h('div','l-scroll');records.slice(0,8).forEach(function(x){row.append(lRecordCard(x.book,x.entry))});recent.append(row)}else recent.append(lEmpty('小さな発見を記録しよう','写真一枚から、図鑑のページが増えていきます。',openRecordPicker,'記録する'));
-    panel.append(recent,lFeature('身近な好きに、\n出会おう。',function(){go('#/search')}));app.append(panel)
+    appendMemoryHome(panel,groups);panel.append(recent,lFeature('身近な好きに、\n出会おう。',function(){go('#/search')}));app.append(panel)
   })}
   function renderCollections(){return lGroups().then(function(groups){
     app.replaceChildren();renderAppNav('collections');app.append(lHeader('Myライブラリ','表紙を選んで、あなたの一冊をひらこう。'));
@@ -1922,6 +1923,61 @@ function validateBackup(data){
   }
 
 function showInstallHelp(){var c=h('div','card');c.append(h('h2',null,'ホーム画面から開く'),h('p',null,'iPhone・iPadでは、Safariの共有メニューから「ホーム画面に追加」を選びます。\n\nAndroidでは、ブラウザのメニューから「アプリをインストール」または「ホーム画面に追加」を選びます。'),h('p','note','初回は通信が必要です。保存した記録は、この端末・ブラウザで開けます。'),lButton('閉じる',closeSheet,'go'));openSheet(c)}
+
+  var journalMonth='',journalFavorite=false;
+  function allRecords(groups){var out=[];groups.forEach(function(g){g.entries.forEach(function(e){out.push({book:g.book,entry:e})})});return out.sort(function(a,b){return String(b.entry.date||'').localeCompare(String(a.entry.date||''))||(b.entry.createdAt||0)-(a.entry.createdAt||0)})}
+  function monthLabel(key){return /^\d{4}-\d{2}$/.test(key)?Number(key.slice(0,4))+'年'+Number(key.slice(5))+'月':'日付未設定'}
+  function recordMonth(e){return /^\d{4}-\d{2}-\d{2}$/.test(e.date||'')?e.date.slice(0,7):'undated'}
+  function appendMemoryHome(panel,groups){
+    var records=allRecords(groups),month=todayISO().slice(0,7),now=records.filter(function(x){return recordMonth(x.entry)===month}),card=h('section','memory-home');
+    var copy=h('div');copy.append(h('p','memory-eyebrow',monthLabel(month)),h('h2',null,now.length?now.length+'個の発見が、集まりました。':'今日は、何を見つけよう。'),h('p','l-note',records.length?'これまでに '+records.length+'件の記録。お気に入りを一枚のカードに。':'身近な「好き」を一枚。あなたの図鑑が育ちはじめます。'));
+    var actions=h('div','memory-actions');actions.append(lButton('記録する',openRecordPicker,'primary-pill'));if(records.length)actions.append(lButton('ふりかえり',function(){go('#/memories')},'secondary-pill'));
+    card.append(copy,actions);panel.prepend(card)
+  }
+  function renderMemories(){return lGroups().then(function(groups){
+    var all=allRecords(groups),months=Array.from(new Set(all.map(function(x){return recordMonth(x.entry)}))).sort().reverse();
+    if(!months.includes(journalMonth))journalMonth=months[0]||todayISO().slice(0,7);
+    app.replaceChildren();renderAppNav('home');app.append(lHeader('わたしのふりかえり','集めた好きが、思い出になる。'));
+    var panel=h('main','l-panel memory-screen'),back=h('a','back','← ホームに戻る');back.href='#/';panel.append(back);
+    if(!all.length){panel.append(lEmpty('最初の発見から、はじめよう','写真を記録すると、月ごとにふりかえることができます。',openRecordPicker,'記録する'));app.append(panel);return}
+    var controls=h('div','memory-controls'),label=h('label');label.append(h('span',null,'ふりかえる月'));var select=document.createElement('select');select.setAttribute('aria-label','ふりかえる月');months.forEach(function(m){var op=document.createElement('option');op.value=m;op.textContent=monthLabel(m);select.append(op)});select.value=journalMonth;label.append(select);
+    var fav=lButton('お気に入りだけ',function(){journalFavorite=!journalFavorite;draw()},'secondary-pill');controls.append(label,fav);panel.append(controls);
+    var summary=h('div','memory-summary'),selection=h('section','memory-selection'),heading=h('div','l-section-head');heading.append(h('h2',null,'カードにする写真'));
+    var choose=h('p','l-note','1〜4枚選べます。番号順にカードに並びます。'),grid=h('div','memory-grid'),footer=h('div','memory-footer'),status=h('p','l-note'),make=lButton('フォトカードをつくる',function(){var selected=chosen.map(function(id){return visible.find(function(x){return x.entry.id===id})}).filter(Boolean);openPhotoCard(selected,monthLabel(journalMonth)+'の発見')},'primary-pill');status.setAttribute('role','status');footer.append(status,make);selection.append(heading,choose,grid,footer);panel.append(summary,selection);app.append(panel);
+    var visible=[],chosen=[];
+    function draw(){visible=all.filter(function(x){return recordMonth(x.entry)===journalMonth&&(!journalFavorite||x.entry.favorite)});chosen=[];fav.setAttribute('aria-pressed',String(journalFavorite));fav.classList.toggle('active',journalFavorite);summary.replaceChildren();var count=h('div');count.append(h('strong',null,String(visible.length)),h('span',null,'件の発見'));var days=new Set(visible.map(function(x){return x.entry.date}).filter(Boolean)).size,day=h('div');day.append(h('strong',null,String(days)),h('span',null,'日分の思い出'));summary.append(count,day);grid.replaceChildren();
+      if(!visible.length){grid.append(lEmpty('お気に入りはまだありません','記録のハートを押すと、ここに集まります。'));choose.hidden=true}else choose.hidden=false;
+      visible.forEach(function(x){var b=lButton('',function(){var pos=chosen.indexOf(x.entry.id);if(pos>=0)chosen.splice(pos,1);else if(chosen.length<4)chosen.push(x.entry.id);else{toast('写真は4枚まで選べます。選んだ写真を押すと外せます。');return}update()},'memory-pick');b.dataset.entryId=x.entry.id;b.setAttribute('aria-label',x.entry.name+'を選択');var img=document.createElement('img');img.src=urlFor(x.entry);img.alt='';img.loading='lazy';var name=h('span','memory-pick-name',x.entry.name),badge=h('span','memory-pick-badge');badge.setAttribute('aria-hidden','true');b.append(img,name,badge);grid.append(b)});update()}
+    function update(){Array.from(grid.querySelectorAll('.memory-pick')).forEach(function(b){var index=chosen.indexOf(b.dataset.entryId);b.setAttribute('aria-pressed',String(index>=0));b.querySelector('.memory-pick-badge').textContent=index>=0?String(index+1):'＋'});status.textContent=chosen.length+' / 4枚 選択中';make.disabled=!chosen.length}
+    select.addEventListener('change',function(){journalMonth=select.value;draw()});draw()
+  })}
+  function photoImage(entry){return new Promise(function(resolve,reject){var img=new Image();img.onload=function(){resolve(img)};img.onerror=function(){reject(new Error('photo'))};img.src=urlFor(entry)})}
+  function cardFit(ctx,text,x,y,max,size,font,color){ctx.fillStyle=color;ctx.textAlign='left';var value=String(text||'');while(size>24){ctx.font='500 '+size+'px '+font;if(ctx.measureText(value).width<=max)break;size-=2}while(value.length&&ctx.measureText(value).width>max){value=Array.from(value).slice(0,-2).join('')+'…'}ctx.fillText(value,x,y)}
+  function drawPhotoCard(items,options){
+    var fonts=document.fonts?Promise.all([document.fonts.load('500 64px "Shippori Mincho"',options.title),document.fonts.load('500 32px "Zen Kaku Gothic New"',items.map(function(x){return x.entry.name}).join(''))]):Promise.resolve();
+    return Promise.all([fonts,Promise.all(items.map(function(x){return photoImage(x.entry)}))]).then(function(result){
+      var imgs=result[1],canvas=document.createElement('canvas');canvas.width=1200;canvas.height=1600;var ctx=canvas.getContext('2d');if(!ctx)throw new Error('canvas');var themes={ivory:['#faf8f3','#263345','#80632e','#e8e3da'],navy:['#263345','#fffdf6','#ddc994','#526073'],sage:['#e5ece2','#263b31','#526948','#b9c6b3']},t=themes[options.theme]||themes.ivory;
+      ctx.fillStyle=t[0];ctx.fillRect(0,0,1200,1600);ctx.fillStyle=t[2];ctx.font='500 23px "Zen Kaku Gothic New",sans-serif';ctx.fillText('MY DISCOVERIES',80,100);cardFit(ctx,options.title||'わたしの発見',80,198,1040,64,'"Shippori Mincho",serif',t[1]);ctx.strokeStyle=t[3];ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(80,236);ctx.lineTo(1120,236);ctx.stroke();
+      var count=imgs.length,cols=count===1?1:2,rows=count>2?2:1,gap=24,cellW=(1040-gap*(cols-1))/cols,cellH=(1040-gap*(rows-1))/rows,labelH=options.names?76:0;
+      imgs.forEach(function(img,i){var x=80+(i%cols)*(cellW+gap),y=284+Math.floor(i/cols)*(cellH+gap),ph=cellH-labelH,scale=Math.max(cellW/img.naturalWidth,ph/img.naturalHeight),sw=cellW/scale,sh=ph/scale;ctx.drawImage(img,(img.naturalWidth-sw)/2,(img.naturalHeight-sh)/2,sw,sh,x,y,cellW,ph);if(options.names)cardFit(ctx,items[i].entry.name,x,y+ph+48,cellW,30,'"Zen Kaku Gothic New",sans-serif',t[1])});
+      if(count===3){ctx.fillStyle=t[2];ctx.font='500 32px "Shippori Mincho",serif';ctx.fillText('小さな好きの、コレクション。',80+cellW+gap,284+cellH+gap+cellH/2)}
+      if(options.dates){var dates=items.map(function(x){return x.entry.date}).filter(Boolean).sort();if(dates.length)cardFit(ctx,showDate(dates[0])+(dates[0]!==dates[dates.length-1]?' — '+showDate(dates[dates.length-1]):''),80,1416,1040,28,'"Zen Kaku Gothic New",sans-serif',t[2])}
+      ctx.fillStyle=t[2];ctx.font='500 27px "Shippori Mincho",serif';ctx.fillText('わたしの図鑑',80,1510);ctx.textAlign='right';ctx.font='400 23px "Zen Kaku Gothic New",sans-serif';ctx.fillText(count+' DISCOVER'+(count===1?'Y':'IES'),1120,1510);
+      return new Promise(function(resolve,reject){canvas.toBlob(function(blob){if(blob)resolve(blob);else reject(new Error('encode'))},'image/jpeg',.94)})
+    })
+  }
+  function openPhotoCard(items,title){
+    if(!items||!items.length)return;items=items.slice(0,4);var c=h('div','card photo-studio');c.append(h('h2',null,'発見を、フォトカードに。'),h('p','l-note','写真と言葉を組み合わせて、自分だけの一枚に。'));
+    var preview=h('div','photo-studio-preview'),img=document.createElement('img');img.alt='フォトカードのプレビュー';preview.append(img);var status=h('p','l-note');status.setAttribute('role','status');c.append(preview,status);
+    var titleField=field('カードのタイトル','input',{id:'card-title',max:32});titleField.input.value=title||'わたしの発見';c.append(titleField.label);
+    var themes=h('div','photo-themes');themes.setAttribute('role','group');themes.setAttribute('aria-label','カードの色');var theme='ivory';[['ivory','アイボリー'],['navy','ネイビー'],['sage','セージ']].forEach(function(x){var b=lButton(x[1],function(){theme=x[0];Array.from(themes.children).forEach(function(n){n.setAttribute('aria-pressed',String(n===b))});sheetDirty=true;schedule()},'photo-theme '+x[0]);b.setAttribute('aria-pressed',String(x[0]===theme));themes.append(b)});c.append(themes);
+    var privacy=h('div','photo-options');function toggle(text,value){var label=h('label'),input=document.createElement('input');input.type='checkbox';input.checked=value;label.append(input,document.createTextNode(text));privacy.append(label);input.addEventListener('change',schedule);return input}
+    var names=toggle('記録の名前を入れる',true),dates=toggle('見つけた日を入れる',false);c.append(privacy,h('p','l-note','場所・メモ・コメントは画像に入りません。写真とタイトルは、共有前にご確認ください。'));
+    var acts=h('div','acts'),save=lButton('画像を保存',function(){if(!blob)return;var href=URL.createObjectURL(blob),a=document.createElement('a');a.href=href;a.download='watashi-no-zukan-'+todayISO()+'.jpg';document.body.append(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(href)},60000);sheetDirty=false;toast('画像の保存を開始しました。端末のダウンロードをご確認ください。')},'primary-pill'),share=lButton('画像を共有',function(){if(!blob)return;var file=new File([blob],'watashi-no-zukan.jpg',{type:'image/jpeg'});if(!navigator.canShare||!navigator.canShare({files:[file]})||!navigator.share){toast('このブラウザでは「画像を保存」からダウンロードできます。');return}sheetBusy=true;share.disabled=true;navigator.share({files:[file],title:titleField.input.value||'わたしの発見'}).then(function(){sheetDirty=false},function(e){if(e.name!=='AbortError')toast('共有できませんでした。「画像を保存」をお試しください。')}).finally(function(){sheetBusy=false;share.disabled=!blob})},'secondary-pill'),close=lButton('閉じる',closeSheet,'secondary-pill');share.hidden=!(navigator.share&&navigator.canShare);acts.append(save,share,close);c.append(acts);
+    var blob=null,currentUrl=null,revision=0,timer=null,closed=false;save.disabled=share.disabled=true;
+    function schedule(){clearTimeout(timer);save.disabled=share.disabled=true;blob=null;var seq=++revision;status.textContent='プレビューを作成しています…';timer=setTimeout(function(){drawPhotoCard(items,{title:titleField.input.value,theme:theme,names:names.checked,dates:dates.checked}).then(function(value){if(closed||seq!==revision)return;blob=value;if(currentUrl)URL.revokeObjectURL(currentUrl);currentUrl=URL.createObjectURL(blob);img.src=currentUrl;save.disabled=share.disabled=false;status.textContent='1200 × 1600 px · JPEG'},function(){if(closed||seq!==revision)return;status.textContent='画像を作れませんでした。写真を選び直してお試しください。'})},120)}
+    titleField.input.addEventListener('input',schedule);c._cleanup=function(){closed=true;revision++;clearTimeout(timer);if(currentUrl)URL.revokeObjectURL(currentUrl)};openSheet(c);schedule()
+  }
 
   /* ================= 起動 ================= */
 
