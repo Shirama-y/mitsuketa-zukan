@@ -32,3 +32,6 @@
 :root{--shelf-scroll-gap:24px;--studio-navy:#172b3d;--studio-gold:#dabb7c;--studio-paper:#f6eedf;--editor-preview-height:clamp(250px,38dvh,390px)}
 /* v36: scroll-linked 3D book movement and unified controls */
 :root{--control-icon-size:22px;--control-icon-stroke:1.7;--motion-ease:cubic-bezier(.22,.68,.25,1)}
+
+/* v38: native application UI, independent of book typography. */
+:root{--font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Hiragino Sans","Zen Kaku Gothic New","Noto Sans JP",sans-serif;--reader-toolbar:52px;--reader-controls:54px}
