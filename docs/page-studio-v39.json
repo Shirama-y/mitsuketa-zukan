@@ -1,0 +1,9 @@
+{
+  "checks": [
+    "six horizontal tools, fixed preview, icon choices and saved/reloaded placement, alignment, writing, font and paper",
+    "native horizontal swipe and 320/390/768 short-screen editor keep controls visible",
+    "eight connected paper strips bend with reverse surfaces and moving shadow; forward/backward finish and remove animation layers",
+    "reduced motion bypasses the turn effect"
+  ],
+  "errors": []
+}
