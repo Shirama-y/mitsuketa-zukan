@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "opening book hides header/navigation and fits the viewport",
+    "magazine layout, vertical writing, two columns and body font persist",
+    "horizontal/one: long text fully preserved across 8 pages",
+    "horizontal/two: long text fully preserved across 6 pages",
+    "vertical/one: long text fully preserved across 7 pages",
+    "vertical/two: long text fully preserved across 7 pages",
+    "short viewport and 320/390/768px keep page and controls visible without scrolling",
+    "record search/list remains reachable and restores app chrome"
+  ],
+  "errors": []
+}

@@ -1,0 +1,36 @@
+/* Existing generated PNG/WebP files only. No procedural visual artwork. */
+img.generated-icon{display:inline-block!important;object-fit:contain;background:transparent!important;filter:none!important;mask:none!important;-webkit-mask:none!important;flex-shrink:0;vertical-align:middle}
+.app-nav button .nav-ico.generated-icon{width:34px;height:34px;margin:0 auto}
+.app-nav button{min-height:58px;gap:5px;padding:4px 3px}
+.app-nav button[aria-current="page"]{font-weight:700!important;text-decoration:underline;text-underline-offset:4px}
+img.generated-icon.book-face-icon{width:58px;height:58px;margin:0 auto 16px}
+.book-face.small img.generated-icon.book-face-icon{width:38px;height:38px;margin:0 auto 10px}
+img.generated-icon.spine-icon{width:36px;height:36px}
+img.generated-icon.choice-icon{width:38px;height:38px;margin:0 auto}
+.icon-choice{width:54px;min-width:54px!important;height:54px}
+img.generated-icon.round-mask{width:30px;height:30px}
+img.generated-icon.search-mask{width:26px;height:26px}
+img.generated-icon.library-add-icon{width:34px;height:34px}
+img.generated-icon.heart-mask{width:30px;height:30px}
+.heart-btn:not(.on) img.generated-icon{opacity:.42}
+.heart-btn.on img.generated-icon{opacity:1}
+img.generated-icon.action-art{width:26px;height:26px;margin-right:8px}
+.native-detail-actions button,.add-entry-btn{display:flex;align-items:center;justify-content:center;gap:0;min-height:48px}
+.library-empty{padding-top:8px;padding-bottom:24px}
+.library-empty-art,.library-feature-art,.empty-art,.search-hero-art,.new-book-art,.pro-hero-art{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:contain;filter:none;margin:0 auto 18px;border-radius:10px}
+.library-empty-art,.library-feature-art{max-width:600px}
+.library-feature-art{margin:8px auto 20px}
+.empty-art,.pro-hero-art{max-width:540px}
+.search-hero-art{max-width:500px}
+.new-book-art{max-width:420px;margin:10px auto 18px}
+.library-empty h2{font-size:22px;line-height:1.5}
+.library-empty p{font-size:14px;line-height:1.8}
+.library-start{min-height:50px}
+.preset-thumb{aspect-ratio:4/3;object-fit:contain;background:#fff6df}
+.new-book-preview .book-face-icon{max-width:38px;max-height:38px}
+button:focus-visible,a:focus-visible{outline:3px solid #bc9144;outline-offset:3px}
+@media(max-width:380px){.native-detail-actions button{font-size:12px;padding:10px 7px}.native-detail-actions .action-art{width:22px;height:22px;margin-right:5px}.library-empty h2{font-size:20px}}
+
+.library-empty p,.empty-collection.rich{text-wrap:pretty}
+.design-preview .book-face.small{width:180px;padding:28px 16px}
+.design-preview .book-face.small .book-face-title{font-size:20px;line-height:1.5}

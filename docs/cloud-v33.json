@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "anonymous denied; nonmembers denied; invited editor allowed; owner-only membership/publication",
+    "retrying a copied record reuses its id instead of duplicating it",
+    "editor adds record; stale save rejected without overwriting",
+    "photo replacement creates a new file while keeping published photo intact",
+    "public snapshot readable anonymously; subsequent draft changes remain private",
+    "membership revocation and unpublish revoke record/media access",
+    "cross-origin mutation blocked"
+  ]
+}

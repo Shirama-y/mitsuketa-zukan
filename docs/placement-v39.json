@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "top: body preserved across 3 pages without heading overlap",
+    "bottom: body preserved across 3 pages without heading overlap",
+    "left: body preserved across 4 pages without heading overlap",
+    "right: body preserved across 4 pages without heading overlap",
+    "shared storage preserves placement/alignment and rejects unsupported placement",
+    "backup restores new placement settings"
+  ],
+  "errors": []
+}

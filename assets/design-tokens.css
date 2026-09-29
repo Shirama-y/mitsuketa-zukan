@@ -1,0 +1,41 @@
+:root {
+  color-scheme: light;
+  --color-ivory:#faf8f3; --color-white:#ffffff; --color-navy:#263345;
+  --color-gold:#af8e4c; --color-gold-dark:#80632e; --color-gold-pale:#f2ead7;
+  --color-pink:#f3e2df; --color-sage:#e5ece2; --color-muted:#747982; --color-line:#e8e3da;
+  --radius-sm:10px; --radius-card:18px; --radius-panel:28px; --radius-pill:999px;
+  --shadow-card:0 3px 14px #392c1710; --shadow-float:0 12px 40px #392c1720;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+  --space-5:20px; --space-6:24px; --space-8:32px; --space-10:40px;
+  --font-body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",Meiryo,system-ui,sans-serif;
+  --font-display:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho","Noto Serif CJK JP",serif;
+  --text-xs:.75rem; --text-sm:.875rem; --text-base:1rem; --text-title:1.75rem;
+  --page-gutter:clamp(16px,4.5vw,32px); --section-gap:32px;
+  --leading-body:1.8; --leading-title:1.5;
+  --ground:var(--color-ivory); --card:var(--color-white); --field:#f5f2ed;
+  --ink:var(--color-navy); --muted:var(--color-muted); --line:var(--color-line);
+  --rule:#c8bcaa; --alert:#a44b43; --shade:#eee9e0; --lift:var(--shadow-card);
+  --tome:var(--color-white); --tome-ink:var(--ink); --tome-muted:var(--muted);
+  --tome-line:var(--line); --tome-rule:var(--rule);
+  --kaku:var(--font-body); --maru:var(--font-body); --klee:var(--font-display);
+}
+:root{--shelf-cover-width:160px;--shelf-book-height:222px;--shelf-spine-width:44px}
+/* v30: binding, paper and reading controls */
+:root{--book-radius:3px 8px 8px 3px;--book-shadow:2px 2px 0 #e9dfcd,4px 3px 0 #c9bda8,6px 4px 0 #f7f0df,9px 12px 20px #30261955;--klee:"Klee One",var(--font-display);--maru:"Zen Maru Gothic",var(--font-body)}
+/* v31: shelf geometry and navigation spacing */
+:root{--shelf-gap:9px;--nav-clearance:calc(112px + env(safe-area-inset-bottom,0px))}
+/* v32: book reader and workspace */
+:root{--header-height:112px;--paper-ivory:#fffdf4;--paper-white:#fff;--paper-sage:#f0f4ec;--turn-duration:260ms;--motion-ease:cubic-bezier(.2,.7,.2,1)}
+/* v34: focused editing workspace and physical book geometry */
+:root{--editor-preview-height:252px;--editor-toolbar-height:62px;--book-depth:9px;--page-flip-duration:650ms}
+/* v35: native shelf scrolling and storybook studio */
+:root{--shelf-scroll-gap:24px;--studio-navy:#172b3d;--studio-gold:#dabb7c;--studio-paper:#f6eedf;--editor-preview-height:clamp(250px,38dvh,390px)}
+/* v36: scroll-linked 3D book movement and unified controls */
+:root{--control-icon-size:22px;--control-icon-stroke:1.7;--motion-ease:cubic-bezier(.22,.68,.25,1)}
+
+/* v38: native application UI, independent of book typography. */
+:root{--font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Hiragino Sans","Zen Kaku Gothic New","Noto Sans JP",sans-serif;--reader-toolbar:52px;--reader-controls:54px}
+/* v41: viewport-aware, edge-to-edge app chrome. */
+:root{--app-viewport-height:100dvh;--app-viewport-bottom:0px;--app-nav-height:calc(80px + env(safe-area-inset-bottom,0px));--nav-clearance:calc(var(--app-nav-height) + var(--app-viewport-bottom) + 24px);--chrome-space:clamp(12px,2.2dvh,18px);--safe-gutter-left:max(var(--page-gutter),env(safe-area-inset-left,0px));--safe-gutter-right:max(var(--page-gutter),env(safe-area-inset-right,0px))}
+/* v42: shared, gender-neutral controls; authored covers keep their own palette. */
+:root{--action-ink:#263c4a;--action-surface:#eef2f3;--muted:#606972;--focus-ring:#284c63;--control-height:48px}

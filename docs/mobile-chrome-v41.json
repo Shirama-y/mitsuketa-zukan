@@ -1,0 +1,708 @@
+{
+  "checks": [
+    "square header and footer; fixed screen edges; visible nav labels; no horizontal overflow at 320/375/390/430/768px and landscape 844x390",
+    "measured footer clearance and sticky header verified on shelf, public library and study",
+    "larger simulated home-indicator inset updates content clearance through ResizeObserver",
+    "simulated visual viewport keyboard shrink and restoration reposition footer",
+    "editor remains full-screen with main header/footer hidden and palette library intact"
+  ],
+  "geometries": [
+    {
+      "view": "shelf",
+      "width": 320,
+      "height": 568,
+      "nav": {
+        "x": 0,
+        "y": 489,
+        "width": 320,
+        "height": 79,
+        "bottom": 568
+      },
+      "header": {
+        "x": 0,
+        "width": 320,
+        "bottom": 96
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "search",
+      "width": 320,
+      "height": 568,
+      "nav": {
+        "x": 0,
+        "y": 489,
+        "width": 320,
+        "height": 79,
+        "bottom": 568
+      },
+      "header": {
+        "x": 0,
+        "width": 320,
+        "bottom": 100.5625
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "public",
+      "width": 320,
+      "height": 568,
+      "nav": {
+        "x": 0,
+        "y": 489,
+        "width": 320,
+        "height": 79,
+        "bottom": 568
+      },
+      "header": {
+        "x": 0,
+        "width": 320,
+        "bottom": 96
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "settings",
+      "width": 320,
+      "height": 568,
+      "nav": {
+        "x": 0,
+        "y": 489,
+        "width": 320,
+        "height": 79,
+        "bottom": 568
+      },
+      "header": {
+        "x": 0,
+        "width": 320,
+        "bottom": 96
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "shelf",
+      "width": 375,
+      "height": 667,
+      "nav": {
+        "x": 0,
+        "y": 588,
+        "width": 375,
+        "height": 79,
+        "bottom": 667
+      },
+      "header": {
+        "x": 0,
+        "width": 375,
+        "bottom": 96
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "search",
+      "width": 375,
+      "height": 667,
+      "nav": {
+        "x": 0,
+        "y": 588,
+        "width": 375,
+        "height": 79,
+        "bottom": 667
+      },
+      "header": {
+        "x": 0,
+        "width": 375,
+        "bottom": 96
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "public",
+      "width": 375,
+      "height": 667,
+      "nav": {
+        "x": 0,
+        "y": 588,
+        "width": 375,
+        "height": 79,
+        "bottom": 667
+      },
+      "header": {
+        "x": 0,
+        "width": 375,
+        "bottom": 96
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "settings",
+      "width": 375,
+      "height": 667,
+      "nav": {
+        "x": 0,
+        "y": 588,
+        "width": 375,
+        "height": 79,
+        "bottom": 667
+      },
+      "header": {
+        "x": 0,
+        "width": 375,
+        "bottom": 96
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "shelf",
+      "width": 390,
+      "height": 844,
+      "nav": {
+        "x": 0,
+        "y": 765,
+        "width": 390,
+        "height": 79,
+        "bottom": 844
+      },
+      "header": {
+        "x": 0,
+        "width": 390,
+        "bottom": 112
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "search",
+      "width": 390,
+      "height": 844,
+      "nav": {
+        "x": 0,
+        "y": 765,
+        "width": 390,
+        "height": 79,
+        "bottom": 844
+      },
+      "header": {
+        "x": 0,
+        "width": 390,
+        "bottom": 112
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "public",
+      "width": 390,
+      "height": 844,
+      "nav": {
+        "x": 0,
+        "y": 765,
+        "width": 390,
+        "height": 79,
+        "bottom": 844
+      },
+      "header": {
+        "x": 0,
+        "width": 390,
+        "bottom": 112
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "settings",
+      "width": 390,
+      "height": 844,
+      "nav": {
+        "x": 0,
+        "y": 765,
+        "width": 390,
+        "height": 79,
+        "bottom": 844
+      },
+      "header": {
+        "x": 0,
+        "width": 390,
+        "bottom": 112
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "shelf",
+      "width": 430,
+      "height": 932,
+      "nav": {
+        "x": 0,
+        "y": 853,
+        "width": 430,
+        "height": 79,
+        "bottom": 932
+      },
+      "header": {
+        "x": 0,
+        "width": 430,
+        "bottom": 112
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "search",
+      "width": 430,
+      "height": 932,
+      "nav": {
+        "x": 0,
+        "y": 853,
+        "width": 430,
+        "height": 79,
+        "bottom": 932
+      },
+      "header": {
+        "x": 0,
+        "width": 430,
+        "bottom": 112
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "public",
+      "width": 430,
+      "height": 932,
+      "nav": {
+        "x": 0,
+        "y": 853,
+        "width": 430,
+        "height": 79,
+        "bottom": 932
+      },
+      "header": {
+        "x": 0,
+        "width": 430,
+        "bottom": 112
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "settings",
+      "width": 430,
+      "height": 932,
+      "nav": {
+        "x": 0,
+        "y": 853,
+        "width": 430,
+        "height": 79,
+        "bottom": 932
+      },
+      "header": {
+        "x": 0,
+        "width": 430,
+        "bottom": 112
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "shelf",
+      "width": 844,
+      "height": 390,
+      "nav": {
+        "x": 42,
+        "y": 337,
+        "width": 760,
+        "height": 53,
+        "bottom": 390
+      },
+      "header": {
+        "x": 42,
+        "width": 760,
+        "bottom": 72
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 77,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "search",
+      "width": 844,
+      "height": 390,
+      "nav": {
+        "x": 42,
+        "y": 337,
+        "width": 760,
+        "height": 53,
+        "bottom": 390
+      },
+      "header": {
+        "x": 42,
+        "width": 760,
+        "bottom": 72
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 77,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "public",
+      "width": 844,
+      "height": 390,
+      "nav": {
+        "x": 42,
+        "y": 337,
+        "width": 760,
+        "height": 53,
+        "bottom": 390
+      },
+      "header": {
+        "x": 42,
+        "width": 760,
+        "bottom": 72
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 77,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "settings",
+      "width": 844,
+      "height": 390,
+      "nav": {
+        "x": 42,
+        "y": 337,
+        "width": 760,
+        "height": 53,
+        "bottom": 390
+      },
+      "header": {
+        "x": 42,
+        "width": 760,
+        "bottom": 72
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 77,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "shelf",
+      "width": 768,
+      "height": 1024,
+      "nav": {
+        "x": 4,
+        "y": 945,
+        "width": 760,
+        "height": 79,
+        "bottom": 1024
+      },
+      "header": {
+        "x": 4,
+        "width": 760,
+        "bottom": 112
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "search",
+      "width": 768,
+      "height": 1024,
+      "nav": {
+        "x": 4,
+        "y": 945,
+        "width": 760,
+        "height": 79,
+        "bottom": 1024
+      },
+      "header": {
+        "x": 4,
+        "width": 760,
+        "bottom": 112
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "public",
+      "width": 768,
+      "height": 1024,
+      "nav": {
+        "x": 4,
+        "y": 945,
+        "width": 760,
+        "height": 79,
+        "bottom": 1024
+      },
+      "header": {
+        "x": 4,
+        "width": 760,
+        "bottom": 112
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "view": "settings",
+      "width": 768,
+      "height": 1024,
+      "nav": {
+        "x": 4,
+        "y": 945,
+        "width": 760,
+        "height": 79,
+        "bottom": 1024
+      },
+      "header": {
+        "x": 4,
+        "width": 760,
+        "bottom": 112
+      },
+      "radius": [
+        "0px",
+        "0px"
+      ],
+      "clearance": 103,
+      "overflow": false,
+      "labels": [
+        true,
+        true,
+        true,
+        true
+      ]
+    }
+  ],
+  "errors": []
+}
