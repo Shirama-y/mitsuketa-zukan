@@ -268,3 +268,27 @@ html[data-view=reader],html[data-view=reader] body{height:100%;overflow:hidden;o
 .palette-note{display:block;font:400 10px/1.6 var(--font-body);color:#7d6e5c;margin:0 2px 2px;overflow-wrap:anywhere}
 .palette-status{color:#665031;font:600 12px/1.6 var(--font-body);margin:2px 0 4px}
 .palette-legend{color:#80715b;font:400 10px/1.6 var(--font-body)}
+
+/* v41: square header/footer, safe areas and measured navigation clearance. */
+.wrap{min-height:var(--app-viewport-height);padding-inline:var(--safe-gutter-left) var(--safe-gutter-right)}
+.l-header{border-radius:0;min-height:calc(clamp(96px,14dvh,112px) + env(safe-area-inset-top,0px));margin-left:calc(-1 * var(--safe-gutter-left));margin-right:calc(-1 * var(--safe-gutter-right));margin-bottom:clamp(16px,2.5dvh,24px);padding:calc(var(--chrome-space) + env(safe-area-inset-top,0px)) var(--safe-gutter-right) var(--chrome-space) var(--safe-gutter-left)}
+.l-header:after{border-radius:0}
+.l-header .l-brand{top:calc(var(--chrome-space) + env(safe-area-inset-top,0px));right:var(--safe-gutter-right)}
+.l-header .icon-button{width:44px;height:44px}
+.l-header h1{font-size:clamp(1.25rem,5.5vw,1.5rem);padding-right:56px}
+.l-header p{max-width:calc(100% - 56px)}
+.app-nav{border-radius:0;border-width:1px 0 0;bottom:var(--app-viewport-bottom);padding:8px max(6px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));align-items:stretch}
+.app-nav button{min-height:62px;grid-template-rows:32px auto;padding:3px 0;gap:4px;align-content:center}
+.app-nav button>span:last-child{font-size:.75rem;line-height:1.5;padding-bottom:0}
+.app-nav .record-circle{transform:none;width:38px;height:38px}
+html{scroll-padding-top:calc(128px + env(safe-area-inset-top,0px));scroll-padding-bottom:var(--nav-clearance)}
+.app-toast{bottom:calc(var(--app-nav-height) + var(--app-viewport-bottom) + 12px)}
+@media(max-height:500px) and (orientation:landscape){
+  :root{--chrome-space:8px}
+  .l-header{min-height:calc(72px + env(safe-area-inset-top,0px));margin-bottom:12px}
+  .l-header h1{font-size:1.125rem}.l-header p{margin-top:2px;font-size:.75rem}
+  .app-nav{padding-top:4px;padding-bottom:calc(4px + env(safe-area-inset-bottom,0px))}
+  .app-nav button{display:flex;flex-direction:row;justify-content:center;align-items:center;gap:8px;min-height:44px}
+  .app-nav button>svg{width:24px;height:24px}.app-nav .record-circle{width:32px;height:32px}.app-nav .record-circle svg{width:22px;height:22px}
+  html{scroll-padding-top:calc(84px + env(safe-area-inset-top,0px))}
+}

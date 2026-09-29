@@ -35,3 +35,5 @@
 
 /* v38: native application UI, independent of book typography. */
 :root{--font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Hiragino Sans","Zen Kaku Gothic New","Noto Sans JP",sans-serif;--reader-toolbar:52px;--reader-controls:54px}
+/* v41: viewport-aware, edge-to-edge app chrome. */
+:root{--app-viewport-height:100dvh;--app-viewport-bottom:0px;--app-nav-height:calc(80px + env(safe-area-inset-bottom,0px));--nav-clearance:calc(var(--app-nav-height) + var(--app-viewport-bottom) + 24px);--chrome-space:clamp(12px,2.2dvh,18px);--safe-gutter-left:max(var(--page-gutter),env(safe-area-inset-left,0px));--safe-gutter-right:max(var(--page-gutter),env(safe-area-inset-right,0px))}
