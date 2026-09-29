@@ -30,3 +30,5 @@
 :root{--editor-preview-height:252px;--editor-toolbar-height:62px;--book-depth:9px;--page-flip-duration:650ms}
 /* v35: native shelf scrolling and storybook studio */
 :root{--shelf-scroll-gap:24px;--studio-navy:#172b3d;--studio-gold:#dabb7c;--studio-paper:#f6eedf;--editor-preview-height:clamp(250px,38dvh,390px)}
+/* v36: scroll-linked 3D book movement and unified controls */
+:root{--control-icon-size:22px;--control-icon-stroke:1.7;--motion-ease:cubic-bezier(.22,.68,.25,1)}
