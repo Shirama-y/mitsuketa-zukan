@@ -201,6 +201,27 @@
     {name:"スレート",bg:"#536b78",ink:"#edf4f7",set:["#536b78","#394d59","#d2bd8a"]}
   ];
 
+  // A palette changes only the three cover inks; the stored custom colours remain portable.
+  var COVER_PALETTES = [
+    {key:'rose',name:'ローズミルク',group:'soft',note:'やわらかな花の記録に',colors:['#ead3d5','#6d394d','#503c4e']},
+    {key:'lavender',name:'ラベンダーの手紙',group:'soft',note:'静かな思い出を綴る',colors:['#ddd8ed','#51456b','#39445c']},
+    {key:'mist',name:'朝のミスト',group:'soft',note:'透明感のある一冊',colors:['#cddfe4','#354f63','#425a55']},
+    {key:'oat',name:'オーツとカカオ',group:'soft',note:'日々の小さな宝物に',colors:['#e9ddcb','#624634','#4b5150']},
+    {key:'sage',name:'セージの庭',group:'nature',note:'草花や庭の観察に',colors:['#c7d2be','#3d5141','#604b37']},
+    {key:'forest',name:'深い森の標本',group:'nature',note:'木々と生きものの世界',colors:['#294d43','#e8d7ad','#d5e4cd']},
+    {key:'clay',name:'テラコッタ日和',group:'nature',note:'旅先のぬくもりを集めて',colors:['#a65540','#fff3d7','#fff5ee']},
+    {key:'sea',name:'海辺のノート',group:'nature',note:'海と空のかけらに',colors:['#336775','#f0deba','#e0f0ed']},
+    {key:'midnight',name:'真夜中の図書館',group:'classic',note:'ネイビーに金のきらめき',colors:['#20364d','#d9bc7b','#f0e5cc']},
+    {key:'wine',name:'ワインと古書',group:'classic',note:'大切な物語を収める',colors:['#663c4c','#ead1a0','#f5e2df']},
+    {key:'ink',name:'墨とシルバー',group:'classic',note:'凛としたモノトーン',colors:['#343d45','#dfdfd6','#bed0d7']},
+    {key:'plum',name:'プラムの書斎',group:'classic',note:'深い紫の落ち着いた装丁',colors:['#53405e','#e3c7a4','#ebdeef']},
+    {key:'lemon',name:'レモンソーダ',group:'pop',note:'明るい発見がいっぱい',colors:['#efdc82','#384e59','#604d36']},
+    {key:'peach',name:'ピーチパーティー',group:'pop',note:'楽しい思い出をカラフルに',colors:['#f0bda6','#753c54','#3f5353']},
+    {key:'mint',name:'ミントキャンディ',group:'pop',note:'遊び心のあるコレクション',colors:['#b6ded0','#3d4c73','#6b3c50']},
+    {key:'sky',name:'空いろの冒険',group:'pop',note:'はじめての発見を一冊に',colors:['#a9cce9','#394967','#643e48']}
+  ];
+  function coverColors(book){return [book.customBg||cover(book.color).bg,book.customAccent||(Number(book.color)>=12?'#715c34':'#e6c579'),book.customInk||cover(book.color).ink]}
+
   function cover(i) { return COVERS[(Number(i) || 0) % COVERS.length]; }
 
   /* 表紙の柄。book.theme（0〜3）に保存する。 */
@@ -1416,6 +1437,10 @@
         screen.querySelectorAll('[data-page-layout]').forEach(function(n){n.setAttribute('aria-pressed',String(n.dataset.pageLayout===(draft.pageLayout||'folio')))});
         draft.title=ti.value;draft.subtitle=si.value;screen.querySelectorAll('.custom-color-row input').forEach(function(n,i){n.value=[draft.customBg||cover(draft.color).bg,draft.customAccent||(Number(draft.color)>=12?'#715c34':'#e6c579'),draft.customInk||cover(draft.color).ink][i]});screen.querySelectorAll('[data-cover-field]').forEach(function(n){if(n.type==='checkbox')n.checked=draft[n.dataset.coverField]!==false;else n.value=draft[n.dataset.coverField]==null?n.dataset.fallback:draft[n.dataset.coverField]});remember();applyButtonTheme(screen,draft);paintPreview();
         [["font",draft.font],["color",draft.color],["theme",draft.theme],["icon",draft.icon],["frame",draft.frame]].forEach(function(p){Array.prototype.forEach.call(screen.querySelectorAll("[data-"+p[0]+"]"),function(n){n.classList.toggle("active",Number(n.dataset[p[0]])===Number(p[1]||0))})});
+        var currentColors=coverColors(draft),matchedPalette=COVER_PALETTES.find(function(p){return p.colors.every(function(c,i){return c===currentColors[i].toLowerCase()})});
+        screen.querySelectorAll('[data-palette]').forEach(function(n){n.setAttribute('aria-pressed',String(!!matchedPalette&&n.dataset.palette===matchedPalette.key))});
+        screen.querySelectorAll('.color-choice').forEach(function(n){var selected=Number(n.dataset.color)===Number(draft.color)&&!draft.customBg&&!draft.customAccent&&!draft.customInk;n.classList.toggle('active',selected);n.setAttribute('aria-pressed',String(selected))});
+        if(paletteStatus){var statusText=matchedPalette?matchedPalette.name+' を使用中':draft.customBg||draft.customAccent||draft.customInk?'カスタムの配色を使用中':'単色の配色を使用中';if(paletteStatus.textContent!==statusText)paletteStatus.textContent=statusText}
         Array.prototype.forEach.call(screen.querySelectorAll("[data-layout]"),function(n){n.classList.toggle("active",n.dataset.layout===draft.layout)});Array.prototype.forEach.call(screen.querySelectorAll("[data-name-mode]"),function(n){n.classList.toggle("active",n.dataset.nameMode===draft.nameMode)});Array.prototype.forEach.call(screen.querySelectorAll("[data-button-theme]"),function(n){n.classList.toggle("active",n.dataset.buttonTheme===draft.buttonTheme)});Array.prototype.forEach.call(screen.querySelectorAll("[data-title-size]"),function(n){n.classList.toggle("active",n.dataset.titleSize===draft.titleSize)});Array.prototype.forEach.call(screen.querySelectorAll("[data-title-align]"),function(n){n.classList.toggle("active",n.dataset.titleAlign===draft.titleAlign)});
         Array.prototype.forEach.call(screen.querySelectorAll("[data-preset]"),function(n){
           var p=BOOK_PRESETS[Number(n.dataset.preset)];
@@ -1451,7 +1476,16 @@
         bt.addEventListener("click",function(){draft.titleAlign=x[0];repaint()});titleAlignGrid.append(bt)
       });
       titleAlignSec.append(titleAlignGrid);screen.append(titleAlignSec);
-      var cs=sec("カラー"),cg=h("div","design-grid");COVERS.forEach(function(co,i){var bt=h("button","design-choice color-choice");bt.type="button";bt.dataset.color=i;bt.style.setProperty("--swatch",co.bg);bt.setAttribute("aria-label",co.name);bt.addEventListener("click",function(){draft.color=i;draft.customBg="";draft.customAccent="";draft.customInk="";if(typeof freeCg!=="undefined"){var ins=freeCg.querySelectorAll('input[type="color"]');if(ins[0])ins[0].value=co.bg;if(ins[1])ins[1].value="#e6c579";if(ins[2])ins[2].value=co.ink}repaint()});cg.append(bt)});cs.append(cg);screen.append(cs);
+      var paletteSection=sec('スウォッチライブラリ'),paletteFilters=h('div','palette-filters'),paletteRail=h('div','palette-library'),paletteStatus=h('p','palette-status');
+      paletteSection.append(h('p','l-note','表紙・文字と飾り・背表紙の文字を、ひとつの配色に。'));
+      paletteFilters.setAttribute('role','group');paletteFilters.setAttribute('aria-label','配色の雰囲気');paletteRail.setAttribute('aria-label','配色スウォッチ');paletteStatus.setAttribute('role','status');
+      [['all','すべて'],['soft','やさしい'],['nature','自然'],['classic','クラシック'],['pop','ポップ']].forEach(function(x){var btn=lButton(x[1],function(){paletteFilters.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed',String(b===btn))});paletteRail.querySelectorAll('[data-palette]').forEach(function(b){b.hidden=x[0]!=='all'&&b.dataset.group!==x[0]});paletteRail.scrollLeft=0},'palette-filter');btn.setAttribute('aria-pressed',String(x[0]==='all'));paletteFilters.append(btn)});
+      COVER_PALETTES.forEach(function(p){var btn=lButton('',function(){inputGroup=lastGroup=null;draft.customBg=p.colors[0];draft.customAccent=p.colors[1];draft.customInk=p.colors[2];repaint()},'palette-card');btn.dataset.palette=p.key;btn.dataset.group=p.group;btn.setAttribute('aria-label',p.name+'：'+p.note);btn.setAttribute('aria-pressed','false');
+        var sample=h('span','palette-sample'),letters=h('span','palette-letter','Aa あ'),mark=h('span','palette-check','✓'),strip=h('span','palette-strip');sample.style.backgroundColor=p.colors[0];sample.style.color=p.colors[1];sample.setAttribute('aria-hidden','true');sample.append(letters,mark);strip.setAttribute('aria-hidden','true');p.colors.forEach(function(c){var chip=h('span');chip.style.backgroundColor=c;strip.append(chip)});btn.append(sample,strip,h('span','palette-name',p.name),h('span','palette-note',p.note));paletteRail.append(btn)
+      });
+      paletteSection.append(paletteFilters,paletteRail,paletteStatus,h('p','palette-legend','色見本は左から、表紙 ／ 文字・飾り ／ 背表紙の文字'));
+      screen.append(paletteSection);
+      var cs=sec("単色から選ぶ"),cg=h("div","design-grid");COVERS.forEach(function(co,i){var bt=h("button","design-choice color-choice");bt.type="button";bt.dataset.color=i;bt.style.setProperty("--swatch",co.bg);bt.setAttribute("aria-label",co.name);bt.addEventListener("click",function(){draft.color=i;draft.customBg="";draft.customAccent="";draft.customInk="";if(typeof freeCg!=="undefined"){var ins=freeCg.querySelectorAll('input[type="color"]');if(ins[0])ins[0].value=co.bg;if(ins[1])ins[1].value="#e6c579";if(ins[2])ins[2].value=co.ink}repaint()});cg.append(bt)});cs.append(cg);screen.append(cs);
       var advancedToggle=h("button","advanced-toggle","こだわり設定を開く");advancedToggle.type="button";
       advancedToggle.addEventListener("click",function(){
         var open=screen.classList.toggle("advanced-open");
@@ -1469,8 +1503,8 @@
         colorField("文字・飾り", "customAccent", "#e6c579"),
         colorField("背表紙の文字", "customInk", cover(draft.color).ink)
       );
-      freeCs.append(freeCg,h("p","color-help","プリセットを土台にして、好きな色へ少しずつ変えられます。"));
-      var resetColor=h("button","color-reset","プリセットの色に戻す");resetColor.type="button";
+      freeCs.append(freeCg,h("p","color-help","選んだ配色を土台に、色をひとつずつ調整できます。"));
+      var resetColor=h("button","color-reset","単色の配色に戻す");resetColor.type="button";
       resetColor.addEventListener("click",function(){draft.customBg="";draft.customAccent="";draft.customInk="";Array.prototype.forEach.call(freeCg.querySelectorAll('input[type="color"]'),function(inp,j){inp.value=j===0?cover(draft.color).bg:j===1?"#e6c579":cover(draft.color).ink});repaint()});
       freeCs.append(resetColor);screen.append(freeCs);
       var xs=sec("表紙の質感"),xg=h("div","design-grid");PATTERNS.forEach(function(pt,i){var bt=h("button","design-choice texture-choice");bt.type="button";bt.dataset.theme=i;bt.setAttribute("aria-label",pt.name);bt.append(h("span","texture-label",pt.name));bt.addEventListener("click",function(){draft.theme=i;repaint()});xg.append(bt)});xs.append(xg);screen.append(xs);
@@ -1512,7 +1546,7 @@
       var titleStyle=sec('タイトルのデザイン');chooseRow(titleStyle,'文字の位置（全面レイアウト）','coverTitlePosition',[['top','上'],['center','中央'],['bottom','下']],'top');chooseRow(titleStyle,'タイトルの背景','coverTitleTreatment',[['plain','そのまま'],['plate','ラベルを敷く']],'plain');slider(titleStyle,'文字の間隔','coverTracking',0,18,0);
       var decorations=sec('飾りとステッカー');chooseRow(decorations,'飾り枠','coverOrnament',[['none','基本の枠'],['antique','金の飾り枠']],'none');var stickers=h('div','studio-stickers');var none=lButton('なし',function(){draft.coverSticker=0;designDirty=true;repaint()},'studio-choice');none.dataset.coverChoice='coverSticker';none.dataset.value='0';none.dataset.fallback='0';stickers.append(none);BOOK_ICONS.forEach(function(ic,i){if(!ic.src)return;var bt=lButton('',function(){draft.coverSticker=i+1;designDirty=true;repaint()},'studio-choice');bt.dataset.coverChoice='coverSticker';bt.dataset.value=String(i+1);bt.dataset.fallback='0';bt.setAttribute('aria-label',ic.name+'のステッカー');bt.append(maskIcon(ic.src,'choice-icon'));stickers.append(bt)});decorations.append(h('h3',null,'ステッカー'),stickers);chooseRow(decorations,'ステッカーの位置','coverStickerPosition',[['left','左下'],['center','中央下'],['right','右下']],'center');slider(decorations,'ステッカーの大きさ','coverStickerSize',70,140,100);
       var undo=lButton('もどす',function(){restoreStep(-1)},'studio-history-button'),redo=lButton('やりなおす',function(){restoreStep(1)},'studio-history-button'),historyBar=h('div','studio-history');undo.disabled=redo.disabled=true;undo.prepend(lIcon('undo'));redo.prepend(lIcon('redo'));historyBar.append(undo,h('span',null,'好きな組み合わせで、あなたの一冊に。'),redo);
-      var toolGroups=[['template','テンプレート',[templates]],['title','タイトル',[ts,fs,titleSizeSec,titleAlignSec,titleStyle]],['color','カラー',[cs,freeCs]],['photo','写真・背景',[photoEditor,composition]],['binding','フレーム',[xs,rs,isec]],['decor','飾り',[decorations]],['theme','テーマ',[ps,bs]],['pages','ページ',[pageSection,ds,ns]]];
+      var toolGroups=[['template','テンプレート',[templates]],['title','タイトル',[ts,fs,titleSizeSec,titleAlignSec,titleStyle]],['color','カラー',[paletteSection,cs,freeCs]],['photo','写真・背景',[photoEditor,composition]],['binding','フレーム',[xs,rs,isec]],['decor','飾り',[decorations]],['theme','テーマ',[ps,bs]],['pages','ページ',[pageSection,ds,ns]]];
       toolGroups.forEach(function(tool,i){var pane=h('div','editor-pane');pane.id='editor-panel-'+tool[0];pane.setAttribute('role','tabpanel');pane.setAttribute('aria-labelledby','editor-tab-'+tool[0]);tool[2].forEach(function(n){n.classList.remove('advanced-option');pane.append(n)});var tab=lButton(tool[1],function(){panes.scrollTo({left:panes.clientWidth*i,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})},'editor-tool');tab.prepend(lIcon(['book','type','palette','image','frame','star','sliders','book'][i]));tab.id='editor-tab-'+tool[0];tab.setAttribute('role','tab');tab.setAttribute('aria-controls',pane.id);tab.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();var j=(i+(e.key==='ArrowRight'?1:-1)+toolGroups.length)%toolGroups.length;tabs.children[j].click();tabs.children[j].focus()}});tabs.append(tab);panes.append(pane)});
       function syncTool(){var selected=Math.round(panes.scrollLeft/Math.max(1,panes.clientWidth));if(selectedTool!==selected){selectedTool=selected;paintPreview()}Array.from(tabs.children).forEach(function(tab,i){tab.setAttribute('aria-selected',String(i===selected));tab.tabIndex=i===selected?0:-1;panes.children[i].inert=i!==selected;if(i===selected){var left=tab.offsetLeft-tabs.offsetLeft;if(left<tabs.scrollLeft||left+tab.offsetWidth>tabs.scrollLeft+tabs.clientWidth)tabs.scrollTo({left:Math.max(0,left-24),behavior:'auto'})}})}
       photoEditor.querySelectorAll('input[type=range]').forEach(function(n){n.dataset.coverField=n===photoEditor.querySelector('[aria-label="表紙写真の拡大"]')?'coverZoom':'coverPhotoY';n.dataset.fallback=n.value});panes.querySelectorAll('select').forEach(function(n){var key={'写真の加工':'coverFilter','タイトルの仕上げ':'titleEffect','文章の方向':'pageWriting','段組':'pageColumns','説明文の書体':'pageBodyFont','紙の色':'pagePaper','ページの組み方':'pagePattern','写真のかたち':'pagePhotoShape','ページの書体':'pageFont','文字の大きさ':'pageTextSize'}[n.getAttribute('aria-label')];if(key){n.dataset.coverField=key;n.dataset.fallback=n.value}});screen.addEventListener('input',function(e){if(e.target.matches('input:not([type=checkbox]):not([type=file]),textarea'))inputGroup=e.target},true);['change','focusout','pointerdown'].forEach(function(event){screen.addEventListener(event,function(){inputGroup=lastGroup=null},true)});panes.addEventListener('scroll',syncTool,{passive:true});screen.replaceChildren(head,preview,tabs,panes,historyBar);app.append(screen);repaint();syncTool();
@@ -1732,7 +1766,7 @@
     }
     row("プライバシー","保存する情報と端末内データについて","見る",openPrivacySheet);
     row("サポート","使い方や不具合について問い合わせ","開く",openSupportSheet);
-    app.append(list,h("p","l-note","v39 · 記録はこの端末内に保存されます。"),h("div","app-nav-spacer"))
+    app.append(list,h("p","l-note","v40 · 記録はこの端末内に保存されます。"),h("div","app-nav-spacer"))
   }
 
   /* Library UI v23. Storage APIs and all existing native integrations remain unchanged. */
