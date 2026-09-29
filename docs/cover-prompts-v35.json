@@ -1,0 +1,25 @@
+{
+  "mode": "built-in image_gen; generate; one call per asset; no retries",
+  "jobs": [
+    {
+      "key": "starry-lake",
+      "prompt": "Use case: illustration-story. Asset type: flat production artwork for a personal encyclopedia cover-template gallery. Portrait 2:3 composition, full-bleed artwork. Style: premium nostalgic children's illustrated storybook, finely painted gouache with delicate engraved detail and softly aged print texture, magical but elegant, tasteful antique gold accents. No text, no lettering, no border, no book mockup, no watermark. Original subjects only. Scene: a starry lake landscape with a huge luminous moon over a mountain village reflected in tranquil water; a tiny child adventurer and dog viewed from behind stand low in the composition. Deep navy and muted antique-gold palette. Keep the upper 30% predominantly quiet deep navy sky for an editable UI title; place the huge moon below this title-safe area and most landscape detail in the lower two thirds.",
+      "transparent_background": false
+    },
+    {
+      "key": "secret-woodland",
+      "prompt": "Use case: illustration-story. Asset type: flat production artwork for a personal encyclopedia cover-template gallery. Portrait 2:3 composition, full-bleed artwork. Style: premium nostalgic children's illustrated storybook, finely painted gouache with delicate engraved detail and softly aged print texture, magical but elegant, tasteful antique gold accents. No text, no lettering, no border, no book mockup, no watermark. Original subjects only. Scene: a secret woodland at dusk, a luminous little cottage nestled among trees, a fox in the foreground and delicate fern foliage. Deep forest green with warm antique-gold window light. Keep the upper 30% quiet dark forest green with minimal low-contrast detail for an editable UI title; concentrate cottage, fox and foliage detail in the lower two thirds.",
+      "transparent_background": false
+    },
+    {
+      "key": "underwater-discovery",
+      "prompt": "Use case: illustration-story. Asset type: flat production artwork for a personal encyclopedia cover-template gallery. Portrait 2:3 composition, full-bleed artwork. Style: premium nostalgic children's illustrated storybook, finely painted gouache with delicate engraved detail and softly aged print texture, magical but elegant, tasteful antique gold accents. No text, no lettering, no border, no book mockup, no watermark. Original subjects only. Scene: an underwater discovery with a small antique submarine, delicate coral and colorful fish. Deep teal water, muted sea greens and subtle antique brass-gold submarine details. Keep the upper 30% quiet deep teal water with minimal low-contrast detail for an editable UI title; concentrate submarine, coral and fish in the lower two thirds.",
+      "transparent_background": false
+    },
+    {
+      "key": "antique-gold-border",
+      "prompt": "Use case: stylized-concept. Asset type: flat portrait 2:3 ornamental antique-gold cover border overlay, genuinely transparent background. Thin double antique-gold rules near the outer edges with intricate delicate botanical corners and a small compass/star motif centered at the bottom. Refined nostalgic storybook cover craftsmanship with fine engraved details. The central 80% must be completely transparent and empty. Only the gold ornament pixels are opaque; all background and interior pixels must have actual alpha transparency. No text, no scene, no background, no book mockup, no drop shadow, no watermark.",
+      "transparent_background": true
+    }
+  ]
+}
