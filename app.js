@@ -703,13 +703,14 @@
       });
   }
 
-  function createBook(title, color, themeIdx, frameIdx) {
+  function createBook(title, color, themeIdx, frameIdx, settings) {
     var b = {
       id: "b-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7),
       title: title, color: color, theme: themeIdx, frame: frameIdx,
       subtitle:"", font:0, icon:0, layout:"normal", nameMode:"both", titleSize:"medium", titleAlign:"center", buttonTheme:"pink",
       createdAt: Date.now(), nextNo: 1, count: 0
     };
+    Object.keys(settings||{}).forEach(function(key){if(!['id','createdAt','nextNo','count'].includes(key))b[key]=settings[key]});
     var t = db.transaction("books", "readwrite");
     t.objectStore("books").put(b);
     return done(t, b);
@@ -1239,6 +1240,7 @@
   function route(){
     var hash=location.hash.replace(/^#/,""),m=/^\/b\/([^/]+)\/e\/(\d+)$/.exec(hash);
     if(m)return{view:"entry",bookId:m[1],no:Number(m[2])};
+    if(hash==="/new"||hash==="/new/record")return{view:"design",recordAfterCreate:hash==="/new/record"};
     m=/^\/b\/([^/]+)\/design$/.exec(hash);if(m)return{view:"design",bookId:m[1]};
     m=/^\/b\/([^/]+)\/list$/.exec(hash);if(m)return{view:"book",bookId:m[1]};
     m=/^\/b\/([^/]+)$/.exec(hash);if(m)return{view:"cover",bookId:m[1]};
@@ -1254,7 +1256,7 @@
     if(r.view==="public")return renderPublicLibrary(r.sharedId);if(r.view==="groups")return renderGroups(r.sharedId);if(r.view==="memories")return renderMemories();if(r.view==="cover")return renderBookCover(r.bookId);
     if(r.view==="book")return renderBook(r.bookId);
     if(r.view==="entry")return renderEntry(r.bookId,r.no);
-    if(r.view==="design")return renderDesign(r.bookId);
+    if(r.view==="design")return renderDesign(r.bookId,{recordAfterCreate:r.recordAfterCreate});
     if(r.view==="search")return renderGlobalSearch();if(r.view==="collections")return renderCollections();if(r.view==="settings")return renderSettings();if(r.view==="storage")return renderStorage();return renderShelf()
   }
 
@@ -1380,20 +1382,23 @@
     openSheet(c)
   }
 
-  function renderDesign(bookId){
-    return Promise.all([store.book(bookId),store.entries(bookId)]).then(function(data){
+  function renderDesign(bookId,options){
+    var isNew=!bookId,recordAfterCreate=!!(options&&options.recordAfterCreate);
+    var initial={title:'',subtitle:'',color:12,theme:5,frame:1,font:1,icon:0,buttonTheme:'gold'};
+    return (isNew?Promise.resolve([initial,[]]):Promise.all([store.book(bookId),store.entries(bookId)])).then(function(data){
       var original=data[0],previewEntries=data[1],selectedTool=0;
       app.replaceChildren();renderAppNav("collections");app.append(lHeader("テーマ編集","お気に入りのデザインで、あなただけの一冊に。"));if(!original){go("#/");return}
       var draft={};Object.keys(original).forEach(function(k){draft[k]=original[k]});if(draft.font==null)draft.font=0;if(draft.icon==null)draft.icon=0;if(!draft.layout)draft.layout="normal";if(!draft.nameMode)draft.nameMode="both";if(!draft.titleSize)draft.titleSize="medium";if(!draft.titleAlign)draft.titleAlign="center";if(!draft.buttonTheme)draft.buttonTheme="pink";if(draft.buttonTheme==="rose")draft.buttonTheme="pink";if(draft.subtitle==null)draft.subtitle="";if(draft.customBg==null)draft.customBg="";if(draft.customAccent==null)draft.customAccent="";if(draft.customInk==null)draft.customInk="";
       var history=[],historyIndex=-1,replaying=false,inputGroup=null,lastGroup=null,photoBusy=false,saving=false;
-      var screen=h("section","design-screen story-studio"),head=h("div","design-head"),back=h("button","round-btn","‹"),save=h("button","save-design","保存");back.type=save.type="button";back.textContent="";back.setAttribute("aria-label","表紙へ戻る");back.append(lIcon("back"));back.addEventListener("click",function(){go("#/b/"+bookId)});head.append(back,h("h1",null,"わたしの装丁室"),save);screen.append(head);
+      var screen=h("section","design-screen story-studio"),head=h("div","design-head"),back=h("button","round-btn","‹"),save=h("button","save-design","保存");back.type=save.type="button";back.textContent="";back.setAttribute("aria-label",isNew?"本棚へ戻る":"表紙へ戻る");back.append(lIcon("back"));back.addEventListener("click",function(){go(isNew?"#/":"#/b/"+bookId)});save.textContent=isNew?"つくる":"保存";head.append(back,h("h1",null,isNew?"新しい図鑑の装丁":"わたしの装丁室"),save);screen.append(head);
       var preview=h("div","design-preview");screen.append(preview);
       var photoEditor=makeCoverPhotoEditor(draft,function(){designDirty=true;repaint()},function(busy){photoBusy=busy;save.disabled=busy||saving;if(undo){undo.disabled=busy||historyIndex<1;redo.disabled=busy||historyIndex>=history.length-1}});screen.append(photoEditor);
       function sec(name){var n=h("section","design-section");n.append(h("h2",null,name));return n}
-      var ps=sec("デザインテーマ"),pg=h("div","preset-grid");
+      var ps=sec("デザインテーマ"),pg=h("div","preset-grid palette-presets");ps.append(h("p","l-note","表紙・文字・差し色の組み合わせから選べます。"));
       BOOK_PRESETS.forEach(function(p,i){
         var bt=h("button","preset-card");bt.type="button";bt.dataset.preset=i;
-        var thumb=document.createElement("img");thumb.className="preset-thumb";thumb.src=p.image;thumb.alt="";
+        var thumb=h('span','theme-palette');thumb.setAttribute('aria-hidden','true');
+        [cover(p.color).bg,Number(p.color)>=12?'#715c34':'#e6c579',cover(p.color).ink,buttonTheme(p.buttonTheme).primary].forEach(function(color){var swatch=h('span','theme-swatch');swatch.style.backgroundColor=color;thumb.append(swatch)});
         bt.append(thumb,h("span","preset-name",p.name),h("span","preset-note",p.note));
         bt.addEventListener("click",function(){
           applyPreset(draft,p);
@@ -1413,7 +1418,7 @@
         Array.prototype.forEach.call(screen.querySelectorAll("[data-preset]"),function(n){
           var p=BOOK_PRESETS[Number(n.dataset.preset)];
           var same=p&&Number(draft.color||0)===p.color&&Number(draft.theme||0)===p.theme&&Number(draft.frame||0)===p.frame&&Number(draft.font||0)===p.font&&Number(draft.icon||0)===p.icon&&draft.layout===p.layout&&draft.titleSize===(p.titleSize||"medium")&&draft.titleAlign===(p.titleAlign||"center")&&draft.buttonTheme===(p.buttonTheme||"pink")&&!draft.customBg&&!draft.customAccent&&!draft.customInk;
-          n.classList.toggle("active",!!same)
+          n.classList.toggle("active",!!same);n.setAttribute("aria-pressed",String(!!same))
         });
         Array.prototype.forEach.call(screen.querySelectorAll("[data-theme]"),function(n){var base=draft.customBg||cover(draft.color).bg;n.style.setProperty("--tex-bg",base);n.style.setProperty("--tex-img",textureCss(Number(n.dataset.theme)));n.style.backgroundColor=base;n.style.backgroundImage=textureCss(Number(n.dataset.theme))})
       }
@@ -1484,12 +1489,13 @@
       });
       ns.append(ng);screen.append(ns);
 
-      save.addEventListener("click",function(){if(photoBusy||saving)return;saving=true;save.disabled=true;undo.disabled=redo.disabled=true;save.textContent="保存中…";store.updateBook(bookId,Object.assign(coverStylePatch(draft),{
+      save.addEventListener("click",function(){if(photoBusy||saving)return;if(isNew&&!ti.value.trim()){tabs.children[1].click();toast('図鑑のタイトルを入れてください。');setTimeout(function(){ti.focus()},350);return}saving=true;save.disabled=true;undo.disabled=redo.disabled=true;save.textContent="保存中…";var patch=Object.assign(coverStylePatch(draft),{
         pagePattern:draft.pagePattern||'field',pagePaper:draft.pagePaper||'ivory',pageLayout:draft.pageLayout||'folio',pagePhotoShape:draft.pagePhotoShape||'square',pageFont:draft.pageFont==null?3:draft.pageFont,pageTextSize:draft.pageTextSize||'normal',pageDate:draft.pageDate!==false,pagePlace:draft.pagePlace!==false,pageNotes:draft.pageNotes!==false,
         coverFilter:draft.coverFilter||'original',coverZoom:draft.coverZoom||100,titleEffect:draft.titleEffect||'plain',coverPhoto:draft.coverPhoto||"",coverPhotoY:draft.coverPhotoY==null?50:draft.coverPhotoY,
         title:(ti.value||"").trim()||"わたしの図鑑",subtitle:(si.value||"").trim(),font:Number(draft.font)||0,icon:Number(draft.icon)||0,
         color:Number(draft.color)||0,theme:Number(draft.theme)||0,frame:Number(draft.frame)||0,layout:draft.layout||"normal",nameMode:draft.nameMode||"both",titleSize:draft.titleSize||"medium",titleAlign:draft.titleAlign||"center",buttonTheme:draft.buttonTheme||"pink",customBg:draft.customBg||"",customAccent:draft.customAccent||"",customInk:draft.customInk||""
-      })).then(function(){designDirty=false;nativeHaptic("success");toast("図鑑のデザインを保存しました");go("#/b/"+bookId)},function(){saving=false;save.disabled=false;undo.disabled=historyIndex<1;redo.disabled=historyIndex>=history.length-1;save.textContent="保存";toast("保存できませんでした。編集内容は残っています。もう一度お試しください。")})});
+      });var write=Promise.resolve().then(function(){return isNew?store.createBook(patch.title,patch.color,patch.theme,patch.frame,patch):store.updateBook(bookId,patch)});
+      write.then(function(book){designDirty=false;nativeHaptic("success");toast(isNew?"新しい図鑑をつくりました":"図鑑のデザインを保存しました");var id=isNew?book.id:bookId;go("#/b/"+id);if(isNew&&recordAfterCreate){var next=h('div','card');next.append(h('h2',null,'最初のページをつくろう'),h('p','l-note','「'+book.title+'」を本棚に追加しました。写真を選んで記録を続けられます。'),lButton('写真を選んで記録する',function(){startCapture(id)},'primary-pill'),lButton('あとで記録する',function(){closeSheet(true)},'secondary-pill'));setTimeout(function(){openSheet(next)},100)}},function(){saving=false;save.disabled=false;undo.disabled=historyIndex<1;redo.disabled=historyIndex>=history.length-1;save.textContent=isNew?"つくる":"保存";toast("保存できませんでした。編集内容は残っています。もう一度お試しください。")})});
       ti.setAttribute('aria-label','図鑑のタイトル');si.setAttribute('aria-label','サブタイトル');
       var tabs=h('div','editor-tools'),panes=h('div','editor-panes');tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','編集ツール');panes.setAttribute('aria-label','横にスワイプして編集ツールを切り替え');
       fs.append(photoEditor.querySelector('[aria-label="タイトルの仕上げ"]').closest('label'));
@@ -1514,158 +1520,8 @@
 
 
   function openNewBook(options){
-    var recordAfterCreate=!!(options&&options.recordAfterCreate);
-    var c=h("div","card new-book-sheet");
-    c.setAttribute("role","dialog");
-    c.setAttribute("aria-modal","true");
-
-    var head=h("div","new-book-head");
-    head.append(
-      h("p","new-book-eyebrow","NEW COLLECTION"),
-      h("h2","display","新しい図鑑")
-    );
-    var introArt=document.createElement("img");
-    introArt.className="new-book-art";
-    introArt.src="./assets/attraction/poster-discover.webp";
-    introArt.alt="写真や好きなものを集めるイラスト";
-    c.append(head,introArt);
-
-    var draft={
-      title:"",
-      subtitle:"",
-      color:12,
-      theme:5,
-      frame:1,
-      font:1,
-      icon:0,
-      layout:"normal",
-      nameMode:"both",
-      titleSize:"medium",
-      titleAlign:"center",
-      buttonTheme:"gold",
-      customBg:"",
-      customAccent:"",
-      customInk:""
-    };
-
-    var preview=h("div","design-preview new-book-preview");
-    c.append(preview);
-
-    var title=field("タイトル","input",{
-      id:"new-title",
-      cls:"big",
-      ph:"草花図鑑",
-      max:24
-    });
-    var sub=field("サブタイトル（任意）","input",{
-      id:"new-subtitle",
-      ph:"Nature / 大切なものを、少しずつ。",
-      max:48
-    });
-    c.append(title.label,sub.label,makeCoverPhotoEditor(draft,function(){sheetDirty=true;paint()},function(busy){make.disabled=busy}));
-
-    var themeLabel=h("div","new-book-section-title","デザインテーマ");
-    c.append(themeLabel);
-
-    var pg=h("div","preset-grid new-book-presets");
-
-    function paint(){
-      draft.title=title.input.value.trim()||"わたしの図鑑";
-      draft.subtitle=sub.input.value.trim();
-      applyButtonTheme(c,draft);
-      preview.replaceChildren(makeBookFace(draft,true))
-    }
-
-    BOOK_PRESETS.forEach(function(theme,i){
-      var bt=h("button","preset-card"+(i===0?" active":""));
-      bt.type="button";
-      bt.setAttribute("aria-label",theme.name);
-
-      var thumb=document.createElement("img");
-      thumb.className="preset-thumb";
-      thumb.src=theme.image;
-      thumb.alt="";
-
-      bt.append(
-        thumb,
-        h("span","preset-name",theme.name),
-        h("span","preset-note",theme.note)
-      );
-
-      bt.addEventListener("click",function(){
-        nativeHaptic("light");
-        applyPreset(draft,theme);
-        Array.prototype.forEach.call(pg.children,function(node,j){
-          node.classList.toggle("active",j===i)
-        });
-        paint()
-      });
-
-      pg.append(bt)
-    });
-
-    c.append(pg,h("h3","new-book-section-title","中のページを選ぶ"),makeLayoutChoices(draft,function(){sheetDirty=true}));
-
-    var help=h("p","new-book-help","色・素材・装丁・アイコン・ボタンテーマは、作成後にいつでも変更できます。");
-    c.append(help);
-
-    var acts=h("div","acts new-book-actions");
-    var make=h("button","go","この図鑑をつくる");
-    var cancel=h("button",null,"やめる");
-    make.type=cancel.type="button";
-    cancel.addEventListener("click",closeSheet);
-    acts.append(make,cancel);
-    c.append(acts);
-
-    title.input.addEventListener("input",paint);
-    sub.input.addEventListener("input",paint);
-
-    make.addEventListener("click",function(){
-      var name=title.input.value.trim();
-      if(!name){
-        title.input.focus();
-        return
-      }
-
-      sheetBusy=true;make.disabled=true;
-      cancel.disabled=true;
-      make.textContent="つくっています…";
-
-      store.createBook(name,draft.color,draft.theme,draft.frame).then(function(book){
-        return store.updateBook(book.id,Object.assign(coverStylePatch(draft),{
-          coverFilter:draft.coverFilter||'original',coverZoom:draft.coverZoom||100,titleEffect:draft.titleEffect||'plain',coverPhoto:draft.coverPhoto||"",coverPhotoY:draft.coverPhotoY==null?50:draft.coverPhotoY,
-          subtitle:sub.input.value.trim(),
-          font:draft.font,
-          icon:draft.icon,
-          layout:draft.layout,
-          pageLayout:draft.pageLayout||"folio",
-          nameMode:draft.nameMode||"both",
-          titleSize:draft.titleSize||"medium",
-          titleAlign:draft.titleAlign||"center",
-          buttonTheme:draft.buttonTheme||"pink",
-          customBg:"",
-          customAccent:"",
-          customInk:""
-        }))
-      }).then(function(book){
-        nativeHaptic("success");
-        closeSheet(true);toast("新しい図鑑をつくりました");
-        if(recordAfterCreate){
-          var next=h('div','card');next.append(h('h2',null,'最初のページをつくろう'),h('p','l-note','「'+book.title+'」を本棚に追加しました。写真を選んで記録を続けられます。'),lButton('写真を選んで記録する',function(){startCapture(book.id)},'primary-pill'),lButton('あとで記録する',function(){closeSheet(true);go('#/b/'+book.id)},'secondary-pill'));openSheet(next);render()
-        }else go("#/b/"+book.id)
-      },function(){
-        sheetBusy=false;make.disabled=false;
-        cancel.disabled=false;
-        make.textContent="もう一度ためす"
-      })
-    });
-
-    paint();
-    openSheet(c);
-
-    setTimeout(function(){
-      title.input.focus()
-    },80)
+    if(!veil.hidden&&!closeSheet(true))return;
+    go(options&&options.recordAfterCreate?'#/new/record':'#/new')
   }
 
   function openEntryForm(bookId,photo){
@@ -1874,7 +1730,7 @@
     }
     row("プライバシー","保存する情報と端末内データについて","見る",openPrivacySheet);
     row("サポート","使い方や不具合について問い合わせ","開く",openSupportSheet);
-    app.append(list,h("p","l-note","v36 · 記録はこの端末内に保存されます。"),h("div","app-nav-spacer"))
+    app.append(list,h("p","l-note","v37 · 記録はこの端末内に保存されます。"),h("div","app-nav-spacer"))
   }
 
   /* Library UI v23. Storage APIs and all existing native integrations remain unchanged. */
@@ -1902,11 +1758,11 @@
     var id='';try{id=localStorage.getItem('zukan-selected-book')||''}catch(_){}var selected=Math.max(0,books.findIndex(function(b){return b.id===id})),step=68,coverWidth=160,depth=44,gap=24,frame=0,drag=null,blocked=0,requested=null;
     var stage=h('div','focus-shelf-stage'),rail=h('div','focus-shelf-rail'),track=h('div','shelf-scroll-track'),layer=h('div','shelf-motion-layer'),info=h('div','focus-shelf-info'),controls=h('div','focus-shelf-controls'),counter=h('span','l-note');rail.tabIndex=0;rail.setAttribute('aria-label','左右にスクロールして図鑑を選ぶ');counter.setAttribute('role','status');
     var previous=lButton('',function(){choose((requested==null?selected:requested)-1,true)},'round-btn'),next=lButton('',function(){choose((requested==null?selected:requested)+1,true)},'round-btn');previous.append(lIcon('back'));var arrow=lIcon('back');arrow.style.transform='rotate(180deg)';next.append(arrow);previous.setAttribute('aria-label','前の図鑑を選ぶ');next.setAttribute('aria-label','次の図鑑を選ぶ');controls.append(previous,counter,next);track.append(layer);rail.append(track);stage.append(rail);root.append(h('p','shelf-instruction','左右にスクロールして選ぶ · 中央の表紙でひらく'),stage,controls,info);
-    var volumes=books.map(function(b,i){var node=lButton('',function(){if(Date.now()<blocked)return;if(Math.abs(rail.scrollLeft/step-i)<.04)go('#/b/'+b.id+'/list');else choose(i,true)},'shelf-volume'),model=h('span','shelf-book-model'),spine=h('span','volume-spine');node.dataset.bookId=b.id;styleBookNode(spine,b);spine.append(h('span','spine-title',b.title),h('span','spine-count',String(b.count||0)));model.append(makeBookFace(b,false),spine);node.append(model);layer.append(node);var snap=h('span','shelf-snap');snap.setAttribute('aria-hidden','true');track.append(snap);return{node:node,model:model,snap:snap}});
+    var volumes=books.map(function(b,i){var node=lButton('',function(){if(Date.now()<blocked)return;if(Math.abs(rail.scrollLeft/step-i)<.04)go('#/b/'+b.id+'/list');else choose(i,true)},'shelf-volume'),model=h('span','shelf-book-model'),spine=h('span','volume-spine');node.dataset.bookId=b.id;styleBookNode(spine,b);spine.append(h('span','spine-title',b.title),h('span','spine-count',String(b.count||0)));styleBookNode(model,b);model.append(makeBookFace(b,false),spine);['back','fore','top','bottom'].forEach(function(side){var surface=h('span','book-solid-'+side);surface.setAttribute('aria-hidden','true');model.append(surface)});node.append(model);layer.append(node);var snap=h('span','shelf-snap');snap.setAttribute('aria-hidden','true');track.append(snap);return{node:node,model:model,snap:snap}});
     function describe(){var b=books[selected];counter.textContent=(selected+1)+' / '+books.length+'冊';previous.disabled=selected===0;next.disabled=selected===books.length-1;volumes.forEach(function(v,i){v.node.setAttribute('aria-label',books[i].title+(i===selected?'をひらく':'を選ぶ'));v.node.setAttribute('aria-current',String(i===selected));v.node.tabIndex=i===selected?0:-1;v.node.classList.toggle('is-selected',i===selected);v.node.classList.toggle('shelf-cover-open',i===selected)});try{localStorage.setItem('zukan-selected-book',b.id)}catch(_){}info.replaceChildren(h('h3',null,b.title),h('p','l-note',(b.count||0)+'件の記録'+(b.subtitle?' · '+b.subtitle:'')));var actions=h('div','shelf-book-actions');actions.append(lButton('この本をひらく',function(){go('#/b/'+b.id+'/list')},'primary-pill'),lButton('図鑑を編集',function(){go('#/b/'+b.id+'/design')},'secondary-pill'),lButton('中のページを編集',function(){openPageLayout(b.id)},'secondary-pill'));info.append(actions)}
     function paint(){frame=0;if(!rail.isConnected)return;var p=Math.max(0,Math.min(books.length-1,rail.scrollLeft/step)),lo=Math.floor(p),t=p-lo,centers=[],widths=[],angles=[],opens=[],cursor=0;
       books.forEach(function(_,i){var proximity=Math.max(0,1-Math.abs(i-p)),open=(1-Math.cos(Math.PI*proximity))/2,angle=(1-open)*Math.PI/2,width=coverWidth*Math.cos(angle)+depth*Math.sin(angle);angles[i]=angle;opens[i]=open;widths[i]=width;centers[i]=cursor+width/2;cursor+=width+gap});var origin=centers[lo]*(1-t)+(centers[Math.min(lo+1,books.length-1)]||centers[lo])*t;
-      volumes.forEach(function(v,i){var x=rail.clientWidth/2+centers[i]-origin,w=widths[i],visible=x+w> -80&&x-w<rail.clientWidth+80;v.node.style.visibility=visible?'visible':'hidden';if(!visible)return;v.node.style.width=w+'px';v.node.style.left=(x-w/2)+'px';v.node.style.bottom=(38+opens[i]*7)+'px';var centerOffset=(coverWidth*Math.cos(angles[i])-depth*Math.sin(angles[i]))/2;v.model.style.transform='translateX('+(-centerOffset)+'px) rotateY('+(-angles[i]*180/Math.PI)+'deg)';v.node.style.zIndex=String(10+Math.round(opens[i]*10));v.node.dataset.openness=opens[i].toFixed(4)});
+      volumes.forEach(function(v,i){var x=rail.clientWidth/2+centers[i]-origin,w=widths[i],visible=x+w> -80&&x-w<rail.clientWidth+80;v.node.style.visibility=visible?'visible':'hidden';if(!visible)return;v.node.style.width=w+'px';v.node.style.left=(x-w/2)+'px';v.node.style.bottom=(38+opens[i]*7)+'px';var centerOffset=coverWidth*Math.cos(angles[i])/2;v.model.style.transform='translateX('+(-centerOffset)+'px) rotateY('+(angles[i]*180/Math.PI)+'deg)';v.node.style.zIndex=String(10+Math.round(opens[i]*10));v.node.dataset.openness=opens[i].toFixed(4)});
       stage.style.backgroundPosition=(-rail.scrollLeft*.45)+'px center';var nearest=Math.round(p);if(nearest!==selected){selected=nearest;describe()}}
     function schedule(){if(!frame)frame=requestAnimationFrame(paint)}
     function choose(index,focus){if(index<0||index>=books.length)return;requested=index;rail.scrollTo({left:index*step,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});if(focus)rail.focus({preventScroll:true});schedule()}
