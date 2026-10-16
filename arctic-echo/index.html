@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#071322">
+<meta name="description" content="同じ北極を、三つの人生から体験するドット絵の短編アドベンチャー。">
+<title>氷のむこうに — ARCTIC ECHO / DODOLABO</title>
+<style>
+:root{--navy:#071322;--panel:#0e2436;--border:#335266;--pale:#e5f6f2;--muted:#9ab9c2;--mint:#9df1d3;--orange:#f5b47b;--sans:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;--pixel:"Courier New",monospace}
+*{box-sizing:border-box}html{background:var(--navy)}body{margin:0;color:var(--pale);font-family:var(--sans);background:radial-gradient(ellipse at 55% -13%,#225069 0,transparent 44%),#071322;min-height:100vh}button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}button:focus-visible,a:focus-visible{outline:3px solid var(--mint);outline-offset:3px}button:disabled{opacity:.5;cursor:not-allowed}a{color:#a9dfdf}main{width:min(100%,680px);margin:0 auto;padding:0 15px 45px;padding-bottom:max(45px,env(safe-area-inset-bottom))}.mast{padding:20px 1px 14px;display:flex;justify-content:space-between;gap:10px;align-items:center;font:700 11px var(--pixel);letter-spacing:.1em;color:#b9dadb}.mast .mark{display:inline-flex;align-items:center;gap:6px}.dot{width:9px;height:9px;background:#94eed3;box-shadow:3px 3px 0 #2e7b8b}.badge{border:1px solid #3d6d7a;padding:5px 8px;color:#b2d7d7;font-size:9px}.intro{text-align:center;padding:18px 6px 18px}.eyebrow{display:block;letter-spacing:.25em;color:var(--mint);font:700 11px var(--pixel)}h1{font-weight:900;font-size:clamp(35px,9vw,52px);letter-spacing:.065em;line-height:1.3;margin:14px 0 9px;text-shadow:0 3px 0 #18304b}h2{font-size:20px;margin:10px 0}p{line-height:1.75}.tagline{font-size:14px;color:#b4cdd5;margin:10px auto;max-width:370px}.screenframe{background:#030e1d;border:3px solid #385f74;box-shadow:0 7px 0 #02101e,0 15px 32px #0006;padding:5px;position:relative}.screenframe:after{content:'';pointer-events:none;position:absolute;inset:5px;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(3,10,25,.1) 4px);mix-blend-mode:multiply;opacity:.6}.screenframe canvas{width:100%;height:auto;aspect-ratio:16/9;display:block;image-rendering:pixelated;image-rendering:crisp-edges;background:#143a56}.overimage{position:absolute;bottom:10px;left:10px;background:#06121cca;color:#d5eaf1;font:700 10px var(--pixel);padding:4px 7px;letter-spacing:.07em;border-left:3px solid var(--mint);z-index:1}.panel{background:linear-gradient(180deg,#122e42,#0b2336);border:1px solid var(--border);padding:17px 16px;margin-top:13px}.headline{font-size:12px;letter-spacing:.15em;color:#a6d2d6;font-weight:700}.separator{height:1px;background:#315162;margin:14px 0}.choose{margin:0 0 11px;font-size:15px;color:#bad3db}.route-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.route{background:#112e43;border:1px solid #507181;padding:13px 7px 11px;color:var(--pale);min-height:143px;text-align:center;transition:.15s}.route[aria-pressed=true]{background:#17445c;border:2px solid #9df1d3;padding:12px 6px 10px;box-shadow:inset 0 0 0 2px #0e293e}.route .emoji{font-size:32px;display:block;margin-bottom:8px;filter:saturate(.75)}.route b{display:block;font-size:13px;letter-spacing:.05em}.route small{font-size:11px;color:#afc8d0;display:block;margin-top:6px;line-height:1.4}.primary{width:100%;background:var(--mint);color:#072438;border:0;padding:15px 12px;margin-top:14px;font-weight:900;letter-spacing:.06em;box-shadow:4px 4px 0 #327e89;min-height:49px}.primary:active:not(:disabled){transform:translate(3px,3px);box-shadow:1px 1px 0 #327e89}.minor{padding:9px 10px;font-size:12px;background:transparent;color:#b8d5d8;border:1px solid #567a89}.note{color:#9cbbc5;font-size:11px;line-height:1.7;margin:14px 1px}.hidden{display:none!important}.bar-top{display:flex;align-items:center;justify-content:space-between;margin:7px 0 11px;gap:10px}.year{font:700 14px var(--pixel);color:#b0efdb}.chapter{font:700 10px var(--pixel);color:#91b7c4}.proglines{display:flex;gap:5px;margin:7px 0 12px}.proglines i{display:block;flex:1;height:4px;background:#29475b}.proglines i.filled{background:#9debd7}.identity{font-size:11px;letter-spacing:.12em;color:#a5cbcd;margin-top:13px}.dialogue{padding:17px 16px 15px;border:1px solid #54758a;background:linear-gradient(180deg,#102d42 0%,#0b2234 100%);min-height:158px;margin-top:12px;position:relative}.dialogue:before{content:'';position:absolute;top:-6px;left:22px;background:#102d42;width:10px;height:10px;border-left:1px solid #54758a;border-top:1px solid #54758a;transform:rotate(45deg)}.dialogue .speaker{color:var(--mint);font-size:11px;font-weight:800;letter-spacing:.12em;margin-bottom:9px}.dialogue p{font-size:15px;line-height:1.9;margin:0;white-space:pre-line}.choice-title{font-size:11px;color:#97c9ca;letter-spacing:.12em;font-weight:900;margin:18px 0 9px}.choice-grid{display:grid;gap:8px}.decision{border:1px solid #456e7e;color:#e4f4f0;background:#102c41;padding:12px 12px;text-align:left;display:flex;gap:12px;align-items:center;min-height:62px}.decision:active{background:#205069}.decision .num{display:grid;place-items:center;border:1px solid #6a9aaa;width:26px;height:26px;flex-shrink:0;font:800 12px var(--pixel);color:#add9de}.decision b{font-size:13px;line-height:1.5}.decision small{display:block;color:#97bac5;font-size:11px;margin-top:4px;line-height:1.5}.data{border:1px solid #3b6870;background:#0a2532;padding:12px;margin-top:13px}.data-head{font:800 10px var(--pixel);color:#91e3c7;letter-spacing:.08em;display:flex;align-items:center;justify-content:space-between}.data-mark{font:700 9px var(--pixel);background:#315d66;color:#e8f5eb;padding:2px 5px}.data p{font-size:12px;line-height:1.65;color:#c1d7d8;margin:7px 0 0}.data a{font-size:11px;display:inline-block;margin-top:6px;text-underline-offset:3px}.data .future{background:#6c5a40;color:#ffebcd}.outcome{border:1px solid #9bb7a5;background:#20383d;padding:15px;margin-top:12px}.outcome .result{font:700 11px var(--pixel);color:var(--mint)}.outcome p{font-size:14px;margin:8px 0 0}.outcome .primary{margin-top:14px}.meters{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 8px}.meter{flex:1;min-width:0;background:#143044;border:1px solid #456779;padding:8px 9px;font-size:11px;color:#adcfd1}.meter strong{font:800 18px var(--pixel);display:block;color:#ebf4e9}.story-end{text-align:center;padding:20px 5px 8px}.end-label{color:#e9c59c;font:700 11px var(--pixel);letter-spacing:.15em}.story-end h2{font-size:26px;margin:11px 0;line-height:1.5}.story-end p{font-size:14px;line-height:1.9;text-align:left}.epilogue{background:#0e2736;border-left:3px solid #9fe0ce;padding:13px 15px;font-size:13px;margin:18px 0;text-align:left;line-height:1.8}.ledger{text-align:left;font-size:12px;color:#c0d6dc;margin:19px 0}.ledger .line{padding:7px 0;border-bottom:1px solid #29465b}.credits{font-size:11px;color:#96b5ba;border-top:1px solid #29445a;margin-top:28px;padding-top:15px}.credits details{padding:6px 0}.credits summary{cursor:pointer;min-height:32px}.credits p{line-height:1.7}.last-line{font-size:12px;color:#b7ccd0;margin:18px 0 0}.home-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.home-actions button{min-height:43px}.cover-line{font:700 12px var(--pixel);color:#a2cfce;margin:13px 0 2px}.sound-toggle{border:none;background:none;color:#a4d8d5;cursor:pointer;font:700 10px var(--pixel);padding:8px}body[data-route=bear] .screenframe{border-color:#5f929c}body[data-route=executive] .screenframe{border-color:#bf9066}body[data-route=politician] .screenframe{border-color:#8199bc}@media(max-width:370px){main{padding-left:10px;padding-right:10px}.panel{padding:14px 12px}.route{padding:11px 4px}.route small{font-size:10px}.dialogue p{font-size:14px}}@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<main>
+<header class="mast"><span class="mark"><i class="dot"></i> DODOLABO / STORIES</span><span class="badge">PLAYABLE PROTOTYPE 02</span></header>
+<section id="home">
+ <div class="intro"><span class="eyebrow">THREE LIVES / ONE ARCTIC</span><h1>氷のむこうに</h1><p class="tagline">同じ世界に生きている。<br>けれど、見えているものは違う。</p></div>
+ <div class="screenframe"><canvas id="homeArt" width="320" height="180" aria-label="ドット絵の北極。氷の向こうを貨物船が通る"></canvas><span class="overimage">ARCTIC OCEAN — 2026</span></div>
+ <section class="panel"><div class="headline">01 / ひとつの人生を選ぶ</div><p class="choose">あなたは誰として、この世界を生きる？</p>
+ <div class="route-grid" id="routes"><button class="route" data-route="bear" type="button" aria-pressed="true"><span class="emoji">🐻‍❄️</span><b>しろくま</b><small>家族と生きる</small></button><button class="route" data-route="executive" type="button" aria-pressed="false"><span class="emoji">🚢</span><b>経営者</b><small>会社を守る</small></button><button class="route" data-route="politician" type="button" aria-pressed="false"><span class="emoji">🏛️</span><b>政治家</b><small>信頼を背負う</small></button></div>
+ <button class="primary" type="button" id="start">この人生を始める →</button><p class="note" id="memory">所要時間：約3〜5分 / 1ルート。選ばなかった人物も同じ世界にいます。</p></section>
+</section>
+<section id="play" class="hidden" aria-label="ゲーム本編">
+ <div class="bar-top"><span class="year" id="year">2026</span><span class="chapter" id="chapter">CHAPTER 01 / 04</span></div><div class="proglines" id="progress"><i></i><i></i><i></i><i></i></div>
+ <div class="screenframe"><canvas id="sceneArt" width="320" height="180" aria-label="場面を描いたドット絵"></canvas><span class="overimage" id="location">北極圏</span></div>
+ <div class="identity" id="identity">A LIFE / 01</div>
+ <div class="meters" id="meters"></div>
+ <div class="dialogue"><div class="speaker" id="speaker">ナレーション</div><p id="dialogueText"></p></div>
+ <section id="options"><div class="choice-title">あなたなら、どうする？</div><div class="choice-grid" id="choices"></div></section>
+ <section class="outcome hidden" id="result" aria-live="polite"><span class="result" id="resultLabel">YOUR CHOICE</span><p id="resultText"></p><button type="button" class="primary" id="continue">物語を進める →</button></section>
+ <aside id="datacard" class="data hidden"></aside>
+ <button type="button" class="minor" id="quit" style="margin-top:16px">← 主人公選択に戻る</button>
+</section>
+<section id="ending" class="hidden">
+ <div class="screenframe"><canvas id="endArt" width="320" height="180" aria-label="物語の終わりを描いたドット絵"></canvas><span class="overimage" id="endingPlace">ARCTIC — EPILOGUE</span></div>
+ <div class="story-end"><span class="end-label">A LIFE, NOT A SCORE</span><h2 id="endingTitle"></h2><p id="endingBody"></p><div class="epilogue" id="epilogue"></div><div class="ledger" id="ledger"></div><div class="home-actions"><button type="button" class="minor" id="retry">この人生をやり直す</button><button type="button" class="primary" style="margin-top:0" id="other">別の人生を見る →</button></div><p class="last-line" id="lastline">別の視点から見ると、同じ景色も違って見える。</p></div>
+</section>
+<footer class="credits"><details><summary>科学的な根拠とフィクションについて</summary><p><b>観測事実</b>：2026年9月12日の北極海氷の年間最小面積は約460万km²（NSIDC速報）。2026年9月の月平均は481万km²、1979〜2026年の9月海氷面積の長期傾向は1981〜2010年平均に対して10年あたり−11.6%。</p><p><b>将来予測</b>：IPCC AR6は、2050年より前に、北極が9月に実質的に海氷のない状態（海氷面積100万km²未満）となる年が少なくとも1度現れる可能性が高いと評価しています。すべての年に氷がなくなるという意味ではありません。</p><p><b>創作</b>：登場人物・運送会社「アストラ海運」・船舶「ASTRA 07」・事件・2040年代の風景・個人の結末・ゲージはフィクションです。ゲージは科学的な確率や数値予測ではありません。主人公の選択で世界の気温や海氷面積が変わる仕組みはありません。</p><p><a href="https://nsidc.org/news-analyses/news-stories/arctic-sea-ice-has-reached-minimum-extent-2026-antarctic-sea-ice-maximum-most-likely-reached-well" target="_blank" rel="noopener">NSIDC：2026年の最小海氷面積</a> ／ <a href="https://nsidc.org/sea-ice-today/analyses/stranger-things-2026-arctic" target="_blank" rel="noopener">NSIDC：2026年10月の分析</a> ／ <a href="https://www.ipcc.ch/report/ar6/wg1/chapter/summary-for-policymakers/" target="_blank" rel="noopener">IPCC AR6：政策決定者向け要約</a></p></details><p>ドット絵・シナリオ：オリジナル試作品 / DODOLABO　※ 一部に厳しい結末があります。</p></footer>
+</main>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);let selected='bear';let state=null;let completions={};
+try{completions=JSON.parse(localStorage.getItem('arcticEchoRuns')||'{}')||{}}catch{}
+function save(){try{localStorage.setItem('arcticEchoRuns',JSON.stringify(completions))}catch{}}
+const FACTS={
+ minimum:{tag:'観測・2026年',text:'2026年9月12日、北極海氷の年間最小面積は約460万km²。人工衛星の観測史上、10番目に少ない水準と並びました（速報）。',url:'https://nsidc.org/news-analyses/news-stories/arctic-sea-ice-has-reached-minimum-extent-2026-antarctic-sea-ice-maximum-most-likely-reached-well',name:'出典：NSIDC（2026/9/23）'},
+ trend:{tag:'観測・1979〜2026年',text:'9月の海氷面積の長期的な減少傾向は、1981〜2010年平均を基準に10年あたり約11.6%。ひとつの年ではなく、数十年の傾向です。',url:'https://nsidc.org/sea-ice-today/analyses/stranger-things-2026-arctic',name:'出典：NSIDC（2026/10/7）'},
+ forecast:{tag:'科学的予測・IPCC AR6',text:'2050年より前に、9月の北極海氷が実質的に消失する年が少なくとも1度現れる可能性が高いと予測。「実質的に」は海氷面積100万km²未満のこと。以下の場面の年・個人の運命は創作です。',url:'https://www.ipcc.ch/report/ar6/wg1/chapter/summary-for-policymakers/',name:'出典：IPCC AR6 WGI'},
+ scene:{tag:'創作上のシーン',text:'登場人物・船・個別の事故や出来事はフィクションです。現実の統計だけから、特定の人や動物の運命は予測できません。',url:null,name:null}
+};
+const SCRIPTS={
+ bear:{name:'しろくま',sub:'一頭の人生 / 北極海',intro:'氷は、いつもの場所にあるはずだった。',stats:[['力','energy'],['空腹への余裕','food']],start:{energy:68,food:62},scenes:[
+ {year:'2026',title:'子どもの冬',place:'北極の海氷',art:'bear',speaker:'からだの記憶',text:'母の足跡を追う。鼻先に、アザラシの匂いがした。\n母は氷の穴で動かなくなった。あなたはまだ、じっと待つことが苦手だ。',fact:'minimum',choices:[
+ {title:'母のそばで、静かに待つ',hint:'お腹はすくが、力は温存できる',delta:{energy:9,food:-14},after:'あなたは母の横で丸くなった。長い時間のあと、氷の下で何かが動いた。'},
+ {title:'匂いのする方へ走る',hint:'食べ物に近づけるかもしれない',delta:{energy:-17,food:18},after:'匂いは強くなった。でも、あなたの小さな足は思ったより早く疲れた。'},
+ {title:'ひとりで遠くまで探しに行く',hint:'大きな賭けになる',delta:{energy:-25,food:6},after:'白い地平線はどこまでも続いた。振り返ると、母はずいぶん小さかった。'}]},
+ {year:'2037',title:'橙色の影',place:'北極の航路付近',art:'shipbear',speaker:'からだの記憶',text:'遠くの海を、大きな橙色の影が横切った。\n低い音が、氷を通って足の裏まで届く。匂いも波も、いつもの海と違う。',fact:'trend',choices:[
+ {title:'音の届かない氷まで離れる',hint:'安全を探すが、体力を使う',delta:{energy:-13,food:-8},after:'音は小さくなった。氷の上には、あなたの足跡だけが続いている。'},
+ {title:'ここで身を伏せて待つ',hint:'動かずにやり過ごす',delta:{energy:6,food:-13},after:'船はやがて小さくなった。しばらくして、波だけが氷に打ちつけた。'},
+ {title:'近づいて、何なのか確かめる',hint:'未知のものに近づく',delta:{energy:-26,food:-7},after:'足元の氷が揺れた。船の形を理解する前に、冷たい水の匂いが迫った。'}]},
+ {year:'2043',title:'黒い水',place:'分断された海氷',art:'water',speaker:'からだの記憶',text:'向こう岸に、獲物の気配がある。けれど氷の間に黒い水が広がっている。\n泳ぐことはできる。でも、向こうまで泳ぎきれるかは分からない。',fact:'forecast',choices:[
+ {title:'泳いで、向こうの氷を目指す',hint:'最短距離。力が足りなければ危険',delta:{energy:-43,food:5},flag:'swim',after:'あなたは水に飛び込んだ。冷たさが、体の奥までしみ込んでくる。'},
+ {title:'時間をかけて、別の氷を探す',hint:'飢えをこらえて遠回りする',delta:{energy:-15,food:-23},after:'足跡は長くなった。何度も立ち止まって、匂いのない風をかいだ。'},
+ {title:'ここにとどまり、変化を待つ',hint:'力は残るが、食べ物が足りない',delta:{energy:8,food:-32},after:'空は暗くなった。氷はつながらない。夜になると、お腹の音だけが大きく聞こえた。'}]},
+ {year:'2047',title:'小さな足跡',place:'春の海氷',art:'cub',speaker:'からだの記憶',text:'あなたの後ろを、小さな子どもが歩いている。\nかつて母の後ろを歩いた時と、よく似た景色。でも、同じ場所にはもう戻れない。',fact:'scene',choices:[
+ {title:'見つけた獲物を、子どもに譲る',hint:'子どもを守る代わりに自分が弱る',delta:{energy:-13,food:-22},flag:'protect',after:'小さな口が動く。あなたは食べずに、子どものそばで風を受けた。'},
+ {title:'ふたりで遠くの狩り場を目指す',hint:'新しい場所には危険もある',delta:{energy:-22,food:12},flag:'journey',after:'振り返ると、子どもはあなたの足跡に足を入れて歩いていた。'},
+ {title:'今日は動かず、力を取り戻す',hint:'今を生き延びるための休息',delta:{energy:12,food:-17},flag:'rest',after:'二つの背中が風に向かって並ぶ。遠い海では、何かが動いていた。'}]}
+ ]},
+ executive:{name:'経営者',sub:'アストラ海運 / 東京',intro:'画面の向こうに、北極が映っていた。',stats:[['資金','cash'],['信頼','trust']],start:{cash:63,trust:61},scenes:[
+ {year:'2026',title:'新しい海',place:'東京・アストラ海運',art:'office',speaker:'社長室',text:'創業者だった父から会社を継いで三年。社員は40人。\n「北極航路の案件が来ています」。部長は地図を広げた。そこには、まだ利用したことのない海があった。',fact:'minimum',choices:[
+ {title:'借り入れを増やし、新航路に賭ける',hint:'伸びる可能性と、返済の負担',delta:{cash:28,trust:-8},after:'船を増やす契約にサインした。社員たちは拍手したが、銀行の担当者は静かだった。'},
+ {title:'安全対策を整えて、小さく試す',hint:'出費は増えるが現場の安心につながる',delta:{cash:-17,trust:16},after:'現場からは感謝された。経理担当は「この支出は長く続けられません」と言った。'},
+ {title:'新航路には手を出さない',hint:'手元資金を守り、機会を見送る',delta:{cash:7,trust:-3},after:'いつもの港に船が戻った。競合他社のニュースだけが増えていった。'}]},
+ {year:'2037',title:'午後7時のニュース',place:'東京・自宅の居間',art:'tv',speaker:'テレビの音声',text:'「北極圏で、氷を求めて移動するホッキョクグマが撮影されました」。\n画面の奥を、橙色の貨物船が通る。船体には、見覚えのある白いマーク。\nあなたの会社の船、ASTRA 07だ。',fact:'trend',choices:[
+ {title:'船長と研究者に現場の話を聞く',hint:'航行計画を見直すための費用が必要',delta:{cash:-13,trust:18},after:'船長は「危険なのは氷だけではありません」と答えた。次の出航まで時間はない。'},
+ {title:'いまは決算を優先する',hint:'数字は回復するが、違和感は残る',delta:{cash:15,trust:-16},after:'テレビを消すと、部屋は静かになった。翌朝、会社の数字は悪くなかった。'},
+ {title:'広報に対応を任せる',hint:'表向きの安心と、現場の距離',delta:{cash:-4,trust:-7},after:'立派な声明文が完成した。だが、船員は社内掲示板に何も書かなくなった。'}]},
+ {year:'2043',title:'船を出す日',place:'北極航路・運航会議',art:'ship',speaker:'運航部長',text:'「氷の状況が不安定です。遠回りすれば納期には遅れます」。\n取引先は、今年を逃すと契約を打ち切ると言っている。',fact:'forecast',choices:[
+ {title:'利益を減らしてでも航路を変更する',hint:'安全側の判断だが、資金を削る',delta:{cash:-27,trust:16},after:'船は進路を変えた。届け先からは厳しい電話があった。現場の船員は無事に帰った。'},
+ {title:'予定の航路を進み、納期を守る',hint:'契約を維持できるが、リスクは高い',delta:{cash:19,trust:-24},flag:'fast',after:'ASTRA 07は予定の航路を進んだ。利益は出た。けれど乗組員から、危険を訴える報告書が届いた。'},
+ {title:'出航を延期し、情報を集める',hint:'不確実さは減るが、出費がかさむ',delta:{cash:-18,trust:9},after:'追加の観測情報が届いた。状況を確認する間、船の維持費だけが増えていった。'}]},
+ {year:'2048',title:'支払日の朝',place:'東京・会社の会議室',art:'bank',speaker:'経理担当',text:'「来月の支払いが厳しいです」。\n社員の給与、船の整備費、銀行の返済。どれも後回しにはできない。\nあなたの名前を呼ぶ40人が、まだこの会社にいる。',fact:'scene',choices:[
+ {title:'資産を売って、事業を縮小する',hint:'会社を残すために何かを手放す',delta:{cash:21,trust:-19},flag:'sell',after:'思い出のある古い船を売った。数人の社員が会社を去った。'},
+ {title:'借り入れで雇用と事業を守る',hint:'いまの生活は守れるが負担が重い',delta:{cash:4,trust:5},flag:'borrow',after:'銀行は条件つきで応じた。今月の給与は払えたが、来年の返済予定表は長かった。'},
+ {title:'正直に説明し、再建に協力を求める',hint:'資金は減るが、信頼が支えになることも',delta:{cash:-10,trust:24},flag:'talk',after:'社員の前で頭を下げた。誰もすぐには拍手をしなかった。ひとりが「明日も来ます」と言った。'}]}
+ ]},
+ politician:{name:'政治家',sub:'国会議員 / 東京',intro:'資料を閉じると、窓の外にはいつもの街があった。',stats:[['支持','support'],['理解','insight']],start:{support:62,insight:41},scenes:[
+ {year:'2026',title:'薄い報告書',place:'東京・議員会館',art:'desk',speaker:'政策秘書',text:'「北極の海氷に関する資料です」。\n9月の年間最小面積は約460万km²。\nしかし今日、地元から届いた相談は、電気代と家賃についてだった。',fact:'minimum',choices:[
+ {title:'科学者を呼んで詳しく話を聞く',hint:'理解は深まるが、地元との時間は減る',delta:{support:-9,insight:22},after:'研究者は数字の背景を説明した。帰宅後、地元の相談者から不在着信が入っていた。'},
+ {title:'地元の家庭を訪ね、暮らしを聞く',hint:'信頼を築く。科学的な理解は少し進む',delta:{support:13,insight:5},after:'「今月をどう乗り切るかが問題です」。声を聞いたあと、資料の数字が違って見えた。'},
+ {title:'短いコメントをメディアに出す',hint:'注目されるが、十分に学ぶ時間はない',delta:{support:6,insight:-5},after:'コメントはニュースになった。翌週、本人より詳しい質問が届いて答えに詰まった。'}]},
+ {year:'2032',title:'駅前の声',place:'東京・駅前',art:'protest',speaker:'デモの参加者',text:'エネルギー価格の上昇をめぐり、駅前でデモが起きた。\n「将来のためって言うけど、うちは今日が苦しい！」\n環境政策に関するあなたの発言も、批判の対象になっている。',fact:'trend',choices:[
+ {title:'マイクを置き、参加者の話を聞く',hint:'対話には時間がかかる',delta:{support:13,insight:12},after:'怒った男性は、子どもの学費の話を始めた。あなたは最後まで聞いた。'},
+ {title:'政策の必要性を壇上から訴える',hint:'一部には届くが、反発もある',delta:{support:-14,insight:5},after:'演説の途中でヤジが飛んだ。支持者は拍手したが、列の外側の人々は背を向けた。'},
+ {title:'混乱を避け、会場を離れる',hint:'今は衝突を避けられる',delta:{support:-20,insight:-4},after:'車の窓からプラカードが見えた。翌朝の見出しは「議員、説明せず」だった。'}]},
+ {year:'2039',title:'現地を見るか',place:'議員会館 / 北極視察の案内',art:'desk',speaker:'政策秘書',text:'北極の研究拠点から、視察の招待状が届いた。\n現地で科学者の話を聞ける。ただし地元で予定していた集会と日程が重なっている。',fact:'forecast',choices:[
+ {title:'北極へ行き、自分の目で確かめる',hint:'理解は深まるが、留守への批判が出る',delta:{support:-11,insight:27},flag:'visit',after:'北極の空は思っていたより広かった。遠くをASTRA 07という船が通った。船員の声と研究者の話が頭に残った。'},
+ {title:'オンラインで研究者に取材する',hint:'現地には行かず、両方をつなぐ',delta:{support:3,insight:13},after:'画面越しの研究者が海氷の変化を説明した。会議が終わると、地元の集会へ向かった。'},
+ {title:'今回は地元集会を優先する',hint:'支持者と過ごせるが、見聞は限られる',delta:{support:13,insight:-7},after:'会場に集まった人々から拍手が起きた。北極への招待状は、机の隅に残った。'}]},
+ {year:'2044',title:'投票日の前夜',place:'東京・選挙事務所',art:'ballot',speaker:'選挙スタッフ',text:'街では再びデモが起こっている。\n「今までの判断について、最後にどう説明しますか」。\n支持者も批判する人も、あなたの言葉を待っている。',fact:'scene',choices:[
+ {title:'反対する人を含め、公開討論を開く',hint:'理解が深ければ信頼につながる',delta:{support:0,insight:5},flag:'debate',after:'意見は割れた。けれど、会場の最後まで人は残っていた。'},
+ {title:'生活支援を最優先すると約束する',hint:'今の困難への応答になる',delta:{support:11,insight:-3},flag:'aid',after:'拍手が起こった。一方、環境問題への説明が足りないという声も残った。'},
+ {title:'批判への対応を控える',hint:'失言は減るが、不信は残りやすい',delta:{support:-20,insight:0},flag:'silent',after:'記者会見を早く切り上げた。外にはまだ、人々が集まっていた。'}]}
+ ]}
+};
+function routeId(){return state&&state.route}
+function show(id){['home','play','ending'].forEach(k=>$(k).classList.toggle('hidden',k!==id));window.scrollTo({top:0,behavior:'instant'})}
+function meterLabel(r,k){return SCRIPTS[r].stats.find(x=>x[1]===k)?.[0]||k}
+function paintStats(){const m=$('meters');m.replaceChildren();SCRIPTS[state.route].stats.forEach(([name,key])=>{const el=document.createElement('div');el.className='meter';const v=Math.max(0,Math.min(100,Math.round(state.vars[key])));el.innerHTML='<strong>'+v+'</strong>'+name;el.setAttribute('aria-label',name+' '+v);m.append(el)})}
+function card(which){const c=$('datacard');if(!which){c.classList.add('hidden');return}const d=FACTS[which];c.classList.remove('hidden');c.replaceChildren();const head=document.createElement('div');head.className='data-head';head.innerHTML='<span>ARCHIVE / 記録</span><span class="data-mark'+(which==='scene'?' future':'')+'">'+d.tag+'</span>';c.append(head);const p=document.createElement('p');p.textContent=d.text;c.append(p);if(d.url){const a=document.createElement('a');a.textContent=d.name+' ↗';a.href=d.url;a.target='_blank';a.rel='noopener noreferrer';c.append(a)}}
+function render(){const r=SCRIPTS[state.route],s=r.scenes[state.step];document.body.dataset.route=state.route;$('year').textContent=s.year;$('chapter').textContent='CHAPTER '+String(state.step+1).padStart(2,'0')+' / 04';[...$('progress').children].forEach((el,i)=>el.classList.toggle('filled',i<=state.step));$('location').textContent=s.place;$('identity').textContent=r.name.toUpperCase()+' / '+s.title;$('speaker').textContent=s.speaker;$('dialogueText').textContent=s.text;paintStats();const wrap=$('choices');wrap.replaceChildren();s.choices.forEach((o,i)=>{const b=document.createElement('button');b.type='button';b.className='decision';const n=document.createElement('span');n.className='num';n.textContent=String(i+1);const t=document.createElement('span');const label=document.createElement('b');label.textContent=o.title;const sub=document.createElement('small');sub.textContent=o.hint;t.append(label,sub);b.append(n,t);b.addEventListener('click',()=>decide(i));wrap.append(b)});$('options').classList.remove('hidden');$('result').classList.add('hidden');card(s.fact);draw($('sceneArt'),s.art,state.route,state.step);show('play')}
+function start(route){const r=SCRIPTS[route];state={route,step:0,vars:{...r.start},flags:{},history:[],failed:false};render()}
+function decide(index){const s=SCRIPTS[state.route].scenes[state.step],o=s.choices[index];Object.entries(o.delta).forEach(([k,v])=>state.vars[k]=Math.max(0,Math.min(100,state.vars[k]+v)));if(o.flag)state.flags[o.flag]=true;state.history.push({year:s.year,title:s.title,choice:o.title});let outcome=o.after;
+if(state.route==='bear'){
+ if(state.step===2&&o.flag==='swim'&&state.vars.energy<22){state.failed='drown';outcome+='\n\n氷までは、あと少しだった。足が動かなくなり、海の音だけが遠のいていった。'}
+ else if((state.vars.energy<=7||state.vars.food<=5)&&state.step>=2){state.failed='exhausted';outcome+='\n\nもう、立ち上がる力は残っていなかった。'}
+}
+if(state.route==='executive'&&state.step===3){if(state.vars.cash<18||(state.vars.trust<30&&state.flags.fast)){state.failed='bankrupt';outcome+='\n\n数週間後、資金が尽きた。アストラ海運は事業を続けられなくなった。'}}
+if(state.route==='politician'&&state.step===3){let extra=0;if(o.flag==='debate')extra=state.vars.insight>=65?17:-10;if(o.flag==='silent')extra=-4;state.vars.support=Math.max(0,Math.min(100,state.vars.support+extra));state.flags.elected=state.vars.support>=56;outcome+='\n\n開票が終わった。あなたは'+(state.flags.elected?'議席を守った。':'落選した。')}
+paintStats();$('resultText').textContent=outcome;$('result').classList.remove('hidden');$('options').classList.add('hidden');$('resultLabel').textContent=state.failed?'A LIFE INTERRUPTED':'YOUR CHOICE / '+s.year;$('continue').textContent=state.failed||state.step>=3?'結末を見る →':'次の章へ →';$('result').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function advance(){if(state.failed||state.step>=3){finish();return}state.step++;render()}
+function finish(){let title='',body='',epi='',art='iceend';const r=state.route,v=state.vars;
+if(r==='bear'){
+ if(state.failed){title=state.failed==='drown'?'氷まで届かなかった':'白い風の中で';body=state.failed==='drown'?'泳ぎ続けた体は、最後の氷まで届かなかった。\n生きようとした一頭の物語は、ここで終わる。':'空腹と疲労が重なり、あなたは立ち上がれなくなった。誰も名前を呼ばない。';epi='2126年。北極の未来は、たった一頭の運命だけでは語れない。けれど、この一頭が見ていた景色も、世界の一部だった。';art='water'}
+ else if(v.food>=25&&v.energy>=18){title='小さな足跡が、続いていく';body='この春、あなたと子どもは生き延びた。来年も同じ氷があるかは分からない。\nそれでも今日、二つの足跡が並んでいる。';epi='2126年。はるかな未来の海氷について、ひとつの人生から答えを出すことはできない。生き残れた理由も、個体の力だけでは説明できない。';art='cub'}
+ else{title='生き延びた、けれど';body='あなたは次の春を迎えた。しかし体はやせ、子どもの行く先も不確かだった。\n生存は、幸福と同じではない。';epi='2126年。海氷がどう変わるかは、人間社会の排出経路など多くの要因に左右される。この物語は、その影響を受ける命のひとつを描いた。';art='iceend'}
+}else if(r==='executive'){
+ if(state.failed){title='会社がなくなった朝';body='アストラ海運は破産した。昨日まで通っていたオフィスには、もう入れない。\nしかし社員たちにも、あなたにも、まだ明日は来る。';epi='2126年。会社の記録には、かつてASTRA 07という船が北極航路を走ったことが残っている。海を渡った人々の暮らしも、そこにいた動物たちの時間も、数字だけでは分からない。';art='bank'}
+ else if(v.trust>=64){title='残ったのは、船だけではない';body='会社は規模を変えながら、次の年を迎えた。去った社員もいる。\nあなたが手放したものを、誰かが覚えている。';epi='2126年。社史には「安全と経営の両立に苦しんだ時代」とだけ書かれている。夜のテレビに映ったあの一頭のことは、社史にはない。';art='office'}
+ else{title='数字の上では、成功';body='会社の看板は残った。帳簿の数字も悪くない。\nただし、あなたが見なかったことにした報告書も、今なお保存されている。';epi='2126年。航海日誌の片隅には、2043年に海が荒れた日の記録がある。あの時代の北極は、一つの企業の成功だけでは測れない。';art='ship'}
+}else{
+ if(!state.flags.elected){title='落選。それでも朝は来る';body='選挙事務所の明かりが消えた。議席を失い、できなくなったことがある。\nしかし、いまなら聞ける声もあるかもしれない。';epi='2126年。議会の記録には、あなたの発言が数行だけ残っている。北極の未来を決めたのは、一人の政治家の言葉ではない。';art='ballot'}
+ else if(state.flags.visit){title='議席の向こうに残った風景';body='あなたは当選した。議席は守られた。\nけれど北極で見た海と船の姿が、当選の歓声の中でも頭から離れない。';epi='2126年。視察で見た氷は、写真になって資料室に残る。その写真は、未来を変えた証拠でも、無意味だった証拠でもない。';art='iceend'}
+ else{title='届いた声、届かなかった声';body='あなたは当選した。地元から祝福の電話が鳴る。\n机の引き出しには、まだ開いていない北極視察の資料がある。';epi='2126年。今から振り返れば、あの頃のすべてを知ることは誰にもできなかった。知ろうとする姿勢は、選択のひとつだった。';art='desk'}
+}
+completions[r]=(completions[r]||0)+1;save();$('endingTitle').textContent=title;$('endingBody').textContent=body;$('epilogue').textContent=epi;$('endingPlace').textContent='2126 / ARCHIVE OF A LIFE';$('ledger').replaceChildren();state.history.forEach(h=>{const div=document.createElement('div');div.className='line';div.textContent=h.year+' / '+h.title+' — '+h.choice;$('ledger').append(div)});$('lastline').textContent=Object.keys(completions).filter(k=>completions[k]>0).length+'/3の人生を体験済み。同じ船が、別の誰かには違って見えていた。';draw($('endArt'),art,r,4);show('ending')}
+function back(){state=null;document.body.dataset.route='';updateHome();show('home')}
+function updateHome(){[...document.querySelectorAll('.route')].forEach(b=>{const is=b.dataset.route===selected;b.setAttribute('aria-pressed',String(is));const small=b.querySelector('small');const sub={bear:'家族と生きる',executive:'会社を守る',politician:'信頼を背負う'}[b.dataset.route];small.textContent=(completions[b.dataset.route]?'✓ ':'')+sub});const n=Object.keys(completions).filter(k=>completions[k]>0).length;$('memory').textContent=n?`${n}/3の人生を体験済み。同じ出来事を別の立場から確かめてみよう。`:'所要時間：約3〜5分 / 1ルート。選ばなかった人物も同じ世界にいます。'}
+$('routes').addEventListener('click',e=>{const b=e.target.closest('[data-route]');if(!b)return;selected=b.dataset.route;updateHome();draw($('homeArt'),'home',selected,0)});
+$('start').addEventListener('click',()=>start(selected));$('continue').addEventListener('click',advance);$('quit').addEventListener('click',back);$('retry').addEventListener('click',()=>start(state.route));$('other').addEventListener('click',back);
+// Pixel-art scene renderer. Everything is drawn on a low-resolution canvas; no external assets are required.
+function draw(canvas,kind,route,chapter){const c=canvas.getContext('2d',{alpha:false});c.imageSmoothingEnabled=false;const W=320,H=180;const isOffice=['office','tv','desk','bank','ballot'].includes(kind);const isCity=['protest'].includes(kind);const arctic=!isOffice&&!isCity;
+const bg=kind==='water'?'#142f4c':isOffice?'#1a3045':isCity?'#1a2c42':'#1a3b5a';
+function rect(x,y,w,h,col){c.fillStyle=col;c.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))}function line(x,y,w,h,col){rect(x,y,w,h,col)}function poly(points,col){c.fillStyle=col;c.beginPath();c.moveTo(...points[0]);points.slice(1).forEach(p=>c.lineTo(...p));c.closePath();c.fill()}function txt(s,x,y,col='#e4f3f2',size=8){c.fillStyle=col;c.font=`bold ${size}px monospace`;c.fillText(s,x,y)}
+rect(0,0,W,H,bg);for(let i=0;i<9;i++)rect(0,16*i,W,2,i%2===0?'#ffffff04':'#00000006');
+function sky(){rect(0,0,320,119,'#173951');rect(0,0,320,48,'#193850');rect(0,33,320,24,'#224962');rect(0,59,320,54,'#397087');rect(0,96,320,33,'#77acb6');rect(220,18,21,21,'#d7e4d8');rect(224,15,14,25,'#f5ebdb');rect(216,22,28,11,'#f6f1e2');for(let i=0;i<15;i++){let x=(i*43+19)%320,y=(i*37+13)%94;rect(x,y,2,2,'#a5bacb')}}
+function sea(){rect(0,115,320,65,'#123d5e');for(let i=0;i<17;i++){const x=(i*51+23)%330,y=118+(i*11)%57;rect(x,y,18+(i%4)*6,2,i%2?'#3c7494':'#255776')}rect(0,113,320,3,'#a1ced0')}
+function icebergs(melt=0){poly([[0,121],[0,105],[10,105],[23,93],[47,90],[64,105],[90,106],[105,115],[105,128],[0,134]],'#e1f0ec');poly([[0,121],[0,108],[25,107],[42,99],[65,109],[92,110],[102,124]],'#a7d4dc');rect(0,127,97,5,'#7db4c5');poly([[210,136],[227,124],[247,120],[255,113],[288,113],[297,123],[320,125],[320,149],[211,151]],'#e8f6ee');poly([[211,138],[250,124],[256,119],[288,122],[309,133],[320,137],[320,151],[214,151]],'#9acbd3');rect(225,149,95,4,'#3d8098');if(!melt){poly([[109,162],[128,150],[174,150],[193,162],[196,180],[111,180]],'#d8eee9');rect(113,174,85,6,'#73adb9')}}
+function ship(x=165,y=91){rect(x-37,y+24,79,5,'#203b4c');poly([[x-51,y+16],[x+52,y+16],[x+41,y+30],[x-38,y+30]],'#263447');rect(x-35,y+10,71,8,'#df7f56');rect(x-25,y-2,56,12,'#d89966');rect(x+12,y-16,19,14,'#e4c0a0');rect(x+17,y-26,4,10,'#1a3043');rect(x-15,y-12,22,8,'#df7f56');rect(x-33,y+21,72,2,'#edc88a');rect(x+15,y-10,4,4,'#203548');for(let j=0;j<5;j++)rect(x-32+j*12,y+4,8,4,'#8f655f');rect(x-47,y+33,93,2,'#76b9c5')}
+function bear(x,y,scale=1,baby=false){c.save();c.translate(Math.round(x),Math.round(y));c.scale(scale,scale);const off='#5d91a8',fur='#f2ede0',shadow='#a4c9c6';rect(7,13,35,21,fur);rect(36,7,16,21,fur);rect(39,4,7,7,fur);rect(48,4,7,8,fur);rect(45,15,13,9,fur);rect(53,19,6,5,'#2d4856');rect(44,13,3,3,'#253a43');rect(9,29,8,14,shadow);rect(33,29,9,14,shadow);rect(8,42,10,4,'#d2dfd6');rect(33,42,10,4,'#d2dfd6');rect(4,18,8,12,fur);rect(8,30,31,3,shadow);if(baby){rect(8,32,10,3,off)}c.restore()}
+function mountain(){poly([[0,113],[0,92],[34,77],[65,102],[98,86],[126,111],[145,120],[0,124]],'#355c70');poly([[0,112],[37,80],[52,93],[65,101],[83,94],[98,87],[128,116],[144,122]],'#c2dadd')}
+function showSnow(){for(let i=0;i<31;i++){let x=(i*59+chapter*7+11)%318,y=(i*31+7)%178;rect(x,y,(i%3===0?2:1),2,'#bcdbe4')}}
+if(arctic){sky();sea();icebergs(kind==='water'?1:0);if(['home','shipbear','ship'].includes(kind))ship(184,85);if(['home','bear','shipbear','cub','iceend','water'].includes(kind)){if(kind==='water'){poly([[0,155],[62,149],[89,164],[85,180],[0,180]],'#cbebee');bear(25,127,.68)}else if(kind==='cub'){bear(60,111,1);bear(118,140,.55,true)}else if(kind==='iceend'){bear(33,117,.7)}else{bear(28,111,.9);if(kind==='bear')bear(97,141,.42,true)}}if(kind==='water'){rect(87,160,123,20,'#153c5e');rect(110,169,25,2,'#5590a4');rect(165,158,17,2,'#3e7994')}showSnow()}
+function windowAt(x,y){rect(x,y,98,81,'#081d34');rect(x+4,y+4,90,73,'#23435b');rect(x+28,y+4,2,73,'#91b5b5');rect(x+59,y+4,2,73,'#91b5b5');rect(x+4,y+38,90,2,'#91b5b5');for(let i=0;i<9;i++){rect(x+8+(i%4)*20,y+60-(i%3)*7,9,2,'#6f889b')}}
+function deskAndPerson(x,y,col){rect(x,y-47,18,21,'#e2ba98');rect(x+2,y-28,16,6,'#e2ba98');rect(x-4,y-23,28,27,col);rect(x-11,y-4,12,7,col);rect(x+20,y-4,12,7,col);rect(x-7,y+19,14,11,'#152536');rect(x+16,y+19,14,11,'#152536');rect(x+2,y-52,17,9,'#263448');rect(x+3,y-44,3,3,'#2d3340')}
+if(isOffice){rect(0,0,320,180,'#193046');rect(0,0,320,15,'#112638');rect(0,125,320,55,'#524e58');rect(0,154,320,26,'#403e4b');windowAt(18,25);rect(185,0,5,130,'#18283a');rect(192,27,105,75,'#486476');rect(195,30,99,69,'#15314a');if(kind==='tv'){rect(200,34,90,55,'#39718a');rect(200,70,90,16,'#225a77');rect(226,44,48,30,'#c3e8df');rect(249,58,14,14,'#b7d9d9');txt('ARCTIC',211,42,'#f5ddbf',7);rect(211,88,68,7,'#c78973')}else{rect(211,44,67,5,'#91acc0');rect(215,59,61,4,'#91acc0');rect(215,70,51,4,'#91acc0')}
+rect(90,117,169,11,'#8c6e69');rect(105,128,10,43,'#413e47');rect(241,128,10,43,'#413e47');rect(140,104,62,13,'#263e58');rect(147,110,51,4,'#8da0ab');rect(151,97,39,7,'#ccd5cc');deskAndPerson(48,142,kind==='bank'?'#354459':'#39516c');if(kind==='bank'){rect(197,112,45,4,'#b87f73');rect(197,107,34,3,'#cfc5b5');rect(209,102,29,5,'#e9e6d9')}if(kind==='ballot'){rect(234,109,41,30,'#a7b3b2');rect(241,110,29,4,'#cdd0c9')} }
+if(isCity){sky();rect(0,90,320,90,'#2e3c4d');for(let i=0;i<7;i++){const h=40+((i*13)%30),x=i*50;rect(x,115-h,41,h,'#253a52');for(let j=0;j<5;j++)rect(x+7+(j%2)*15,122-h+j*8,4,5,'#7e8da0')}rect(0,126,320,54,'#49505c');rect(0,148,320,32,'#354556');for(let i=0;i<13;i++){const x=7+i*25,y=132+(i%3)*3;rect(x,y-18,10,12,i%2?'#a1b3b4':'#b59491');rect(x+2,y-26,6,8,'#d2b69a');rect(x+1,y-4,4,21,'#243242');rect(x+7,y-4,4,21,'#243242');if(i%3!==1){rect(x-2,y-43,16,14,'#d9d2bc');rect(x,y-41,12,2,'#7d8f9a')}}}
+if(kind==='desk'&&route==='politician'){rect(211,44,67,5,'#91acc0')}
+if(kind==='ballot'){txt('VOTE',202,21,'#a8d4d2',9)}
+if(kind==='office'||kind==='tv'||kind==='bank'){txt('ASTRA',206,21,'#a4d6d2',9)}
+if(!arctic&&!isCity){for(let i=0;i<8;i++)rect((i*47+13)%320,(i*27+22)%110,1,2,'#b6d1cb33')}
+}
+updateHome();draw($('homeArt'),'home','bear',0);
+})();
+</script>
+</body></html>
