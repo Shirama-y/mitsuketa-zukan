@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "month grouping, 1–4 photo limit and selection order",
+    "live theme/title preview and 1200×1600 JPEG download",
+    "favorites filter resets photo selection",
+    "unsaved card confirmation and cancellation",
+    "offline card generation",
+    "single record card entry point",
+    "native file-share payload and cancelled share retain editor",
+    "empty library has a recording entry point"
+  ],
+  "errors": []
+}

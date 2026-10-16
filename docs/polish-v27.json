@@ -1,0 +1,10 @@
+{
+  "checks": [
+    "320/390/768/1280px: main screens without horizontal overflow",
+    "half-width katakana search and retained query",
+    "edited notes searchable with multiple normalized words",
+    "delete confirmation: cancel and confirmed deletion",
+    "200% root text: no page overflow"
+  ],
+  "errors": []
+}

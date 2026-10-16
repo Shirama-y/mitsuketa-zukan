@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "11-book shelf: one central cover, 10 spines, centered at 320/390/768px",
+    "selection persists; arrow and keyboard navigation",
+    "horizontal swipe changes book without opening it",
+    "gallery/date/place customization persists after reload",
+    "journal retains separate observation/story; search works",
+    "cancelled layout edit retains saved layout",
+    "new book creation includes layout choice; empty preview does not create records",
+    "backup includes page settings; six existing records preserved"
+  ],
+  "errors": []
+}

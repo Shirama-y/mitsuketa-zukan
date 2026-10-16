@@ -1,0 +1,10 @@
+{
+  "checks": [
+    "header stays fixed during scrolling",
+    "page turning and paper/layout customization persist",
+    "photo filters/zoom and title outline saved",
+    "shared book create, photo add, edit and explicit public snapshot UI",
+    "responsive library and reduced-motion reader"
+  ],
+  "errors": []
+}

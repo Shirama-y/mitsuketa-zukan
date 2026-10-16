@@ -1,0 +1,10 @@
+{
+  "checks": [
+    "simulated storage failure preserves draft and creates no incomplete book; retry creates exactly one book",
+    "new book starts in full studio; no record before save; complete photo/colour/font/frame/page settings save atomically and survive reload",
+    "discarding unsaved new design creates no empty book",
+    "record picker creates through same studio then offers first photo capture",
+    "existing book edit and photo-free theme palettes work at 320/390/768px"
+  ],
+  "errors": []
+}

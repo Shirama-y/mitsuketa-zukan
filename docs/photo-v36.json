@@ -1,0 +1,10 @@
+{
+  "checks": [
+    "template color controls match visible cover",
+    "own photo and illustration switch without losing either source",
+    "oval and full-bleed crops",
+    "photo source undo/redo",
+    "photo composition persists after reload",
+    "320x568 editor leaves controls visible"
+  ]
+}

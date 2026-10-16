@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "native touch scroll selects the next book; selected cover stays centered with 24px gaps",
+    "11 books, first/last book, keyboard and 320/390/768px widths keep spacing and center",
+    "storybook template applies, undo and redo restore composed cover",
+    "template, title, spacing, shade, ornament and sticker survive saving and reload",
+    "backup exports and restores the new cover fields",
+    "shared storage preserves new cover settings",
+    "editor panels switch by native horizontal touch scroll"
+  ],
+  "errors": []
+}

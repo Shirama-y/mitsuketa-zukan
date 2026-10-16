@@ -1,0 +1,179 @@
+{
+  "checks": [
+    "six fixed planes share one rigid transform and matching height; detached pseudo-page edge removed",
+    "scroll-linked 3D rotation has intermediate angles, preserves DOM and maintains 24px gaps",
+    "next button animates through intermediate scroll positions instead of swapping volumes",
+    "native touch drag moves the shelf and settles at a centered book",
+    "first/last volumes stay centered at 320/390/768px with no horizontal page overflow",
+    "full-image covers apply basic frames; undo restores antique frame",
+    "title alignment renders; live editing retains image node; typing and range gestures undo in one step",
+    "page layout controls and preview stay synchronized through undo/redo",
+    "edited cover and page settings persist after saving and reload",
+    "functional icons use consistent SVG strokes in editor and record actions",
+    "reduced motion keeps direct selection and centered layout"
+  ],
+  "errors": [],
+  "motionSamples": [
+    {
+      "p": 0,
+      "open": 1,
+      "angle": "translateX(-80px) rotateY(0deg)",
+      "gap": 24
+    },
+    {
+      "p": 0.125,
+      "open": 0.9574,
+      "angle": "translateX(-79.8209px) rotateY(3.83428deg)",
+      "gap": 24
+    },
+    {
+      "p": 0.25,
+      "open": 0.8536,
+      "angle": "translateX(-77.8926px) rotateY(13.1802deg)",
+      "gap": 24
+    },
+    {
+      "p": 0.375,
+      "open": 0.6806,
+      "angle": "translateX(-70.1421px) rotateY(28.7441deg)",
+      "gap": 24
+    },
+    {
+      "p": 0.5,
+      "open": 0.5,
+      "angle": "translateX(-56.5685px) rotateY(45deg)",
+      "gap": 24
+    },
+    {
+      "p": 0.625,
+      "open": 0.298,
+      "angle": "translateX(-36.0996px) rotateY(63.1764deg)",
+      "gap": 24
+    },
+    {
+      "p": 0.75,
+      "open": 0.1464,
+      "angle": "translateX(-18.2411px) rotateY(76.8198deg)",
+      "gap": 24
+    },
+    {
+      "p": 0.875,
+      "open": 0.0338,
+      "angle": "translateX(-4.24091px) rotateY(86.9613deg)",
+      "gap": 24
+    },
+    {
+      "p": 1,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 24
+    },
+    {
+      "p": 1.125,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 24
+    },
+    {
+      "p": 1.25,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 23.984375
+    },
+    {
+      "p": 1.375,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 23.984375
+    },
+    {
+      "p": 1.5,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 23.984375
+    },
+    {
+      "p": 1.625,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 23.984375
+    },
+    {
+      "p": 1.75,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 23.984375
+    },
+    {
+      "p": 1.875,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 23.984375
+    },
+    {
+      "p": 2,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 24
+    },
+    {
+      "p": 2.125,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 23.984375
+    },
+    {
+      "p": 2.25,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 23.984375
+    },
+    {
+      "p": 2.375,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 23.984375
+    },
+    {
+      "p": 2.5,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 23.984375
+    },
+    {
+      "p": 2.625,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 23.984375
+    },
+    {
+      "p": 2.75,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 23.984375
+    },
+    {
+      "p": 2.875,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 23.984375
+    },
+    {
+      "p": 3,
+      "open": 0,
+      "angle": "translateX(-4.89859e-15px) rotateY(90deg)",
+      "gap": 24
+    }
+  ],
+  "buttonScrollSamples": [
+    0,
+    3,
+    48,
+    63,
+    67,
+    68,
+    68,
+    68,
+    68
+  ]
+}

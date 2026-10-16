@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "home and old collection route share one shelf and filters",
+    "preview and save toolbar stay visible while controls scroll",
+    "existing title, exact cover color, photo, filter, outline and zoom persist after reload",
+    "forward and reverse page flips animate a physical sheet over the underlying page",
+    "record action creates a new book and continues directly to a photo record",
+    "320, 390 and 768px editors fit without page overflow",
+    "page design edits use the pinned live preview and save with the cover",
+    "reduced motion switches pages without animation"
+  ],
+  "errors": []
+}

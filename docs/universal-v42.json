@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "legacy collections URL resolves to one shelf; two contextual shelf actions and four nav destinations",
+    "same book action menu reaches cover studio and page studio; cover settings save",
+    "favorites and confirmed deletion remain available; cancel preserves book",
+    "search shows books and records, single filter uses actual stored tags, hints collapsed",
+    "simplified record form saves photo, multilingual name and custom tags; Arabic search matches without translation",
+    "study groups unique tasks; data management consolidates export/import/status; display preferences survive reload",
+    "large text 320/390/768px keeps navigation and layouts within viewport; reduced-motion reader skips animated turn; bilingual quick guide works"
+  ],
+  "errors": []
+}

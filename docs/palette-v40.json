@@ -1,0 +1,92 @@
+{
+  "checks": [
+    "all single-colour chips display their own actual colours, including active chip",
+    "one-click palette updates all three colours and preview; undo/redo and custom selection stay in sync",
+    "new book palette saves and survives reload",
+    "existing book palette edit preserves photo, title, font, frame",
+    "filters, persisted selection, single-colour reset and 320/390/768px widths verified"
+  ],
+  "contrast": [
+    {
+      "key": "rose",
+      "title": 6.307798455095538,
+      "spine": 7.045227152482764
+    },
+    {
+      "key": "lavender",
+      "title": 6.264822665404619,
+      "spine": 7.014907244786133
+    },
+    {
+      "key": "mist",
+      "title": 6.233288911031276,
+      "spine": 5.405171795334549
+    },
+    {
+      "key": "oat",
+      "title": 6.4089031450053415,
+      "spine": 6.045442176445099
+    },
+    {
+      "key": "sage",
+      "title": 5.461711471834252,
+      "spine": 5.2328351762737855
+    },
+    {
+      "key": "forest",
+      "title": 6.596123884594234,
+      "spine": 7.067038327840037
+    },
+    {
+      "key": "clay",
+      "title": 4.769537312501341,
+      "spine": 4.893216203507904
+    },
+    {
+      "key": "sea",
+      "title": 4.75250857761929,
+      "spine": 5.349854829548118
+    },
+    {
+      "key": "midnight",
+      "title": 6.738197528356796,
+      "spine": 9.895204544962438
+    },
+    {
+      "key": "wine",
+      "title": 6.1003269200300165,
+      "spine": 7.266429319330335
+    },
+    {
+      "key": "ink",
+      "title": 8.246449747306556,
+      "spine": 6.945735685709208
+    },
+    {
+      "key": "plum",
+      "title": 5.732579147914618,
+      "spine": 7.171391121885852
+    },
+    {
+      "key": "lemon",
+      "title": 6.340029448136132,
+      "spine": 5.830292727371549
+    },
+    {
+      "key": "peach",
+      "title": 4.952981319048467,
+      "spine": 4.870575544252173
+    },
+    {
+      "key": "mint",
+      "title": 5.7861870480909845,
+      "spine": 6.010176796149563
+    },
+    {
+      "key": "sky",
+      "title": 5.3816749329667,
+      "spine": 5.37786100971514
+    }
+  ],
+  "errors": []
+}

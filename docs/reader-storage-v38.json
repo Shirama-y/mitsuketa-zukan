@@ -1,0 +1,9 @@
+{
+  "checks": [
+    "handwriting font index 0 persists in both page editors",
+    "studio saves columns and description font",
+    "shared API preserves settings and rejects fractional font values",
+    "backup exports and restores reader settings"
+  ],
+  "errors": []
+}

@@ -1,0 +1,9 @@
+{
+  "checks": [
+    "3 books centered for every selection at 320/375/390/430/768px; arrows and nav labels aligned",
+    "collection view and reload retain central cover",
+    "11 books and keyboard selection stay centered",
+    "long title saved; page and cover edit buttons accessible above navigation"
+  ],
+  "errors": []
+}

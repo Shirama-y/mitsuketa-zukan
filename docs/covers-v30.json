@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "photo cover upload, long Japanese title, position and font persist",
+    "discarding photo removal retains cover",
+    "page shape, font, size, spacing saved and reloaded",
+    "six photographic categories filter records",
+    "backup roundtrip retains cover photo and page options; original records retained",
+    "invalid cover image rejected before restoration",
+    "new book photo cover and saved removal work",
+    "three bundled typefaces load; configured pages reopen offline"
+  ],
+  "errors": []
+}
